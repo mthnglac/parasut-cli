@@ -2,8 +2,8 @@ from __future__ import annotations
 from .builder import Builder
 from .project import Project
 
-class ConcreteBuilder(Builder):
 
+class ConcreteBuilder(Builder):
     def __init__(self) -> None:
         self.reset()
 
@@ -52,7 +52,9 @@ class ConcreteBuilder(Builder):
         self._project.set_directory("~/Code/development/parasutcom/client/")
         self._project.choose_yarn_version("1.21.1")
         self._project.choose_node_version("0.11.16")
-        self._project.execute("./node_modules/ember-cli/bin/ember s --live-reload-port 6505")
+        self._project.execute(
+            "./node_modules/ember-cli/bin/ember s --live-reload-port 6505"
+        )
 
     def launch_server(self) -> None:
         # self._project.add("server")

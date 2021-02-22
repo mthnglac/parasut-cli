@@ -4,7 +4,6 @@ from .project import Project
 
 
 class Builder(ABC):
-
     @abstractproperty
     def project(self) -> Project:
         pass

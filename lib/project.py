@@ -4,8 +4,7 @@ import subprocess
 import os
 
 
-class Project():
-
+class Project:
     def __init__(self) -> None:
         self.repos: List[str] = []
 
@@ -16,16 +15,16 @@ class Project():
         print(f"Project repos: {', '.join(self.repos)}", end="")
 
     def choose_yarn_version(self, version: str) -> None:
-        subprocess.run(['/bin/zsh', '-i', '-c', 'yvm use {0}'.format(version)])
+        subprocess.run(["/bin/zsh", "-i", "-c", "yvm use {0}".format(version)])
 
     def choose_node_version(self, version: str) -> None:
-        subprocess.run(['/bin/zsh', '-i', '-c', 'nvm use {0}'.format(version)])
+        subprocess.run(["/bin/zsh", "-i", "-c", "nvm use {0}".format(version)])
 
     def choose_ruby_version(self, version: str) -> None:
-        subprocess.run(['/bin/zsh', '-i', '-c', 'rvm use {0}'.format(version)])
+        subprocess.run(["/bin/zsh", "-i", "-c", "rvm use {0}".format(version)])
 
     def set_directory(self, path: str) -> None:
         os.chdir(os.path.expanduser(path))
 
     def execute(self, command: str) -> None:
-        subprocess.run(['/bin/zsh', '-i', '-c', '{0}'.format(command)])
+        subprocess.run(["/bin/zsh", "-i", "-c", "{0}".format(command)])

@@ -1,9 +1,9 @@
 from __future__ import annotations
 from .builder import Builder
-from  argparse import Namespace
+from argparse import Namespace
+
 
 class Director:
-
     def __init__(self) -> None:
         self._builder: Builder
 
