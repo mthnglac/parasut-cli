@@ -79,7 +79,9 @@ class Receiver:
         self.tmux_server = Server()
 
     def create_parasut_ws_setup(self) -> None:
+        # create session
         self.tmux_session_parasut_ws_setup = self.tmux_server.new_session(session_name="parasut-ws-setup", kill_session=True, attach=False)
+        # launch relative repos
         self.launch_parasut_server_repo()
         self.launch_parasut_billing_repo()
         self.launch_parasut_e_doc_broker_repo()
@@ -87,15 +89,19 @@ class Receiver:
         self.launch_parasut_client_repo()
         self.launch_parasut_trinity_repo()
         self.launch_parasut_ui_library_repo()
+        # kill the first empty window
         self.tmux_session_parasut_ws_setup.select_window(1).kill_window()
 
     def create_parasut_ws_editor(self) -> None:
+        # create session
         self.tmux_session_parasut_ws_editor = self.tmux_server.new_session(session_name="parasut-ws-editor", kill_session=True, attach=False)
+        # launch relative repos
         self.launch_parasut_phoenix_editor()
         self.launch_parasut_shared_logic_editor()
         self.launch_parasut_client_editor()
         self.launch_parasut_trinity_editor()
         self.launch_parasut_ui_library_editor()
+        # kill the first empty window
         self.tmux_session_parasut_ws_editor.select_window(1).kill_window()
 
     def launch_parasut_server_repo(self) -> None:
@@ -204,9 +210,9 @@ class Receiver:
 
 class Invoker:
     def __init__(self) -> None:
-        self._on_start: Command = None
-        self._progress: Command = None
-        self._on_finish: Command = None
+        self._on_start: Command
+        self._progress: Command
+        self._on_finish: Command
 
     def set_on_start(self, command: Command) -> None:
         self._on_start = command
