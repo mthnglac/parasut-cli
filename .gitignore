@@ -1,4 +1,4 @@
-# Byte-compiled / optimized / DLL files
+LinkCommand Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
@@ -102,4 +102,5 @@ ENV/
 .mypy_cache/
 
 # IDE settings
+.vim/
 .vscode/
