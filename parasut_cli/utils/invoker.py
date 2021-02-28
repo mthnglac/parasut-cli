@@ -1,14 +1,14 @@
 from __future__ import annotations
 from libtmux import Server, Session, Window, Pane
-import argparse
 
 from parasut_cli.utils.command import Command
 
 
 class Invoker:
-    _on_start: Command
-    _progress: Command
-    _on_finish: Command
+    def __init__(self):
+        self._on_start: Command
+        self._progress: Command
+        self._on_finish: Command
 
     def set_on_start(self, command: Command) -> None:
         self._on_start = command

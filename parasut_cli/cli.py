@@ -23,7 +23,7 @@ def main():
         "--repo",
         dest="starting_repos",
         type=str,
-        nargs="*",
+        nargs="+",
         choices=[
             "server",
             "billing",
@@ -44,7 +44,7 @@ def main():
         "--repo",
         dest="linking_repos",
         type=str,
-        nargs="*",
+        nargs="+",
         choices=["ui-library", "shared-logic"],
         required=True,
         metavar="<repo-name>",
@@ -80,11 +80,11 @@ def main():
     caretaker.undo()
 
     # if hasattr(args, "starting_repos"):
-    # invoker.do_something_important(StartCommand(receiver, args.starting_repos))
+        # invoker.do_something_important(StartCommand(receiver, args.starting_repos))
     # elif hasattr(args, "linking_repos"):
-    # invoker.do_something_important(LinkCommand(receiver, args.linking_repos))
+        # invoker.do_something_important(LinkCommand(receiver, args.linking_repos))
     # else:
-    # parser.print_help()
+        # parser.print_help()
 
     return 0
 

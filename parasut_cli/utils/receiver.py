@@ -1,61 +1,61 @@
 from __future__ import annotations
 from typing import Dict
 from libtmux import Server, Session, Window, Pane
-import argparse
 
 
 class Receiver:
-    _tmux_server: Server
-    _tmux_session_parasut_ws_setup: Session
-    _tmux_session_parasut_ws_editor: Session
-    _server_commands: Dict[str, str] = dict(
-        launch_nvim="nvim",
-        choose_ruby_version="rvm use 2.6.6",
-        launch_sidekiq="bundle exec sidekiq",
-        launch_rails="rails server",
-    )
-    _billing_commands = dict(
-        launch_nvim="nvim",
-        choose_ruby_version="rvm use 2.4.2",
-        launch_sidekiq="bundle exec sidekiq",
-        launch_rails="rails server -p 4002",
-    )
-    _e_doc_broker_commands = dict(
-        launch_nvim="nvim",
-        choose_ruby_version="rvm use 2.5.1",
-        launch_sidekiq="bundle exec sidekiq",
-        launch_rails="rails server -p 5002",
-    )
-    _phoenix_commands = dict(
-        launch_nvim="nvim",
-        choose_yarn_version="yvm use 1.21.1",
-        choose_node_version="nvm use 8.16.0",
-        ember_serve="PROJECT_TARGET=phoenix ember s",
-    )
-    _client_commands = dict(
-        launch_nvim="nvim",
-        choose_yarn_version="yvm use 1.21.1",
-        choose_node_version="nvm use 0.11.16",
-        ember_serve="./node_modules/ember-cli/bin/ember s --live-reload-port 6500",
-    )
-    _trinity_commands = dict(
-        launch_nvim="nvim",
-        choose_yarn_version="yvm use 1.21.1",
-        choose_node_version="nvm use 8.16.0",
-        ember_serve="ember s --live-reload-port 6505",
-    )
-    _ui_library_commands = dict(
-        launch_nvim="nvim",
-        choose_yarn_version="yvm use 1.21.1",
-        choose_node_version="nvm use 8.16.0",
-        ember_serve="PROJECT_TARGET=phoenix ember s --live-reload-port 6510",
-    )
-    _shared_logic_commands = dict(
-        launch_nvim="nvim",
-        choose_yarn_version="yvm use 1.21.1",
-        choose_node_version="nvm use 8.16.0",
-        ember_serve="ember s --live-reload-port 6515",
-    )
+    def __init__(self):
+        self._tmux_server: Server
+        self._tmux_session_parasut_ws_setup: Session
+        self._tmux_session_parasut_ws_editor: Session
+        self._server_commands: Dict[str, str] = dict(
+            launch_nvim="nvim",
+            choose_ruby_version="rvm use 2.6.6",
+            launch_sidekiq="bundle exec sidekiq",
+            launch_rails="rails server",
+        )
+        self._billing_commands = dict(
+            launch_nvim="nvim",
+            choose_ruby_version="rvm use 2.4.2",
+            launch_sidekiq="bundle exec sidekiq",
+            launch_rails="rails server -p 4002",
+        )
+        self._e_doc_broker_commands = dict(
+            launch_nvim="nvim",
+            choose_ruby_version="rvm use 2.5.1",
+            launch_sidekiq="bundle exec sidekiq",
+            launch_rails="rails server -p 5002",
+        )
+        self._phoenix_commands = dict(
+            launch_nvim="nvim",
+            choose_yarn_version="yvm use 1.21.1",
+            choose_node_version="nvm use 8.16.0",
+            ember_serve="PROJECT_TARGET=phoenix ember s",
+        )
+        self._client_commands = dict(
+            launch_nvim="nvim",
+            choose_yarn_version="yvm use 1.21.1",
+            choose_node_version="nvm use 0.11.16",
+            ember_serve="./node_modules/ember-cli/bin/ember s --live-reload-port 6500",
+        )
+        self._trinity_commands = dict(
+            launch_nvim="nvim",
+            choose_yarn_version="yvm use 1.21.1",
+            choose_node_version="nvm use 8.16.0",
+            ember_serve="ember s --live-reload-port 6505",
+        )
+        self._ui_library_commands = dict(
+            launch_nvim="nvim",
+            choose_yarn_version="yvm use 1.21.1",
+            choose_node_version="nvm use 8.16.0",
+            ember_serve="PROJECT_TARGET=phoenix ember s --live-reload-port 6510",
+        )
+        self._shared_logic_commands = dict(
+            launch_nvim="nvim",
+            choose_yarn_version="yvm use 1.21.1",
+            choose_node_version="nvm use 8.16.0",
+            ember_serve="ember s --live-reload-port 6515",
+        )
 
     def initialize_tmux_server(self) -> None:
         self._tmux_server = Server()
