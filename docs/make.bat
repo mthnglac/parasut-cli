@@ -9,7 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=.
 set BUILDDIR=_build
-set SPHINXPROJ=parasut_cli
+set SPHINXPROJ=parasut-cli
 
 if "%1" == "" goto help
 
