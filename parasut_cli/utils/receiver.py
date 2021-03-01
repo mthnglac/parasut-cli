@@ -74,11 +74,11 @@ class Receiver:
             ["/bin/zsh", "-i", "-c", f'yarn install{" --force" if force else ""}']
         )
 
-    def change_dependency_value(self, json_file_path: str, dep_value: str) -> str:
+    def change_dependency_value(self, json_file_path: str, dep_key: str, dep_value: str) -> str:
         with open(json_file_path, "r") as json_file:
             data = json.load(json_file)
-            dep_ver = data["devDependencies"]["ui-library"]
-            data["devDependencies"]["ui-library"] = dep_value
+            dep_ver = data["devDependencies"][dep_key]
+            data["devDependencies"][dep_key] = dep_value
 
         with open(json_file_path, "w+") as json_file:
             json_file.write(json.dumps(data, indent=True))
@@ -115,24 +115,26 @@ class Receiver:
 
         for repo_name in target_repos:
             if "ui-library" in repo_name:
+                dep_key = "ui-library"
                 dep_value = f"link:../{repo_name}"
                 repo_path = f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}"
                 json_file_path = f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}/package.json"
 
                 dep_versions["ui-library"] = self.change_dependency_value(
-                    json_file_path=json_file_path, dep_value=dep_value
+                    json_file_path=json_file_path, dep_key=dep_key, dep_value=dep_value
                 )
                 self.apply_package_changes()
                 self.change_directory(repo_path)
                 self.apply_package_changes(force=True)
                 self.change_directory(base_path)
             elif "shared_logic" in repo_name:
+                dep_key = "shared-logic"
                 dep_value = f"link:../{repo_name}"
                 repo_path = f"{config['PARASUT_BASE_DIR']}/{config['SHARED_LOGIC_DIR']}"
                 json_file_path = f"{config['PARASUT_BASE_DIR']}/{config['SHARED_LOGIC_DIR']}/package.json"
 
                 dep_versions["shared-logic"] = self.change_dependency_value(
-                    json_file_path=json_file_path, dep_value=dep_value
+                    json_file_path=json_file_path, dep_key=dep_key, dep_value=dep_value
                 )
                 self.apply_package_changes()
                 self.change_directory(repo_path)
@@ -148,24 +150,26 @@ class Receiver:
 
         for repo_name in repos:
             if "ui-library" in repo_name:
+                dep_key = "ui-library"
                 dep_value = dep_versions["ui_library"]
                 repo_path = f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}"
                 json_file_path = f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}/package.json"
 
                 self.change_dependency_value(
-                    json_file_path=json_file_path, dep_value=dep_value
+                    json_file_path=json_file_path, dep_key=dep_key, dep_value=dep_value
                 )
                 self.apply_package_changes()
                 self.change_directory(repo_path)
                 self.apply_package_changes(force=True)
                 self.change_directory(base_path)
             elif "shared_logic" in repo_name:
+                dep_key = "shared-logic"
                 dep_value = dep_versions["shared_logic"]
                 repo_path = f"{config['PARASUT_BASE_DIR']}/{config['SHARED_LOGIC_DIR']}"
                 json_file_path = f"{config['PARASUT_BASE_DIR']}/{config['SHARED_LOGIC_DIR']}/package.json"
 
                 self.change_dependency_value(
-                    json_file_path=json_file_path, dep_value=dep_value
+                    json_file_path=json_file_path, dep_key=dep_key, dep_value=dep_value
                 )
                 self.apply_package_changes()
                 self.change_directory(repo_path)
