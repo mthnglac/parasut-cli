@@ -74,7 +74,9 @@ class Receiver:
             ["/bin/zsh", "-i", "-c", f'yarn install{" --force" if force else ""}']
         )
 
-    def change_dependency_value(self, json_file_path: str, dep_key: str, dep_value: str) -> str:
+    def change_dependency_value(
+        self, json_file_path: str, dep_key: str, dep_value: str
+    ) -> str:
         with open(json_file_path, "r") as json_file:
             data = json.load(json_file)
             dep_ver = data["devDependencies"][dep_key]
