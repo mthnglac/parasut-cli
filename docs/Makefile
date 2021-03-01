@@ -4,7 +4,7 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = python -msphinx
-SPHINXPROJ    = parasut_cli
+SPHINXPROJ    = parasut-cli
 SOURCEDIR     = .
 BUILDDIR      = _build
 

@@ -48,12 +48,12 @@ class LinkCommand(Command):
         # self._caretaker.undo()
 
         if self._target_repos:
-            dep_versions |= self._receiver.do_linking(self._base_repo, self._target_repos)
+            # dep_versions |= self._receiver.do_linking(self._base_repo, self._target_repos)
             print(self._base_repo)
             print(self._target_repos)
             print(self._undo_linked_repos)
         if self._undo_linked_repos:
-            self._receiver.undo_linking(self._base_repo, self._undo_linked_repos, dep_versions)
+            # self._receiver.undo_linking(self._base_repo, self._undo_linked_repos, dep_versions)
             print(self._base_repo)
             print(self._target_repos)
             print(self._undo_linked_repos)
