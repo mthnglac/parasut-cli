@@ -104,3 +104,6 @@ ENV/
 # IDE settings
 .vim/
 .vscode/
+
+# state data
+*.pickle

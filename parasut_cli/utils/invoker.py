@@ -22,7 +22,7 @@ class Invoker:
         # print("Invoker: Does anybody want something done before I begin?")
         # self._on_start.execute()
 
-        print("Invoker: ...doing something really important...")
+        # print("Invoker: ...doing something really important...")
         self._progress.execute()
 
         # print("Invoker: Does anybody want something done after I finish?")

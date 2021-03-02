@@ -93,6 +93,13 @@ def main():
         choices=["ui-library", "shared-logic"],
         help="an reporitory name for unlinking it",
     )
+    group_link.add_argument(
+        "-l",
+        "--list",
+        dest="list_linked_repos",
+        action="store_true",
+        help="listing linked repos of base repo",
+    )
 
     args = parent_parser.parse_args()
 
@@ -103,21 +110,22 @@ def main():
         if getattr(args, "edit_repos", False) or getattr(args, "setup_repos", False):
             invoker.do_something_important(
                 StartCommand(
-                    receiver, setup_repos=args.setup_repos, edit_repos=args.edit_repos
+                    receiver,
+                    setup_repos=args.setup_repos,
+                    edit_repos=args.edit_repos,
                 )
             )
         else:
             parser_start.print_help()
     elif hasattr(args, "subcommand") and args.subcommand == "link":
-        if getattr(args, "target_repos", False) or getattr(
-            args, "undo_linked_repos", False
-        ):
+        if getattr(args, "target_repos", False) or getattr(args, "undo_linked_repos", False) or getattr(args, "list_linked_repos", False):
             invoker.do_something_important(
                 LinkCommand(
                     receiver,
                     base_repo=args.base_repo,
                     target_repos=args.target_repos,
                     undo_linked_repos=args.undo_linked_repos,
+                    list_linked_repos=args.list_linked_repos,
                 )
             )
         else:

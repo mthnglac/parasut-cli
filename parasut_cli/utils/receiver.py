@@ -5,6 +5,7 @@ from dotenv import dotenv_values
 import os
 import json
 import subprocess
+import pickle
 
 config = dotenv_values(".env")
 
@@ -14,6 +15,14 @@ class Receiver:
         self._tmux_server: Server
         self._tmux_session_parasut_ws_setup: Session
         self._tmux_session_parasut_ws_editor: Session
+        self._dep_versions = dict(
+            ui_library=dict(linked=False, value=""),
+            shared_logic=dict(linked=False, value=""),
+        )
+        self._linking_options = dict(
+            ui_library="ui-library",
+            shared_logic="shared-logic",
+        )
         self._server_commands: Dict[str, str] = dict(
             launch_nvim="nvim",
             choose_ruby_version=f"rvm use {config['SERVER_RUBY_V']}",
@@ -71,22 +80,25 @@ class Receiver:
 
     def apply_package_changes(self, force=False) -> None:
         subprocess.run(
-            ["/bin/zsh", "-i", "-c", f'yarn install{" --force" if force else ""}']
+            ["/bin/zsh", "-c", f'yarn install{" --force" if force else ""}']
         )
 
     def change_dependency_value(
-        self, json_file_path: str, dep_key: str, dep_value: str
+        self, dep_json_file: str, dep_key: str, dep_value: str
     ) -> str:
-        with open(json_file_path, "r") as json_file:
+        with open(dep_json_file, "r") as json_file:
             data = json.load(json_file)
             dep_ver = data["devDependencies"][dep_key]
             data["devDependencies"][dep_key] = dep_value
 
-        with open(json_file_path, "w+") as json_file:
+        with open(dep_json_file, "w+") as json_file:
             json_file.write(json.dumps(data, indent=True))
             json_file.close()
 
         return dep_ver
+
+    def get_project_root_dir(self) -> str:
+        return os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
     def find_repo_path(self, repo_name: str) -> str:
         if "server" in repo_name:
@@ -110,73 +122,154 @@ class Receiver:
                 "Exiting because of an error: wrong repo path. couldn't find the repo"
             )
 
-    def do_linking(self, base_repo: str, target_repos: List[str]) -> Dict[str, str]:
+    def store_linking_info(self, dep_versions: Dict) -> None:
+        cli_root_path = self.get_project_root_dir()
+        pickle_file_path = f"{cli_root_path}/state/link_info.pickle"
+
+        with open(pickle_file_path, "wb") as handle:
+            pickle.dump(dep_versions, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+    def initialize_dep_versions(self, base_repo: str) -> None:
+        root_path = self.get_project_root_dir()
+        pickle_file_path = f"{root_path}/state/link_info.pickle"
+
+        try:
+            with open(pickle_file_path, "rb") as handle:
+                self._dep_versions = pickle.load(handle)
+        except FileNotFoundError:
+            with open(pickle_file_path, "wb") as handle:
+                pickle.dump(
+                    self._dep_versions, handle, protocol=pickle.HIGHEST_PROTOCOL
+                )
+
+        for i, j in self._linking_options.items():
+            if self.is_linked(base_repo=base_repo, dep_key=j):
+                self._dep_versions[i]["linked"] = True
+            else:
+                self._dep_versions[i]["linked"] = False
+
+    def do_linking(self, base_repo: str, target_repos: List[str]) -> None:
         base_path: str = self.find_repo_path(base_repo)
 
-        dep_versions: Dict[str, str] = dict(ui_library="", shared_logic="")
+        self.initialize_dep_versions(base_repo)
+        self.change_directory(base_path)
 
         for repo_name in target_repos:
             if "ui-library" in repo_name:
                 dep_key = "ui-library"
                 dep_value = f"link:../{repo_name}"
-                repo_path = f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}"
-                json_file_path = f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}/package.json"
+                target_path = f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}"
+                json_file = "package.json"
 
-                dep_versions["ui-library"] = self.change_dependency_value(
-                    json_file_path=json_file_path, dep_key=dep_key, dep_value=dep_value
-                )
-                self.apply_package_changes()
-                self.change_directory(repo_path)
-                self.apply_package_changes(force=True)
-                self.change_directory(base_path)
-            elif "shared_logic" in repo_name:
+                if self._dep_versions["ui_library"]["linked"] == True:
+                    print(
+                        f"{repo_name} has been linked before. Try --list to check linked repos."
+                    )
+                else:
+                    self._dep_versions["ui_library"]["value"] = self.change_dependency_value(
+                        dep_json_file=json_file, dep_key=dep_key, dep_value=dep_value
+                    )
+                    self._dep_versions["ui_library"]["linked"] = True
+
+                    self.store_linking_info(self._dep_versions)
+                    self.apply_package_changes()
+                    self.change_directory(target_path)
+                    self.apply_package_changes(force=True)
+                    self.change_directory(base_path)
+            elif "shared-logic" in repo_name:
                 dep_key = "shared-logic"
                 dep_value = f"link:../{repo_name}"
-                repo_path = f"{config['PARASUT_BASE_DIR']}/{config['SHARED_LOGIC_DIR']}"
-                json_file_path = f"{config['PARASUT_BASE_DIR']}/{config['SHARED_LOGIC_DIR']}/package.json"
-
-                dep_versions["shared-logic"] = self.change_dependency_value(
-                    json_file_path=json_file_path, dep_key=dep_key, dep_value=dep_value
+                target_path = (
+                    f"{config['PARASUT_BASE_DIR']}/{config['SHARED_LOGIC_DIR']}"
                 )
-                self.apply_package_changes()
-                self.change_directory(repo_path)
-                self.apply_package_changes(force=True)
-                self.change_directory(base_path)
+                json_file = "package.json"
 
-        return dep_versions
+                if self._dep_versions["shared_logic"]["linked"] == True:
+                    print(
+                        f"{repo_name} has been linked before. Try --list to check linked repos."
+                    )
+                else:
+                    self._dep_versions["shared_logic"]["value"] = self.change_dependency_value(
+                        dep_json_file=json_file, dep_key=dep_key, dep_value=dep_value
+                    )
+                    self._dep_versions["shared_logic"]["linked"] = True
 
-    def undo_linking(
-        self, base_repo: str, repos: List[str], dep_versions: Dict[str, str]
-    ) -> None:
+                    self.store_linking_info(self._dep_versions)
+                    self.apply_package_changes()
+                    self.change_directory(target_path)
+                    self.apply_package_changes(force=True)
+                    self.change_directory(base_path)
+
+    def undo_linking(self, base_repo: str, repos: List[str]) -> None:
         base_path: str = self.find_repo_path(base_repo)
+
+        self.initialize_dep_versions(base_repo)
+        self.change_directory(base_path)
 
         for repo_name in repos:
             if "ui-library" in repo_name:
                 dep_key = "ui-library"
-                dep_value = dep_versions["ui_library"]
-                repo_path = f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}"
-                json_file_path = f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}/package.json"
+                dep_value = self._dep_versions["ui_library"]["value"]
+                target_path = f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}"
+                json_file = "package.json"
 
-                self.change_dependency_value(
-                    json_file_path=json_file_path, dep_key=dep_key, dep_value=dep_value
-                )
-                self.apply_package_changes()
-                self.change_directory(repo_path)
-                self.apply_package_changes(force=True)
-                self.change_directory(base_path)
-            elif "shared_logic" in repo_name:
+                if self._dep_versions["ui_library"]["linked"] == False:
+                    print(
+                        f"{repo_name} has not been linked before. Try listing linked repos."
+                    )
+                else:
+                    self.change_dependency_value(
+                        dep_json_file=json_file, dep_key=dep_key, dep_value=dep_value
+                    )
+                    self._dep_versions["ui_library"]["linked"] = False
+
+                    self.apply_package_changes()
+                    self.change_directory(target_path)
+                    self.apply_package_changes(force=True)
+                    self.change_directory(base_path)
+            elif "shared-logic" in repo_name:
                 dep_key = "shared-logic"
-                dep_value = dep_versions["shared_logic"]
-                repo_path = f"{config['PARASUT_BASE_DIR']}/{config['SHARED_LOGIC_DIR']}"
-                json_file_path = f"{config['PARASUT_BASE_DIR']}/{config['SHARED_LOGIC_DIR']}/package.json"
-
-                self.change_dependency_value(
-                    json_file_path=json_file_path, dep_key=dep_key, dep_value=dep_value
+                dep_value = self._dep_versions["shared_logic"]["value"]
+                target_path = (
+                    f"{config['PARASUT_BASE_DIR']}/{config['SHARED_LOGIC_DIR']}"
                 )
-                self.apply_package_changes()
-                self.change_directory(repo_path)
-                self.apply_package_changes(force=True)
-                self.change_directory(base_path)
+                json_file = "package.json"
+
+                if self._dep_versions["shared_logic"]["linked"] == False:
+                    print(
+                        f"{repo_name} has not been linked before. Try listing linked repos."
+                    )
+                else:
+                    self.change_dependency_value(
+                        dep_json_file=json_file, dep_key=dep_key, dep_value=dep_value
+                    )
+                    self._dep_versions["shared_logic"]["linked"] = False
+
+                    self.apply_package_changes()
+                    self.change_directory(target_path)
+                    self.apply_package_changes(force=True)
+                    self.change_directory(base_path)
+
+    def get_linked_repos(self, base_repo: str) -> None:
+        for key, value in self._dep_versions.items():
+            if self._dep_versions[key]["linked"]:
+                print(key)
+        else:
+            print("There is no repo linked by this cli.")
+
+    def is_linked(self, base_repo: str, dep_key: str):
+        base_path: str = self.find_repo_path(base_repo)
+        checking_word = "link"
+        json_file = "package.json"
+
+        self.change_directory(base_path)
+
+        with open(json_file, "r") as file:
+            data = json.load(file)
+            if checking_word in data["devDependencies"][dep_key]:
+                return True
+            else:
+                return False
 
     def create_parasut_ws_setup(self, repos: List[str]) -> None:
         # create session
