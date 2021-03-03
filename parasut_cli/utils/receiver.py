@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, List
+from typing import Dict, List, Optional
 from libtmux import Server, Session, Window, Pane
 from dotenv import dotenv_values
 import os
@@ -79,9 +79,7 @@ class Receiver:
         os.chdir(os.path.expanduser(path))
 
     def apply_package_changes(self, force=False) -> None:
-        subprocess.run(
-            ["/bin/zsh", "-c", f'yarn install{" --force" if force else ""}']
-        )
+        subprocess.run(["/bin/zsh", "-c", f'yarn install{" --force" if force else ""}'])
 
     def change_dependency_value(
         self, dep_json_file: str, dep_key: str, dep_value: str
@@ -96,6 +94,16 @@ class Receiver:
             json_file.close()
 
         return dep_ver
+
+    def change_ruby_version(self, version: Optional[str]) -> None:
+        subprocess.run(["/bin/zsh", "-c", f"rvm use {version}"])
+
+    def switch_server(self, target_repo: str) -> None:
+        server_repo = f"{config['PARASUT_BASE_DIR']}/{config['SERVER_DIR']}"
+        self.change_directory(server_repo)
+        self.change_ruby_version(config["SERVER_RUBY_V"])
+        subprocess.run(["/bin/zsh", "-c", "ruby -v"])
+        # subprocess.run(["/bin/zsh", "-c", "rails runner 'puts Company.find(31169).update!(used_app: \"sales\")'"])
 
     def get_project_root_dir(self) -> str:
         return os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -166,7 +174,9 @@ class Receiver:
                         f"{repo_name} has been linked before. Try --list to check linked repos."
                     )
                 else:
-                    self._dep_versions["ui_library"]["value"] = self.change_dependency_value(
+                    self._dep_versions["ui_library"][
+                        "value"
+                    ] = self.change_dependency_value(
                         dep_json_file=json_file, dep_key=dep_key, dep_value=dep_value
                     )
                     self._dep_versions["ui_library"]["linked"] = True
@@ -189,7 +199,9 @@ class Receiver:
                         f"{repo_name} has been linked before. Try --list to check linked repos."
                     )
                 else:
-                    self._dep_versions["shared_logic"]["value"] = self.change_dependency_value(
+                    self._dep_versions["shared_logic"][
+                        "value"
+                    ] = self.change_dependency_value(
                         dep_json_file=json_file, dep_key=dep_key, dep_value=dep_value
                     )
                     self._dep_versions["shared_logic"]["linked"] = True

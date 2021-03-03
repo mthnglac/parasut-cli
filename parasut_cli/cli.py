@@ -5,6 +5,7 @@ from parasut_cli.utils.invoker import Invoker
 from parasut_cli.utils.receiver import Receiver
 from parasut_cli.commands.start import StartCommand
 from parasut_cli.commands.link import LinkCommand
+from parasut_cli.commands.switch import SwitchCommand
 
 
 def main():
@@ -18,7 +19,7 @@ def main():
 
     # start command
     parser_start = subparsers.add_parser(
-        "start", help="an repository name for setting up the workspace"
+        "start", help="command for setting up the workspace"
     )
     parser_start.add_argument(
         "-e",
@@ -60,7 +61,7 @@ def main():
     )
 
     # link command
-    parser_link = subparsers.add_parser("link", help="link help")
+    parser_link = subparsers.add_parser("link", help="command for linking")
     group_link = parser_link.add_mutually_exclusive_group(required=True)
     parser_link.add_argument(
         "-b",
@@ -101,6 +102,25 @@ def main():
         help="listing linked repos of base repo",
     )
 
+    # switch command
+    parser_switch = subparsers.add_parser(
+        "switch", help="command for switching server between phoenix & trinity"
+    )
+    parser_switch.add_argument(
+        "-t",
+        "--target",
+        dest="switch_repo",
+        metavar="<repo-name>",
+        type=str,
+        nargs=1,
+        choices=[
+            "phoenix",
+            "trinity",
+        ],
+        required=True,
+        help="a repository name to switch on server",
+    )
+
     args = parent_parser.parse_args()
 
     invoker = Invoker()
@@ -118,7 +138,11 @@ def main():
         else:
             parser_start.print_help()
     elif hasattr(args, "subcommand") and args.subcommand == "link":
-        if getattr(args, "target_repos", False) or getattr(args, "undo_linked_repos", False) or getattr(args, "list_linked_repos", False):
+        if (
+            getattr(args, "target_repos", False)
+            or getattr(args, "undo_linked_repos", False)
+            or getattr(args, "list_linked_repos", False)
+        ):
             invoker.do_something_important(
                 LinkCommand(
                     receiver,
@@ -130,6 +154,13 @@ def main():
             )
         else:
             parser_link.print_help()
+    elif hasattr(args, "subcommand") and args.subcommand == "switch":
+        if getattr(args, "switch_repo", False):
+            invoker.do_something_important(
+                SwitchCommand(receiver, target_repo=args.switch_repo)
+            )
+        else:
+            parser_switch.print_help()
     else:
         parent_parser.print_help()
 
