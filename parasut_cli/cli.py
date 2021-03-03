@@ -17,7 +17,7 @@ def main():
         dest="subcommand",
     )
 
-    # start command
+    # start command parser
     parser_start = subparsers.add_parser(
         "start", help="command for setting up the workspace"
     )
@@ -60,7 +60,7 @@ def main():
         help="a repository name to launch",
     )
 
-    # link command
+    # link command parser
     parser_link = subparsers.add_parser("link", help="command for linking")
     group_link = parser_link.add_mutually_exclusive_group(required=True)
     parser_link.add_argument(
@@ -102,9 +102,9 @@ def main():
         help="listing linked repos of base repo",
     )
 
-    # switch command
+    # switch command parser
     parser_switch = subparsers.add_parser(
-        "switch", help="command for switching server between phoenix & trinity"
+        "switch", help="command for switching server rails between phoenix & trinity"
     )
     parser_switch.add_argument(
         "-t",
@@ -126,6 +126,7 @@ def main():
     invoker = Invoker()
     receiver = Receiver()
 
+    # main condition for given arguments
     if hasattr(args, "subcommand") and args.subcommand == "start":
         if getattr(args, "edit_repos", False) or getattr(args, "setup_repos", False):
             invoker.do_something_important(
