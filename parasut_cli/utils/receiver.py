@@ -79,10 +79,14 @@ class Receiver:
         os.chdir(os.path.expanduser(path))
 
     def apply_package_changes(self, force=False) -> None:
-        try:
-            subprocess.run(["/bin/zsh", "-c", f'yarn install{" --force" if force else ""}'], check=True)
-        except subprocess.CalledProcessError:
-            subprocess.run(["/bin/zsh", "-c", f'yarn install{" --force" if force else ""}'], check=True)
+        attempts = 0
+
+        while attempts < 3:
+            try:
+                subprocess.run(["/bin/zsh", "-c", f'yarn install{" --force" if force else ""}'], check=True)
+                break
+            except subprocess.CalledProcessError:
+                attempts += 1
 
     def change_dependency_value(
         self, dep_json_file: str, dep_key: str, dep_value: str
