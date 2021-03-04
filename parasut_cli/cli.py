@@ -69,7 +69,6 @@ def main():
         dest="base_repo",
         metavar="<repo-name>",
         type=str,
-        nargs=1,
         choices=["phoenix", "trinity"],
         required=True,
         help="an base reporitory name for linking target repository. Use this with -t option",
@@ -112,7 +111,6 @@ def main():
         dest="switch_repo",
         metavar="<repo-name>",
         type=str,
-        nargs=1,
         choices=[
             "phoenix",
             "trinity",

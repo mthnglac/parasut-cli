@@ -11,4 +11,4 @@ class SwitchCommand(Command):
         self._target_repo: str = target_repo
 
     def execute(self) -> None:
-        self._receiver.switch_server(self._target_repo)
+        self._receiver.switch_server_rails(self._target_repo)

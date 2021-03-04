@@ -7,7 +7,10 @@ import json
 import subprocess
 import pickle
 
-config = dotenv_values(".env")
+config = {
+    **dotenv_values(".envs/.env.shared"),
+    **dotenv_values(".envs/.env.secret"),
+}
 
 
 class Receiver:
@@ -83,7 +86,10 @@ class Receiver:
 
         while attempts < 3:
             try:
-                subprocess.run(["/bin/zsh", "-c", f'yarn install{" --force" if force else ""}'], check=True)
+                subprocess.run(
+                    ["/bin/zsh", "-c", f'yarn install{" --force" if force else ""}'],
+                    check=True,
+                )
                 break
             except subprocess.CalledProcessError:
                 attempts += 1
@@ -103,34 +109,53 @@ class Receiver:
         return dep_ver
 
     def change_ruby_version(self, version: Optional[str]) -> None:
-        subprocess.run(["/bin/zsh", "-c", f"rvm use {version}"])
+        # -i option for interactive mode. otherwise rvm yelling!
+        subprocess.run(["/bin/zsh", "-i", "-c", f"rvm use ruby-{version}"])
 
-    def switch_server(self, target_repo: str) -> None:
+    def switch_server_rails(self, target_repo: str) -> None:
         server_repo = f"{config['PARASUT_BASE_DIR']}/{config['SERVER_DIR']}"
+
         self.change_directory(server_repo)
         self.change_ruby_version(config["SERVER_RUBY_V"])
-        subprocess.run(["/bin/zsh", "-c", "ruby -v"])
-        # subprocess.run(["/bin/zsh", "-c", "rails runner 'puts Company.find(31169).update!(used_app: \"sales\")'"])
+
+        if target_repo == "phoenix":
+            subprocess.run(
+                [
+                    "/bin/zsh",
+                    "-i",
+                    "-c",
+                    f"rails runner 'puts Company.find({config['COMPANY_ID']}).update!(used_app: \"{config['PHOENIX_SWITCH_NAME']}\")'",
+                ]
+            )
+        if target_repo == "trinity":
+            subprocess.run(
+                [
+                    "/bin/zsh",
+                    "-i",
+                    "-c",
+                    f"rails runner 'puts Company.find({config['COMPANY_ID']}).update!(used_app: \"{config['TRINITY_SWITCH_NAME']}\")'",
+                ]
+            )
 
     def get_project_root_dir(self) -> str:
         return os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
     def find_repo_path(self, repo_name: str) -> str:
-        if "server" in repo_name:
+        if repo_name == "server":
             return f"{config['PARASUT_BASE_DIR']}/{config['SERVER_DIR']}"
-        elif "billing" in repo_name:
+        elif repo_name == "billing":
             return f"{config['PARASUT_BASE_DIR']}/{config['BILLING_DIR']}"
-        elif "e-doc-broker" in repo_name:
+        elif repo_name == "e-doc-broker":
             return f"{config['PARASUT_BASE_DIR']}/{config['E_DOC_BROKER_DIR']}"
-        elif "client" in repo_name:
+        elif repo_name == "client":
             return f"{config['PARASUT_BASE_DIR']}/{config['CLIENT_DIR']}"
-        elif "phoenix" in repo_name:
+        elif repo_name == "phoenix":
             return f"{config['PARASUT_BASE_DIR']}/{config['PHOENIX_DIR']}"
-        elif "shared-logic" in repo_name:
+        elif repo_name == "shared-logic":
             return f"{config['PARASUT_BASE_DIR']}/{config['SHARED_LOGIC_DIR']}"
-        elif "trinity" in repo_name:
+        elif repo_name == "trinity":
             return f"{config['PARASUT_BASE_DIR']}/{config['TRINITY_DIR']}"
-        elif "ui-library" in repo_name:
+        elif repo_name == "ui-library":
             return f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}"
         else:
             raise Exception(
@@ -170,7 +195,7 @@ class Receiver:
         self.change_directory(base_path)
 
         for repo_name in target_repos:
-            if "ui-library" in repo_name:
+            if repo_name == "ui-library":
                 dep_key = "ui-library"
                 dep_value = f"link:../{repo_name}"
                 target_path = f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}"
@@ -193,7 +218,7 @@ class Receiver:
                     self.change_directory(target_path)
                     self.apply_package_changes(force=True)
                     self.change_directory(base_path)
-            elif "shared-logic" in repo_name:
+            elif repo_name == "shared-logic":
                 dep_key = "shared-logic"
                 dep_value = f"link:../{repo_name}"
                 target_path = (
@@ -226,7 +251,7 @@ class Receiver:
         self.change_directory(base_path)
 
         for repo_name in repos:
-            if "ui-library" in repo_name:
+            if repo_name == "ui-library":
                 dep_key = "ui-library"
                 dep_value = self._dep_versions["ui_library"]["value"]
                 target_path = f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}"
@@ -246,7 +271,7 @@ class Receiver:
                     self.change_directory(target_path)
                     self.apply_package_changes(force=True)
                     self.change_directory(base_path)
-            elif "shared-logic" in repo_name:
+            elif repo_name == "shared-logic":
                 dep_key = "shared-logic"
                 dep_value = self._dep_versions["shared_logic"]["value"]
                 target_path = (
