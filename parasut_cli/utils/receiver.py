@@ -7,9 +7,11 @@ import json
 import subprocess
 import pickle
 
+from parasut_cli.config.settings import APP_DIR, ROOT_DIR
+
 config = {
-    **dotenv_values(".envs/.env.shared"),
-    **dotenv_values(".envs/.env.secret"),
+    **dotenv_values(f"{ROOT_DIR}/.envs/.env.shared"),
+    **dotenv_values(f"{ROOT_DIR}/.envs/.env.secret"),
 }
 
 
@@ -78,40 +80,111 @@ class Receiver:
     def initialize_tmux_server(self) -> None:
         self._tmux_server = Server()
 
-    def change_directory(self, path: str) -> None:
-        os.chdir(os.path.expanduser(path))
-
-    def apply_package_changes(self, force=False) -> None:
-        attempts = 0
-
-        while attempts < 3:
-            try:
-                subprocess.run(
-                    ["/bin/zsh", "-c", f'yarn install{" --force" if force else ""}'],
-                    check=True,
+    def create_parasut_ws_setup(self, repos: List[str]) -> None:
+        # create session
+        self._tmux_session_parasut_ws_setup = self._tmux_server.new_session(
+            session_name="parasut-ws-setup", kill_session=True, attach=False
+        )
+        # launch relative repos
+        for repo_name in repos:
+            if "server" == repo_name:
+                self._change_directory(
+                    f"{config['PARASUT_BASE_DIR']}/{config['SERVER_DIR']}"
                 )
-                break
-            except subprocess.CalledProcessError:
-                attempts += 1
+                self._launch_parasut_server_repo()
+            elif "billing" == repo_name:
+                self._change_directory(
+                    f"{config['PARASUT_BASE_DIR']}/{config['BILLING_DIR']}"
+                )
+                self._launch_parasut_billing_repo()
+            elif "e-doc-broker" == repo_name:
+                self._change_directory(
+                    f"{config['PARASUT_BASE_DIR']}/{config['E_DOC_BROKER_DIR']}"
+                )
+                self._launch_parasut_e_doc_broker_repo()
+            elif "phoenix" == repo_name:
+                self._change_directory(
+                    f"{config['PARASUT_BASE_DIR']}/{config['PHOENIX_DIR']}"
+                )
+                self._launch_parasut_phoenix_repo()
+            elif "client" == repo_name:
+                self._change_directory(
+                    f"{config['PARASUT_BASE_DIR']}/{config['CLIENT_DIR']}"
+                )
+                self._launch_parasut_client_repo()
+            elif "trinity" == repo_name:
+                self._change_directory(
+                    f"{config['PARASUT_BASE_DIR']}/{config['TRINITY_DIR']}"
+                )
+                self._launch_parasut_trinity_repo()
+            elif "ui-library" == repo_name:
+                self._change_directory(
+                    f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}"
+                )
+                self._launch_parasut_ui_library_repo()
+            elif "shared-logic" == repo_name:
+                self._change_directory(
+                    f"{config['PARASUT_BASE_DIR']}/{config['SHARED_LOGIC_DIR']}"
+                )
+                self._launch_parasut_shared_logic_repo()
 
-    def change_dependency_value(
-        self, dep_json_file: str, dep_key: str, dep_value: str
-    ) -> str:
-        with open(dep_json_file, "r") as json_file:
-            data = json.load(json_file)
-            dep_ver = data["devDependencies"][dep_key]
-            data["devDependencies"][dep_key] = dep_value
+        # kill the first empty window
+        self._tmux_session_parasut_ws_setup.select_window(1).kill_window()
 
-        with open(dep_json_file, "w+") as json_file:
-            json_file.write(json.dumps(data, indent=True))
-            json_file.close()
-
-        return dep_ver
+    def create_parasut_ws_editor(self, repos: List[str]) -> None:
+        # create session
+        self._tmux_session_parasut_ws_editor = self._tmux_server.new_session(
+            session_name="parasut-ws-editor", kill_session=True, attach=False
+        )
+        # launch relative repos
+        for repo_name in repos:
+            if "server" == repo_name:
+                self._change_directory(
+                    f"{config['PARASUT_BASE_DIR']}/{config['SERVER_DIR']}"
+                )
+                self._launch_parasut_server_editor()
+            elif "billing" == repo_name:
+                self._change_directory(
+                    f"{config['PARASUT_BASE_DIR']}/{config['BILLING_DIR']}"
+                )
+                self._launch_parasut_billing_editor()
+            elif "e-doc-broker" == repo_name:
+                self._change_directory(
+                    f"{config['PARASUT_BASE_DIR']}/{config['E_DOC_BROKER_DIR']}"
+                )
+                self._launch_parasut_e_doc_broker_editor()
+            elif "phoenix" == repo_name:
+                self._change_directory(
+                    f"{config['PARASUT_BASE_DIR']}/{config['PHOENIX_DIR']}"
+                )
+                self._launch_parasut_phoenix_editor()
+            elif "client" == repo_name:
+                self._change_directory(
+                    f"{config['PARASUT_BASE_DIR']}/{config['CLIENT_DIR']}"
+                )
+                self._launch_parasut_client_editor()
+            elif "trinity" == repo_name:
+                self._change_directory(
+                    f"{config['PARASUT_BASE_DIR']}/{config['TRINITY_DIR']}"
+                )
+                self._launch_parasut_trinity_editor()
+            elif "ui-library" == repo_name:
+                self._change_directory(
+                    f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}"
+                )
+                self._launch_parasut_ui_library_editor()
+            elif "shared-logic" == repo_name:
+                self._change_directory(
+                    f"{config['PARASUT_BASE_DIR']}/{config['SHARED_LOGIC_DIR']}"
+                )
+                self._launch_parasut_shared_logic_editor()
+        # kill the first empty window
+        self._tmux_session_parasut_ws_editor.select_window(1).kill_window()
 
     def switch_server_rails(self, target_repo: str) -> None:
         server_repo = f"{config['PARASUT_BASE_DIR']}/{config['SERVER_DIR']}"
 
-        self.change_directory(server_repo)
+        self._change_directory(server_repo)
 
         # shut up! this telescope is necessary.
         # don't judge me, judge rvm.
@@ -134,10 +207,147 @@ class Receiver:
                 ]
             )
 
-    def get_project_root_dir(self) -> str:
-        return os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    def do_linking(self, base_repo: str, target_repos: List[str]) -> None:
+        base_path: str = self._find_repo_path(base_repo)
 
-    def find_repo_path(self, repo_name: str) -> str:
+        self._initialize_dep_versions(base_repo)
+        self._change_directory(base_path)
+
+        for repo_name in target_repos:
+            if repo_name == "ui-library":
+                dep_key = "ui-library"
+                dep_value = f"link:../{repo_name}"
+                target_path = f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}"
+                json_file = "package.json"
+
+                if self._dep_versions["ui_library"]["linked"] == True:
+                    print(
+                        f"{repo_name} has been linked before. Try --list to check linked repos."
+                    )
+                else:
+                    self._dep_versions["ui_library"][
+                        "value"
+                    ] = self._change_dependency_value(
+                        dep_json_file=json_file, dep_key=dep_key, dep_value=dep_value
+                    )
+                    self._dep_versions["ui_library"]["linked"] = True
+
+                    self._store_linking_info(self._dep_versions)
+                    self._apply_package_changes()
+                    self._change_directory(target_path)
+                    self._apply_package_changes(force=True)
+                    self._change_directory(base_path)
+            elif repo_name == "shared-logic":
+                dep_key = "shared-logic"
+                dep_value = f"link:../{repo_name}"
+                target_path = (
+                    f"{config['PARASUT_BASE_DIR']}/{config['SHARED_LOGIC_DIR']}"
+                )
+                json_file = "package.json"
+
+                if self._dep_versions["shared_logic"]["linked"] == True:
+                    print(
+                        f"{repo_name} has been linked before. Try --list to check linked repos."
+                    )
+                else:
+                    self._dep_versions["shared_logic"][
+                        "value"
+                    ] = self._change_dependency_value(
+                        dep_json_file=json_file, dep_key=dep_key, dep_value=dep_value
+                    )
+                    self._dep_versions["shared_logic"]["linked"] = True
+
+                    self._store_linking_info(self._dep_versions)
+                    self._apply_package_changes()
+                    self._change_directory(target_path)
+                    self._apply_package_changes(force=True)
+                    self._change_directory(base_path)
+
+    def undo_linking(self, base_repo: str, repos: List[str]) -> None:
+        base_path: str = self._find_repo_path(base_repo)
+
+        self._initialize_dep_versions(base_repo)
+        self._change_directory(base_path)
+
+        for repo_name in repos:
+            if repo_name == "ui-library":
+                dep_key = "ui-library"
+                dep_value = self._dep_versions["ui_library"]["value"]
+                target_path = f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}"
+                json_file = "package.json"
+
+                if self._dep_versions["ui_library"]["linked"] == False:
+                    print(
+                        f"{repo_name} has not been linked before. Try listing linked repos."
+                    )
+                else:
+                    self._change_dependency_value(
+                        dep_json_file=json_file, dep_key=dep_key, dep_value=dep_value
+                    )
+                    self._dep_versions["ui_library"]["linked"] = False
+
+                    self._apply_package_changes()
+                    self._change_directory(target_path)
+                    self._apply_package_changes(force=True)
+                    self._change_directory(base_path)
+            elif repo_name == "shared-logic":
+                dep_key = "shared-logic"
+                dep_value = self._dep_versions["shared_logic"]["value"]
+                target_path = (
+                    f"{config['PARASUT_BASE_DIR']}/{config['SHARED_LOGIC_DIR']}"
+                )
+                json_file = "package.json"
+
+                if self._dep_versions["shared_logic"]["linked"] == False:
+                    print(
+                        f"{repo_name} has not been linked before. Try listing linked repos."
+                    )
+                else:
+                    self._change_dependency_value(
+                        dep_json_file=json_file, dep_key=dep_key, dep_value=dep_value
+                    )
+                    self._dep_versions["shared_logic"]["linked"] = False
+
+                    self._apply_package_changes()
+                    self._change_directory(target_path)
+                    self._apply_package_changes(force=True)
+                    self._change_directory(base_path)
+
+    def get_linked_repos(self, base_repo: str) -> None:
+        for key, value in self._dep_versions.items():
+            if self._dep_versions[key]["linked"]:
+                print(key)
+        else:
+            print("There is no repo linked by this cli.")
+
+    def _apply_package_changes(self, force=False) -> None:
+        attempts = 0
+
+        while attempts < 3:
+            try:
+                subprocess.run(
+                    ["/bin/zsh", "-c", f'yarn install{" --force" if force else ""}'],
+                    check=True,
+                )
+                break
+            except subprocess.CalledProcessError:
+                attempts += 1
+
+    def _change_dependency_value(
+        self, dep_json_file: str, dep_key: str, dep_value: str
+    ) -> str:
+        with open(dep_json_file, "r") as json_file:
+            data = json.load(json_file)
+            dep_ver = data["devDependencies"][dep_key]
+            data["devDependencies"][dep_key] = dep_value
+
+        with open(dep_json_file, "w+") as json_file:
+            json_file.write(json.dumps(data, indent=True))
+            json_file.close()
+
+        return dep_ver
+
+    def _find_repo_path(self, repo_name: str) -> str:
         if repo_name == "server":
             return f"{config['PARASUT_BASE_DIR']}/{config['SERVER_DIR']}"
         elif repo_name == "billing":
@@ -159,16 +369,14 @@ class Receiver:
                 "Exiting because of an error: wrong repo path. couldn't find the repo"
             )
 
-    def store_linking_info(self, dep_versions: Dict) -> None:
-        cli_root_path = self.get_project_root_dir()
-        pickle_file_path = f"{cli_root_path}/state/link_info.pickle"
+    def _store_linking_info(self, dep_versions: Dict) -> None:
+        pickle_file_path = f"{APP_DIR}/state/link_info.pickle"
 
         with open(pickle_file_path, "wb") as handle:
             pickle.dump(dep_versions, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-    def initialize_dep_versions(self, base_repo: str) -> None:
-        root_path = self.get_project_root_dir()
-        pickle_file_path = f"{root_path}/state/link_info.pickle"
+    def _initialize_dep_versions(self, base_repo: str) -> None:
+        pickle_file_path = f"{APP_DIR}/state/link_info.pickle"
 
         try:
             with open(pickle_file_path, "rb") as handle:
@@ -180,130 +388,17 @@ class Receiver:
                 )
 
         for i, j in self._linking_options.items():
-            if self.is_linked(base_repo=base_repo, dep_key=j):
+            if self._is_linked(base_repo=base_repo, dep_key=j):
                 self._dep_versions[i]["linked"] = True
             else:
                 self._dep_versions[i]["linked"] = False
 
-    def do_linking(self, base_repo: str, target_repos: List[str]) -> None:
-        base_path: str = self.find_repo_path(base_repo)
-
-        self.initialize_dep_versions(base_repo)
-        self.change_directory(base_path)
-
-        for repo_name in target_repos:
-            if repo_name == "ui-library":
-                dep_key = "ui-library"
-                dep_value = f"link:../{repo_name}"
-                target_path = f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}"
-                json_file = "package.json"
-
-                if self._dep_versions["ui_library"]["linked"] == True:
-                    print(
-                        f"{repo_name} has been linked before. Try --list to check linked repos."
-                    )
-                else:
-                    self._dep_versions["ui_library"][
-                        "value"
-                    ] = self.change_dependency_value(
-                        dep_json_file=json_file, dep_key=dep_key, dep_value=dep_value
-                    )
-                    self._dep_versions["ui_library"]["linked"] = True
-
-                    self.store_linking_info(self._dep_versions)
-                    self.apply_package_changes()
-                    self.change_directory(target_path)
-                    self.apply_package_changes(force=True)
-                    self.change_directory(base_path)
-            elif repo_name == "shared-logic":
-                dep_key = "shared-logic"
-                dep_value = f"link:../{repo_name}"
-                target_path = (
-                    f"{config['PARASUT_BASE_DIR']}/{config['SHARED_LOGIC_DIR']}"
-                )
-                json_file = "package.json"
-
-                if self._dep_versions["shared_logic"]["linked"] == True:
-                    print(
-                        f"{repo_name} has been linked before. Try --list to check linked repos."
-                    )
-                else:
-                    self._dep_versions["shared_logic"][
-                        "value"
-                    ] = self.change_dependency_value(
-                        dep_json_file=json_file, dep_key=dep_key, dep_value=dep_value
-                    )
-                    self._dep_versions["shared_logic"]["linked"] = True
-
-                    self.store_linking_info(self._dep_versions)
-                    self.apply_package_changes()
-                    self.change_directory(target_path)
-                    self.apply_package_changes(force=True)
-                    self.change_directory(base_path)
-
-    def undo_linking(self, base_repo: str, repos: List[str]) -> None:
-        base_path: str = self.find_repo_path(base_repo)
-
-        self.initialize_dep_versions(base_repo)
-        self.change_directory(base_path)
-
-        for repo_name in repos:
-            if repo_name == "ui-library":
-                dep_key = "ui-library"
-                dep_value = self._dep_versions["ui_library"]["value"]
-                target_path = f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}"
-                json_file = "package.json"
-
-                if self._dep_versions["ui_library"]["linked"] == False:
-                    print(
-                        f"{repo_name} has not been linked before. Try listing linked repos."
-                    )
-                else:
-                    self.change_dependency_value(
-                        dep_json_file=json_file, dep_key=dep_key, dep_value=dep_value
-                    )
-                    self._dep_versions["ui_library"]["linked"] = False
-
-                    self.apply_package_changes()
-                    self.change_directory(target_path)
-                    self.apply_package_changes(force=True)
-                    self.change_directory(base_path)
-            elif repo_name == "shared-logic":
-                dep_key = "shared-logic"
-                dep_value = self._dep_versions["shared_logic"]["value"]
-                target_path = (
-                    f"{config['PARASUT_BASE_DIR']}/{config['SHARED_LOGIC_DIR']}"
-                )
-                json_file = "package.json"
-
-                if self._dep_versions["shared_logic"]["linked"] == False:
-                    print(
-                        f"{repo_name} has not been linked before. Try listing linked repos."
-                    )
-                else:
-                    self.change_dependency_value(
-                        dep_json_file=json_file, dep_key=dep_key, dep_value=dep_value
-                    )
-                    self._dep_versions["shared_logic"]["linked"] = False
-
-                    self.apply_package_changes()
-                    self.change_directory(target_path)
-                    self.apply_package_changes(force=True)
-                    self.change_directory(base_path)
-
-    def get_linked_repos(self, base_repo: str) -> None:
-        for key, value in self._dep_versions.items():
-            if self._dep_versions[key]["linked"]:
-                print(key)
-        else:
-            print("There is no repo linked by this cli.")
-
-    def is_linked(self, base_repo: str, dep_key: str):
-        base_path: str = self.find_repo_path(base_repo)
+    def _is_linked(self, base_repo: str, dep_key: str):
+        base_path: str = self._find_repo_path(base_repo)
         checking_word = "link"
         json_file = "package.json"
 
-        self.change_directory(base_path)
+        self._change_directory(base_path)
 
         with open(json_file, "r") as file:
             data = json.load(file)
@@ -312,108 +407,10 @@ class Receiver:
             else:
                 return False
 
-    def create_parasut_ws_setup(self, repos: List[str]) -> None:
-        # create session
-        self._tmux_session_parasut_ws_setup = self._tmux_server.new_session(
-            session_name="parasut-ws-setup", kill_session=True, attach=False
-        )
-        # launch relative repos
-        for repo_name in repos:
-            if "server" == repo_name:
-                self.change_directory(
-                    f"{config['PARASUT_BASE_DIR']}/{config['SERVER_DIR']}"
-                )
-                self.launch_parasut_server_repo()
-            elif "billing" == repo_name:
-                self.change_directory(
-                    f"{config['PARASUT_BASE_DIR']}/{config['BILLING_DIR']}"
-                )
-                self.launch_parasut_billing_repo()
-            elif "e-doc-broker" == repo_name:
-                self.change_directory(
-                    f"{config['PARASUT_BASE_DIR']}/{config['E_DOC_BROKER_DIR']}"
-                )
-                self.launch_parasut_e_doc_broker_repo()
-            elif "phoenix" == repo_name:
-                self.change_directory(
-                    f"{config['PARASUT_BASE_DIR']}/{config['PHOENIX_DIR']}"
-                )
-                self.launch_parasut_phoenix_repo()
-            elif "client" == repo_name:
-                self.change_directory(
-                    f"{config['PARASUT_BASE_DIR']}/{config['CLIENT_DIR']}"
-                )
-                self.launch_parasut_client_repo()
-            elif "trinity" == repo_name:
-                self.change_directory(
-                    f"{config['PARASUT_BASE_DIR']}/{config['TRINITY_DIR']}"
-                )
-                self.launch_parasut_trinity_repo()
-            elif "ui-library" == repo_name:
-                self.change_directory(
-                    f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}"
-                )
-                self.launch_parasut_ui_library_repo()
-            elif "shared-logic" == repo_name:
-                self.change_directory(
-                    f"{config['PARASUT_BASE_DIR']}/{config['SHARED_LOGIC_DIR']}"
-                )
-                self.launch_parasut_shared_logic_repo()
+    def _change_directory(self, path: str) -> None:
+        os.chdir(os.path.expanduser(path))
 
-        # kill the first empty window
-        self._tmux_session_parasut_ws_setup.select_window(1).kill_window()
-
-    def create_parasut_ws_editor(self, repos: List[str]) -> None:
-        # create session
-        self._tmux_session_parasut_ws_editor = self._tmux_server.new_session(
-            session_name="parasut-ws-editor", kill_session=True, attach=False
-        )
-        # launch relative repos
-        for repo_name in repos:
-            if "server" == repo_name:
-                self.change_directory(
-                    f"{config['PARASUT_BASE_DIR']}/{config['SERVER_DIR']}"
-                )
-                self.launch_parasut_server_editor()
-            elif "billing" == repo_name:
-                self.change_directory(
-                    f"{config['PARASUT_BASE_DIR']}/{config['BILLING_DIR']}"
-                )
-                self.launch_parasut_billing_editor()
-            elif "e-doc-broker" == repo_name:
-                self.change_directory(
-                    f"{config['PARASUT_BASE_DIR']}/{config['E_DOC_BROKER_DIR']}"
-                )
-                self.launch_parasut_e_doc_broker_editor()
-            elif "phoenix" == repo_name:
-                self.change_directory(
-                    f"{config['PARASUT_BASE_DIR']}/{config['PHOENIX_DIR']}"
-                )
-                self.launch_parasut_phoenix_editor()
-            elif "client" == repo_name:
-                self.change_directory(
-                    f"{config['PARASUT_BASE_DIR']}/{config['CLIENT_DIR']}"
-                )
-                self.launch_parasut_client_editor()
-            elif "trinity" == repo_name:
-                self.change_directory(
-                    f"{config['PARASUT_BASE_DIR']}/{config['TRINITY_DIR']}"
-                )
-                self.launch_parasut_trinity_editor()
-            elif "ui-library" == repo_name:
-                self.change_directory(
-                    f"{config['PARASUT_BASE_DIR']}/{config['UI_LIBRARY_DIR']}"
-                )
-                self.launch_parasut_ui_library_editor()
-            elif "shared-logic" == repo_name:
-                self.change_directory(
-                    f"{config['PARASUT_BASE_DIR']}/{config['SHARED_LOGIC_DIR']}"
-                )
-                self.launch_parasut_shared_logic_editor()
-        # kill the first empty window
-        self._tmux_session_parasut_ws_editor.select_window(1).kill_window()
-
-    def launch_parasut_server_repo(self) -> None:
+    def _launch_parasut_server_repo(self) -> None:
         server_window: Window = self._tmux_session_parasut_ws_setup.new_window(
             attach=False, window_name="server"
         )
@@ -441,7 +438,7 @@ class Receiver:
         )
         # server.attach_session(target_session="session_name")
 
-    def launch_parasut_server_editor(self) -> None:
+    def _launch_parasut_server_editor(self) -> None:
         server_window: Window = self._tmux_session_parasut_ws_editor.new_window(
             attach=False, window_name="server"
         )
@@ -456,7 +453,7 @@ class Receiver:
         )
         # server.attach_session(target_session="session_name")
 
-    def launch_parasut_billing_repo(self) -> None:
+    def _launch_parasut_billing_repo(self) -> None:
         billing_window: Window = self._tmux_session_parasut_ws_setup.new_window(
             attach=False, window_name="billing"
         )
@@ -483,7 +480,7 @@ class Receiver:
         )
         # server.attach_session(target_session="session_name")
 
-    def launch_parasut_billing_editor(self) -> None:
+    def _launch_parasut_billing_editor(self) -> None:
         billing_window: Window = self._tmux_session_parasut_ws_editor.new_window(
             attach=False, window_name="billing"
         )
@@ -498,7 +495,7 @@ class Receiver:
         )
         # server.attach_session(target_session="session_name")
 
-    def launch_parasut_e_doc_broker_repo(self) -> None:
+    def _launch_parasut_e_doc_broker_repo(self) -> None:
         e_doc_broker_window: Window = self._tmux_session_parasut_ws_setup.new_window(
             attach=False, window_name="e_doc_broker"
         )
@@ -527,7 +524,7 @@ class Receiver:
         )
         # server.attach_session(target_session="session_name")
 
-    def launch_parasut_e_doc_broker_editor(self) -> None:
+    def _launch_parasut_e_doc_broker_editor(self) -> None:
         e_doc_broker_window: Window = self._tmux_session_parasut_ws_editor.new_window(
             attach=False, window_name="e_doc_broker"
         )
@@ -542,7 +539,7 @@ class Receiver:
         )
         # server.attach_session(target_session="session_name")
 
-    def launch_parasut_phoenix_repo(self) -> None:
+    def _launch_parasut_phoenix_repo(self) -> None:
         phoenix_window: Window = self._tmux_session_parasut_ws_setup.new_window(
             attach=False, window_name="phoenix"
         )
@@ -559,7 +556,7 @@ class Receiver:
         )
         # server.attach_session(target_session="session_name")
 
-    def launch_parasut_phoenix_editor(self) -> None:
+    def _launch_parasut_phoenix_editor(self) -> None:
         phoenix_window: Window = self._tmux_session_parasut_ws_editor.new_window(
             attach=False, window_name="phoenix"
         )
@@ -574,7 +571,7 @@ class Receiver:
         )
         # server.attach_session(target_session="session_name")
 
-    def launch_parasut_client_repo(self) -> None:
+    def _launch_parasut_client_repo(self) -> None:
         client_window: Window = self._tmux_session_parasut_ws_setup.new_window(
             attach=False, window_name="client"
         )
@@ -591,7 +588,7 @@ class Receiver:
         )
         # server.attach_session(target_session="session_name")
 
-    def launch_parasut_client_editor(self) -> None:
+    def _launch_parasut_client_editor(self) -> None:
         client_window: Window = self._tmux_session_parasut_ws_editor.new_window(
             attach=False, window_name="client"
         )
@@ -606,7 +603,7 @@ class Receiver:
         )
         # server.attach_session(target_session="session_name")
 
-    def launch_parasut_trinity_repo(self) -> None:
+    def _launch_parasut_trinity_repo(self) -> None:
         trinity_window: Window = self._tmux_session_parasut_ws_setup.new_window(
             attach=False, window_name="trinity"
         )
@@ -623,7 +620,7 @@ class Receiver:
         )
         # server.attach_session(target_session="session_name")
 
-    def launch_parasut_trinity_editor(self) -> None:
+    def _launch_parasut_trinity_editor(self) -> None:
         trinity_window: Window = self._tmux_session_parasut_ws_editor.new_window(
             attach=False, window_name="trinity"
         )
@@ -638,7 +635,7 @@ class Receiver:
         )
         # server.attach_session(target_session="session_name")
 
-    def launch_parasut_ui_library_repo(self) -> None:
+    def _launch_parasut_ui_library_repo(self) -> None:
         ui_library_window: Window = self._tmux_session_parasut_ws_setup.new_window(
             attach=False, window_name="ui_library"
         )
@@ -655,7 +652,7 @@ class Receiver:
         )
         # server.attach_session(target_session="session_name")
 
-    def launch_parasut_ui_library_editor(self) -> None:
+    def _launch_parasut_ui_library_editor(self) -> None:
         ui_library_window: Window = self._tmux_session_parasut_ws_editor.new_window(
             attach=False, window_name="ui_library"
         )
@@ -670,7 +667,7 @@ class Receiver:
         )
         # server.attach_session(target_session="session_name")
 
-    def launch_parasut_shared_logic_repo(self) -> None:
+    def _launch_parasut_shared_logic_repo(self) -> None:
         shared_logic_window: Window = self._tmux_session_parasut_ws_setup.new_window(
             attach=False, window_name="shared_logic"
         )
@@ -687,7 +684,7 @@ class Receiver:
         )
         # server.attach_session(target_session="session_name")
 
-    def launch_parasut_shared_logic_editor(self) -> None:
+    def _launch_parasut_shared_logic_editor(self) -> None:
         shared_logic_window: Window = self._tmux_session_parasut_ws_editor.new_window(
             attach=False, window_name="shared_logic"
         )
