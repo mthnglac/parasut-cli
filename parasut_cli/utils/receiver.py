@@ -108,23 +108,20 @@ class Receiver:
 
         return dep_ver
 
-    def change_ruby_version(self, version: Optional[str]) -> None:
-        # -i option for interactive mode. otherwise rvm yelling!
-        subprocess.run(["/bin/zsh", "-i", "-c", f"rvm use ruby-{version}"])
-
     def switch_server_rails(self, target_repo: str) -> None:
         server_repo = f"{config['PARASUT_BASE_DIR']}/{config['SERVER_DIR']}"
 
         self.change_directory(server_repo)
-        self.change_ruby_version(config["SERVER_RUBY_V"])
 
+        # shut up! this telescope is necessary.
+        # don't judge me, judge rvm.
         if target_repo == "phoenix":
             subprocess.run(
                 [
                     "/bin/zsh",
                     "-i",
                     "-c",
-                    f"rails runner 'puts Company.find({config['COMPANY_ID']}).update!(used_app: \"{config['PHOENIX_SWITCH_NAME']}\")'",
+                    f"rvm use {config['SERVER_RUBY_V']} && rails runner 'puts Company.find({config['COMPANY_ID']}).update!(used_app: \"{config['PHOENIX_SWITCH_NAME']}\")'",
                 ]
             )
         if target_repo == "trinity":
@@ -133,7 +130,7 @@ class Receiver:
                     "/bin/zsh",
                     "-i",
                     "-c",
-                    f"rails runner 'puts Company.find({config['COMPANY_ID']}).update!(used_app: \"{config['TRINITY_SWITCH_NAME']}\")'",
+                    f"rvm use {config['SERVER_RUBY_V']} && rails runner 'puts Company.find({config['COMPANY_ID']}).update!(used_app: \"{config['TRINITY_SWITCH_NAME']}\")'",
                 ]
             )
 
