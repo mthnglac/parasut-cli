@@ -436,7 +436,6 @@ class Receiver:
                 ]
             )
         )
-        # server.attach_session(target_session="session_name")
 
     def _launch_parasut_server_editor(self) -> None:
         server_window: Window = self._tmux_session_parasut_ws_editor.new_window(
@@ -451,7 +450,6 @@ class Receiver:
                 ]
             )
         )
-        # server.attach_session(target_session="session_name")
 
     def _launch_parasut_billing_repo(self) -> None:
         billing_window: Window = self._tmux_session_parasut_ws_setup.new_window(
@@ -478,7 +476,6 @@ class Receiver:
                 ]
             )
         )
-        # server.attach_session(target_session="session_name")
 
     def _launch_parasut_billing_editor(self) -> None:
         billing_window: Window = self._tmux_session_parasut_ws_editor.new_window(
@@ -493,7 +490,6 @@ class Receiver:
                 ]
             )
         )
-        # server.attach_session(target_session="session_name")
 
     def _launch_parasut_e_doc_broker_repo(self) -> None:
         e_doc_broker_window: Window = self._tmux_session_parasut_ws_setup.new_window(
@@ -522,7 +518,6 @@ class Receiver:
                 ]
             )
         )
-        # server.attach_session(target_session="session_name")
 
     def _launch_parasut_e_doc_broker_editor(self) -> None:
         e_doc_broker_window: Window = self._tmux_session_parasut_ws_editor.new_window(
@@ -537,7 +532,6 @@ class Receiver:
                 ]
             )
         )
-        # server.attach_session(target_session="session_name")
 
     def _launch_parasut_phoenix_repo(self) -> None:
         phoenix_window: Window = self._tmux_session_parasut_ws_setup.new_window(
@@ -554,7 +548,6 @@ class Receiver:
                 ]
             )
         )
-        # server.attach_session(target_session="session_name")
 
     def _launch_parasut_phoenix_editor(self) -> None:
         phoenix_window: Window = self._tmux_session_parasut_ws_editor.new_window(
@@ -569,7 +562,6 @@ class Receiver:
                 ]
             )
         )
-        # server.attach_session(target_session="session_name")
 
     def _launch_parasut_client_repo(self) -> None:
         client_window: Window = self._tmux_session_parasut_ws_setup.new_window(
@@ -586,7 +578,6 @@ class Receiver:
                 ]
             )
         )
-        # server.attach_session(target_session="session_name")
 
     def _launch_parasut_client_editor(self) -> None:
         client_window: Window = self._tmux_session_parasut_ws_editor.new_window(
@@ -601,7 +592,6 @@ class Receiver:
                 ]
             )
         )
-        # server.attach_session(target_session="session_name")
 
     def _launch_parasut_trinity_repo(self) -> None:
         trinity_window: Window = self._tmux_session_parasut_ws_setup.new_window(
@@ -618,7 +608,6 @@ class Receiver:
                 ]
             )
         )
-        # server.attach_session(target_session="session_name")
 
     def _launch_parasut_trinity_editor(self) -> None:
         trinity_window: Window = self._tmux_session_parasut_ws_editor.new_window(
@@ -633,7 +622,6 @@ class Receiver:
                 ]
             )
         )
-        # server.attach_session(target_session="session_name")
 
     def _launch_parasut_ui_library_repo(self) -> None:
         ui_library_window: Window = self._tmux_session_parasut_ws_setup.new_window(
@@ -650,7 +638,6 @@ class Receiver:
                 ]
             )
         )
-        # server.attach_session(target_session="session_name")
 
     def _launch_parasut_ui_library_editor(self) -> None:
         ui_library_window: Window = self._tmux_session_parasut_ws_editor.new_window(
@@ -665,7 +652,6 @@ class Receiver:
                 ]
             )
         )
-        # server.attach_session(target_session="session_name")
 
     def _launch_parasut_shared_logic_repo(self) -> None:
         shared_logic_window: Window = self._tmux_session_parasut_ws_setup.new_window(
@@ -682,7 +668,6 @@ class Receiver:
                 ]
             )
         )
-        # server.attach_session(target_session="session_name")
 
     def _launch_parasut_shared_logic_editor(self) -> None:
         shared_logic_window: Window = self._tmux_session_parasut_ws_editor.new_window(
@@ -697,4 +682,3 @@ class Receiver:
                 ]
             )
         )
-        # server.attach_session(target_session="session_name")
