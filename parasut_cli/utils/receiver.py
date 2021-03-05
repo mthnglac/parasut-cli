@@ -83,9 +83,7 @@ class Receiver:
         # launch relative repos
         for repo_name in repos:
             if "server" == repo_name:
-                self._change_directory(
-                    f"{env['PARASUT_BASE_DIR']}/{env['SERVER_DIR']}"
-                )
+                self._change_directory(f"{env['PARASUT_BASE_DIR']}/{env['SERVER_DIR']}")
                 self._launch_parasut_server_repo()
             elif "billing" == repo_name:
                 self._change_directory(
@@ -103,9 +101,7 @@ class Receiver:
                 )
                 self._launch_parasut_phoenix_repo()
             elif "client" == repo_name:
-                self._change_directory(
-                    f"{env['PARASUT_BASE_DIR']}/{env['CLIENT_DIR']}"
-                )
+                self._change_directory(f"{env['PARASUT_BASE_DIR']}/{env['CLIENT_DIR']}")
                 self._launch_parasut_client_repo()
             elif "trinity" == repo_name:
                 self._change_directory(
@@ -134,9 +130,7 @@ class Receiver:
         # launch relative repos
         for repo_name in repos:
             if "server" == repo_name:
-                self._change_directory(
-                    f"{env['PARASUT_BASE_DIR']}/{env['SERVER_DIR']}"
-                )
+                self._change_directory(f"{env['PARASUT_BASE_DIR']}/{env['SERVER_DIR']}")
                 self._launch_parasut_server_editor()
             elif "billing" == repo_name:
                 self._change_directory(
@@ -154,9 +148,7 @@ class Receiver:
                 )
                 self._launch_parasut_phoenix_editor()
             elif "client" == repo_name:
-                self._change_directory(
-                    f"{env['PARASUT_BASE_DIR']}/{env['CLIENT_DIR']}"
-                )
+                self._change_directory(f"{env['PARASUT_BASE_DIR']}/{env['CLIENT_DIR']}")
                 self._launch_parasut_client_editor()
             elif "trinity" == repo_name:
                 self._change_directory(
@@ -182,8 +174,6 @@ class Receiver:
 
         self._change_directory(server_repo)
 
-        # shut up! this telescope is necessary.
-        # don't judge me, judge rvm.
         if target_repo == "phoenix":
             subprocess.run(
                 [
@@ -236,9 +226,7 @@ class Receiver:
             elif repo_name == "shared-logic":
                 dep_key = "shared-logic"
                 dep_value = f"link:../{repo_name}"
-                target_path = (
-                    f"{env['PARASUT_BASE_DIR']}/{env['SHARED_LOGIC_DIR']}"
-                )
+                target_path = f"{env['PARASUT_BASE_DIR']}/{env['SHARED_LOGIC_DIR']}"
                 json_file = "package.json"
 
                 if self._dep_versions["shared_logic"]["linked"] == True:
@@ -289,9 +277,7 @@ class Receiver:
             elif repo_name == "shared-logic":
                 dep_key = "shared-logic"
                 dep_value = self._dep_versions["shared_logic"]["value"]
-                target_path = (
-                    f"{env['PARASUT_BASE_DIR']}/{env['SHARED_LOGIC_DIR']}"
-                )
+                target_path = f"{env['PARASUT_BASE_DIR']}/{env['SHARED_LOGIC_DIR']}"
                 json_file = "package.json"
 
                 if self._dep_versions["shared_logic"]["linked"] == False:
@@ -328,6 +314,10 @@ class Receiver:
                 break
             except subprocess.CalledProcessError:
                 attempts += 1
+        else:
+            raise Exception(
+                "Exiting because of an error: yarn couldn't install dependencies on related repo"
+            )
 
     def _change_dependency_value(
         self, dep_json_file: str, dep_key: str, dep_value: str
