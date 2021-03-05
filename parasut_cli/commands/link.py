@@ -12,13 +12,13 @@ class LinkCommand(Command):
         base_repo: str,
         target_repos: Optional[List[str]],
         undo_linked_repos: Optional[List[str]],
-        list_linked_repos: bool,
+        list_linked_repos: Optional[bool],
     ) -> None:
         self._receiver: Receiver = receiver
         self._base_repo: str = base_repo
         self._target_repos: Optional[List[str]] = target_repos
         self._undo_linked_repos: Optional[List[str]] = undo_linked_repos
-        self._list_linked_repos: bool = list_linked_repos
+        self._list_linked_repos: Optional[bool] = list_linked_repos
 
     def execute(self) -> None:
         if self._target_repos:

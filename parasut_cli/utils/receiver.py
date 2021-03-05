@@ -169,7 +169,7 @@ class Receiver:
         self._tmux_session_parasut_ws_editor.select_window(1).kill_window()
         self._tmux_session_parasut_ws_editor.select_window(1)
 
-    def switch_server_rails(self, target_repo: str) -> None:
+    def switch_server_rails_frontend(self, target_repo: str) -> None:
         server_repo = f"{env['PARASUT_BASE_DIR']}/{env['SERVER_DIR']}"
 
         self._change_directory(server_repo)
@@ -192,6 +192,31 @@ class Receiver:
                     f"rvm use {env['SERVER_RUBY_V']} && rails runner 'puts Company.find({env['COMPANY_ID']}).update!(used_app: \"{env['TRINITY_SWITCH_NAME']}\")'",
                 ]
             )
+
+    def switch_server_rails_addling(self, target_addling: str):
+        server_repo = f"{env['PARASUT_BASE_DIR']}/{env['SERVER_DIR']}"
+
+        self._change_directory(server_repo)
+
+        if target_addling == "receipt":
+            subprocess.run(
+                [
+                    "/bin/zsh",
+                    "-i",
+                    "-c",
+                    f"rvm use {env['SERVER_RUBY_V']} && rails runner 'puts company=Company.find({env['COMPANY_ID']}); company.feature_flags[\"using_sales_receipt\"]=true; company.save!'",
+                ]
+            )
+        if target_addling == "invoice":
+            subprocess.run(
+                [
+                    "/bin/zsh",
+                    "-i",
+                    "-c",
+                    f"rvm use {env['SERVER_RUBY_V']} && rails runner 'puts company=Company.find({env['COMPANY_ID']}); company.feature_flags[\"using_sales_receipt\"]=false; company.save!'",
+                ]
+            )
+
 
     def do_linking(self, base_repo: str, target_repos: List[str]) -> None:
         base_path: str = self._find_repo_path(base_repo)

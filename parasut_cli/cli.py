@@ -105,18 +105,41 @@ def main():
     parser_switch = subparsers.add_parser(
         "switch", help="command for switching server rails between phoenix & trinity"
     )
-    parser_switch.add_argument(
+    subparsers_switch = parser_switch.add_subparsers(
+        title="switch subcommands",
+        description="valid switch subcommands",
+        help="switch sub-command help",
+        dest="switch_subcommand",
+    )
+    parser_switch_rails = subparsers_switch.add_parser(
+        "rails", help="command for switching rails between available repos"
+    )
+    parser_switch_rails.add_argument(
         "-t",
         "--target",
-        dest="switch_repo",
+        dest="switch_rails",
         metavar="<repo-name>",
         type=str,
         choices=[
             "phoenix",
             "trinity",
         ],
-        required=True,
-        help="a repository name to switch on server",
+        help="a repository name to switch rails frontend repo on server",
+    )
+    parser_switch_addlings = subparsers_switch.add_parser(
+        "addlings", help="command for switching rails between available repos"
+    )
+    parser_switch_addlings.add_argument(
+        "-t",
+        "--target",
+        dest="switch_addling",
+        metavar="<addling_name>",
+        type=str,
+        choices=[
+            "receipt",
+            "invoice",
+        ],
+        help="a addling name to switch rails addlings on server",
     )
 
     args = parent_parser.parse_args()
@@ -125,6 +148,7 @@ def main():
     receiver = Receiver()
 
     # main condition for given arguments
+    # start
     if hasattr(args, "subcommand") and args.subcommand == "start":
         if getattr(args, "edit_repos", False) or getattr(args, "setup_repos", False):
             invoker.do_something_important(
@@ -136,32 +160,45 @@ def main():
             )
         else:
             parser_start.print_help()
+    # link
     elif hasattr(args, "subcommand") and args.subcommand == "link":
         if (
             getattr(args, "target_repos", False)
             or getattr(args, "undo_linked_repos", False)
             or getattr(args, "list_linked_repos", False)
         ):
-            invoker.do_something_important(
-                LinkCommand(
-                    receiver,
-                    base_repo=args.base_repo,
-                    target_repos=args.target_repos,
-                    undo_linked_repos=args.undo_linked_repos,
-                    list_linked_repos=args.list_linked_repos,
-                )
-            )
+            print(args)
+            # invoker.do_something_important(
+                # LinkCommand(
+                    # receiver,
+                    # base_repo=args.base_repo,
+                    # target_repos=args.target_repos,
+                    # undo_linked_repos=args.undo_linked_repos,
+                    # list_linked_repos=args.list_linked_repos,
+                # )
+            # )
         else:
             parser_link.print_help()
+    # switch
     elif hasattr(args, "subcommand") and args.subcommand == "switch":
-        if getattr(args, "switch_repo", False):
-            invoker.do_something_important(
-                SwitchCommand(receiver, target_repo=args.switch_repo)
-            )
+        # switch rails sub-command
+        if hasattr(args, "switch_subcommand") and args.switch_subcommand == "rails":
+            if getattr(args, "switch_rails", False):
+                print(args)
+                invoker.do_something_important(
+                    SwitchCommand(receiver, target_repo=args.switch_rails)
+                )
+            else:
+                parser_switch.print_help()
+        elif hasattr(args, "switch_subcommand") and args.switch_subcommand == "addlings":
+            if getattr(args, "switch_addling", False):
+                invoker.do_something_important(
+                    SwitchCommand(receiver, target_addling=args.switch_addling)
+                )
+            else:
+                parser_switch.print_help()
         else:
-            parser_switch.print_help()
-    else:
-        parent_parser.print_help()
+            parent_parser.print_help()
 
     return 0
 
