@@ -167,16 +167,15 @@ def main():
             or getattr(args, "undo_linked_repos", False)
             or getattr(args, "list_linked_repos", False)
         ):
-            print(args)
-            # invoker.do_something_important(
-                # LinkCommand(
-                    # receiver,
-                    # base_repo=args.base_repo,
-                    # target_repos=args.target_repos,
-                    # undo_linked_repos=args.undo_linked_repos,
-                    # list_linked_repos=args.list_linked_repos,
-                # )
-            # )
+            invoker.do_something_important(
+                LinkCommand(
+                    receiver,
+                    base_repo=args.base_repo,
+                    target_repos=args.target_repos,
+                    undo_linked_repos=args.undo_linked_repos,
+                    list_linked_repos=args.list_linked_repos,
+                )
+            )
         else:
             parser_link.print_help()
     # switch
@@ -184,7 +183,6 @@ def main():
         # switch rails sub-command
         if hasattr(args, "switch_subcommand") and args.switch_subcommand == "rails":
             if getattr(args, "switch_rails", False):
-                print(args)
                 invoker.do_something_important(
                     SwitchCommand(receiver, target_repo=args.switch_rails)
                 )

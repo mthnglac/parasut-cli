@@ -3,6 +3,7 @@ from typing import Dict, List, Optional
 from libtmux import Server, Session, Window, Pane
 from dotenv import dotenv_values
 import os
+import sys
 import json
 import subprocess
 import pickle
@@ -12,6 +13,53 @@ from parasut_cli.config.settings import APP_DIR, env
 
 class Receiver:
     def __init__(self):
+        # env variables
+        try:
+            # core
+            self.COMPANY_ID: str = env["PARASUT_COMPANY_ID"]
+            self.PARASUT_BASE_DIR: str = env["PARASUT_BASE_DIR"]
+            self.PARASUT_CLI_TEXT_EDITOR: str = env["PARASUT_CLI_TEXT_EDITOR"]
+            # server
+            self.SERVER_RUBY_V: str = env["PARASUT_SERVER_RUBY_V"]
+            self.SERVER_DIR: str = env["PARASUT_SERVER_DIR"]
+            # billing
+            self.BILLING_RUBY_V: str = env["PARASUT_BILLING_RUBY_V"]
+            self.BILLING_RAILS_PORT: str = env["PARASUT_BILLING_RAILS_PORT"]
+            self.BILLING_DIR: str = env["PARASUT_BILLING_DIR"]
+            # e-doc-broker
+            self.E_DOC_BROKER_RUBY_V: str = env["PARASUT_E_DOC_BROKER_RUBY_V"]
+            self.E_DOC_BROKER_RAILS_PORT: str = env["PARASUT_E_DOC_BROKER_RAILS_PORT"]
+            self.E_DOC_BROKER_DIR: str = env["PARASUT_E_DOC_BROKER_DIR"]
+            # phoenix
+            self.PHOENIX_NODE_V: str = env["PARASUT_PHOENIX_NODE_V"]
+            self.PHOENIX_YARN_V: str = env["PARASUT_PHOENIX_YARN_V"]
+            self.PHOENIX_DIR: str = env["PARASUT_PHOENIX_DIR"]
+            self.PHOENIX_SWITCH_NAME: str = env["PARASUT_PHOENIX_SWITCH_NAME"]
+            # client
+            self.CLIENT_NODE_V: str = env["PARASUT_CLIENT_NODE_V"]
+            self.CLIENT_YARN_V: str = env["PARASUT_CLIENT_YARN_V"]
+            self.CLIENT_EMBER_PORT: str = env["PARASUT_CLIENT_EMBER_PORT"]
+            self.CLIENT_DIR: str = env["PARASUT_CLIENT_DIR"]
+            # trinity
+            self.TRINITY_NODE_V: str = env["PARASUT_TRINITY_NODE_V"]
+            self.TRINITY_YARN_V: str = env["PARASUT_TRINITY_YARN_V"]
+            self.TRINITY_EMBER_PORT: str = env["PARASUT_TRINITY_EMBER_PORT"]
+            self.TRINITY_SWITCH_NAME: str = env["PARASUT_TRINITY_SWITCH_NAME"]
+            self.TRINITY_DIR: str = env["PARASUT_TRINITY_DIR"]
+            # ui-library
+            self.UI_LIBRARY_NODE_V: str = env["PARASUT_UI_LIBRARY_NODE_V"]
+            self.UI_LIBRARY_YARN_V: str = env["PARASUT_UI_LIBRARY_YARN_V"]
+            self.UI_LIBRARY_EMBER_PORT: str = env["PARASUT_UI_LIBRARY_EMBER_PORT"]
+            self.UI_LIBRARY_DIR: str = env["PARASUT_UI_LIBRARY_DIR"]
+            # shared-logic
+            self.SHARED_LOGIC_NODE_V: str = env["PARASUT_SHARED_LOGIC_NODE_V"]
+            self.SHARED_LOGIC_YARN_V: str = env["PARASUT_SHARED_LOGIC_YARN_V"]
+            self.SHARED_LOGIC_EMBER_PORT: str = env["PARASUT_SHARED_LOGIC_EMBER_PORT"]
+            self.SHARED_LOGIC_DIR: str = env["PARASUT_SHARED_LOGIC_DIR"]
+        except KeyError as e:
+            print(f"Please set environment variable: {e}")
+            sys.exit(0)
+
         self._tmux_server: Server
         self._tmux_session_parasut_ws_setup: Session
         self._tmux_session_parasut_ws_editor: Session
@@ -24,52 +72,52 @@ class Receiver:
             shared_logic="shared-logic",
         )
         self._server_commands: Dict[str, str] = dict(
-            launch_nvim="nvim",
-            choose_ruby_version=f"rvm use {env['SERVER_RUBY_V']}",
+            launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
+            choose_ruby_version=f"rvm use {self.SERVER_RUBY_V}",
             launch_sidekiq="bundle exec sidekiq",
             launch_rails="rails server",
         )
         self._billing_commands = dict(
-            launch_nvim="nvim",
-            choose_ruby_version=f"rvm use {env['BILLING_RUBY_V']}",
+            launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
+            choose_ruby_version=f"rvm use {self.BILLING_RUBY_V}",
             launch_sidekiq="bundle exec sidekiq",
-            launch_rails=f"rails server -p {env['BILLING_RAILS_PORT']}",
+            launch_rails=f"rails server -p {self.BILLING_RAILS_PORT}",
         )
         self._e_doc_broker_commands = dict(
-            launch_nvim="nvim",
-            choose_ruby_version=f"rvm use {env['E_DOC_BROKER_RUBY_V']}",
+            launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
+            choose_ruby_version=f"rvm use {self.E_DOC_BROKER_RUBY_V}",
             launch_sidekiq="bundle exec sidekiq",
-            launch_rails=f"rails server -p {env['E_DOC_BROKER_RAILS_PORT']}",
+            launch_rails=f"rails server -p {self.E_DOC_BROKER_RAILS_PORT}",
         )
         self._phoenix_commands = dict(
-            launch_nvim="nvim",
-            choose_yarn_version=f"yvm use {env['PHOENIX_YARN_V']}",
-            choose_node_version=f"nvm use {env['PHOENIX_NODE_V']}",
+            launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
+            choose_yarn_version=f"yvm use {self.PHOENIX_YARN_V}",
+            choose_node_version=f"nvm use {self.PHOENIX_NODE_V}",
             ember_serve="PROJECT_TARGET=phoenix ember s",
         )
         self._client_commands = dict(
-            launch_nvim="nvim",
-            choose_yarn_version=f"yvm use {env['CLIENT_YARN_V']}",
-            choose_node_version=f"nvm use {env['CLIENT_NODE_V']}",
-            ember_serve=f"./node_modules/ember-cli/bin/ember s --live-reload-port {env['CLIENT_EMBER_PORT']}",
+            launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
+            choose_yarn_version=f"yvm use {self.CLIENT_YARN_V}",
+            choose_node_version=f"nvm use {self.CLIENT_NODE_V}",
+            ember_serve=f"./node_modules/ember-cli/bin/ember s --live-reload-port {self.CLIENT_EMBER_PORT}",
         )
         self._trinity_commands = dict(
-            launch_nvim="nvim",
-            choose_yarn_version=f"yvm use {env['TRINITY_YARN_V']}",
-            choose_node_version=f"nvm use {env['TRINITY_NODE_V']}",
+            launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
+            choose_yarn_version=f"yvm use {self.TRINITY_YARN_V}",
+            choose_node_version=f"nvm use {self.TRINITY_NODE_V}",
             ember_serve="ember s --live-reload-port 6505",
         )
         self._ui_library_commands = dict(
-            launch_nvim="nvim",
-            choose_yarn_version=f"yvm use {env['UI_LIBRARY_YARN_V']}",
-            choose_node_version=f"nvm use {env['UI_LIBRARY_NODE_V']}",
-            ember_serve=f"PROJECT_TARGET=phoenix ember s --live-reload-port {env['UI_LIBRARY_EMBER_PORT']}",
+            launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
+            choose_yarn_version=f"yvm use {self.UI_LIBRARY_YARN_V}",
+            choose_node_version=f"nvm use {self.UI_LIBRARY_NODE_V}",
+            ember_serve=f"PROJECT_TARGET=phoenix ember s --live-reload-port {self.UI_LIBRARY_EMBER_PORT}",
         )
         self._shared_logic_commands = dict(
-            launch_nvim="nvim",
-            choose_yarn_version=f"yvm use {env['SHARED_LOGIC_YARN_V']}",
-            choose_node_version=f"nvm use {env['SHARED_LOGIC_NODE_V']}",
-            ember_serve=f"ember s --live-reload-port {env['SHARED_LOGIC_EMBER_PORT']}",
+            launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
+            choose_yarn_version=f"yvm use {self.SHARED_LOGIC_YARN_V}",
+            choose_node_version=f"nvm use {self.SHARED_LOGIC_NODE_V}",
+            ember_serve=f"ember s --live-reload-port {self.SHARED_LOGIC_EMBER_PORT}",
         )
 
     def initialize_tmux_server(self) -> None:
@@ -83,39 +131,39 @@ class Receiver:
         # launch relative repos
         for repo_name in repos:
             if "server" == repo_name:
-                self._change_directory(f"{env['PARASUT_BASE_DIR']}/{env['SERVER_DIR']}")
+                self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}")
                 self._launch_parasut_server_repo()
             elif "billing" == repo_name:
                 self._change_directory(
-                    f"{env['PARASUT_BASE_DIR']}/{env['BILLING_DIR']}"
+                    f"{self.PARASUT_BASE_DIR}/{self.BILLING_DIR}"
                 )
                 self._launch_parasut_billing_repo()
             elif "e-doc-broker" == repo_name:
                 self._change_directory(
-                    f"{env['PARASUT_BASE_DIR']}/{env['E_DOC_BROKER_DIR']}"
+                    f"{self.PARASUT_BASE_DIR}/{self.E_DOC_BROKER_DIR}"
                 )
                 self._launch_parasut_e_doc_broker_repo()
             elif "phoenix" == repo_name:
                 self._change_directory(
-                    f"{env['PARASUT_BASE_DIR']}/{env['PHOENIX_DIR']}"
+                    f"{self.PARASUT_BASE_DIR}/{self.PHOENIX_DIR}"
                 )
                 self._launch_parasut_phoenix_repo()
             elif "client" == repo_name:
-                self._change_directory(f"{env['PARASUT_BASE_DIR']}/{env['CLIENT_DIR']}")
+                self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.CLIENT_DIR}")
                 self._launch_parasut_client_repo()
             elif "trinity" == repo_name:
                 self._change_directory(
-                    f"{env['PARASUT_BASE_DIR']}/{env['TRINITY_DIR']}"
+                    f"{self.PARASUT_BASE_DIR}/{self.TRINITY_DIR}"
                 )
                 self._launch_parasut_trinity_repo()
             elif "ui-library" == repo_name:
                 self._change_directory(
-                    f"{env['PARASUT_BASE_DIR']}/{env['UI_LIBRARY_DIR']}"
+                    f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}"
                 )
                 self._launch_parasut_ui_library_repo()
             elif "shared-logic" == repo_name:
                 self._change_directory(
-                    f"{env['PARASUT_BASE_DIR']}/{env['SHARED_LOGIC_DIR']}"
+                    f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
                 )
                 self._launch_parasut_shared_logic_repo()
 
@@ -130,39 +178,39 @@ class Receiver:
         # launch relative repos
         for repo_name in repos:
             if "server" == repo_name:
-                self._change_directory(f"{env['PARASUT_BASE_DIR']}/{env['SERVER_DIR']}")
+                self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}")
                 self._launch_parasut_server_editor()
             elif "billing" == repo_name:
                 self._change_directory(
-                    f"{env['PARASUT_BASE_DIR']}/{env['BILLING_DIR']}"
+                    f"{self.PARASUT_BASE_DIR}/{self.BILLING_DIR}"
                 )
                 self._launch_parasut_billing_editor()
             elif "e-doc-broker" == repo_name:
                 self._change_directory(
-                    f"{env['PARASUT_BASE_DIR']}/{env['E_DOC_BROKER_DIR']}"
+                    f"{self.PARASUT_BASE_DIR}/{self.E_DOC_BROKER_DIR}"
                 )
                 self._launch_parasut_e_doc_broker_editor()
             elif "phoenix" == repo_name:
                 self._change_directory(
-                    f"{env['PARASUT_BASE_DIR']}/{env['PHOENIX_DIR']}"
+                    f"{self.PARASUT_BASE_DIR}/{self.PHOENIX_DIR}"
                 )
                 self._launch_parasut_phoenix_editor()
             elif "client" == repo_name:
-                self._change_directory(f"{env['PARASUT_BASE_DIR']}/{env['CLIENT_DIR']}")
+                self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.CLIENT_DIR}")
                 self._launch_parasut_client_editor()
             elif "trinity" == repo_name:
                 self._change_directory(
-                    f"{env['PARASUT_BASE_DIR']}/{env['TRINITY_DIR']}"
+                    f"{self.PARASUT_BASE_DIR}/{self.TRINITY_DIR}"
                 )
                 self._launch_parasut_trinity_editor()
             elif "ui-library" == repo_name:
                 self._change_directory(
-                    f"{env['PARASUT_BASE_DIR']}/{env['UI_LIBRARY_DIR']}"
+                    f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}"
                 )
                 self._launch_parasut_ui_library_editor()
             elif "shared-logic" == repo_name:
                 self._change_directory(
-                    f"{env['PARASUT_BASE_DIR']}/{env['SHARED_LOGIC_DIR']}"
+                    f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
                 )
                 self._launch_parasut_shared_logic_editor()
         # kill the first empty window
@@ -170,7 +218,7 @@ class Receiver:
         self._tmux_session_parasut_ws_editor.select_window(1)
 
     def switch_server_rails_frontend(self, target_repo: str) -> None:
-        server_repo = f"{env['PARASUT_BASE_DIR']}/{env['SERVER_DIR']}"
+        server_repo = f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}"
 
         self._change_directory(server_repo)
 
@@ -180,7 +228,7 @@ class Receiver:
                     "/bin/zsh",
                     "-i",
                     "-c",
-                    f"rvm use {env['SERVER_RUBY_V']} && rails runner 'puts Company.find({env['COMPANY_ID']}).update!(used_app: \"{env['PHOENIX_SWITCH_NAME']}\")'",
+                    f"rvm use {self.SERVER_RUBY_V} && rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.PHOENIX_SWITCH_NAME}\")'",
                 ]
             )
         if target_repo == "trinity":
@@ -189,12 +237,12 @@ class Receiver:
                     "/bin/zsh",
                     "-i",
                     "-c",
-                    f"rvm use {env['SERVER_RUBY_V']} && rails runner 'puts Company.find({env['COMPANY_ID']}).update!(used_app: \"{env['TRINITY_SWITCH_NAME']}\")'",
+                    f"rvm use {self.SERVER_RUBY_V} && rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.TRINITY_SWITCH_NAME}\")'",
                 ]
             )
 
     def switch_server_rails_addling(self, target_addling: str):
-        server_repo = f"{env['PARASUT_BASE_DIR']}/{env['SERVER_DIR']}"
+        server_repo = f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}"
 
         self._change_directory(server_repo)
 
@@ -204,7 +252,7 @@ class Receiver:
                     "/bin/zsh",
                     "-i",
                     "-c",
-                    f"rvm use {env['SERVER_RUBY_V']} && rails runner 'puts company=Company.find({env['COMPANY_ID']}); company.feature_flags[\"using_sales_receipt\"]=true; company.save!'",
+                    f"rvm use {self.SERVER_RUBY_V} && rails runner 'puts company=Company.find({self.COMPANY_ID}); company.feature_flags[\"using_sales_receipt\"]=true; company.save!'",
                 ]
             )
         if target_addling == "invoice":
@@ -213,7 +261,7 @@ class Receiver:
                     "/bin/zsh",
                     "-i",
                     "-c",
-                    f"rvm use {env['SERVER_RUBY_V']} && rails runner 'puts company=Company.find({env['COMPANY_ID']}); company.feature_flags[\"using_sales_receipt\"]=false; company.save!'",
+                    f"rvm use {self.SERVER_RUBY_V} && rails runner 'puts company=Company.find({self.COMPANY_ID}); company.feature_flags[\"using_sales_receipt\"]=false; company.save!'",
                 ]
             )
 
@@ -228,7 +276,7 @@ class Receiver:
             if repo_name == "ui-library":
                 dep_key = "ui-library"
                 dep_value = f"link:../{repo_name}"
-                target_path = f"{env['PARASUT_BASE_DIR']}/{env['UI_LIBRARY_DIR']}"
+                target_path = f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}"
                 json_file = "package.json"
 
                 if self._dep_versions["ui_library"]["linked"] == True:
@@ -251,7 +299,7 @@ class Receiver:
             elif repo_name == "shared-logic":
                 dep_key = "shared-logic"
                 dep_value = f"link:../{repo_name}"
-                target_path = f"{env['PARASUT_BASE_DIR']}/{env['SHARED_LOGIC_DIR']}"
+                target_path = f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
                 json_file = "package.json"
 
                 if self._dep_versions["shared_logic"]["linked"] == True:
@@ -282,7 +330,7 @@ class Receiver:
             if repo_name == "ui-library":
                 dep_key = "ui-library"
                 dep_value = self._dep_versions["ui_library"]["value"]
-                target_path = f"{env['PARASUT_BASE_DIR']}/{env['UI_LIBRARY_DIR']}"
+                target_path = f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}"
                 json_file = "package.json"
 
                 if self._dep_versions["ui_library"]["linked"] == False:
@@ -302,7 +350,7 @@ class Receiver:
             elif repo_name == "shared-logic":
                 dep_key = "shared-logic"
                 dep_value = self._dep_versions["shared_logic"]["value"]
-                target_path = f"{env['PARASUT_BASE_DIR']}/{env['SHARED_LOGIC_DIR']}"
+                target_path = f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
                 json_file = "package.json"
 
                 if self._dep_versions["shared_logic"]["linked"] == False:
@@ -360,21 +408,21 @@ class Receiver:
 
     def _find_repo_path(self, repo_name: str) -> str:
         if repo_name == "server":
-            return f"{env['PARASUT_BASE_DIR']}/{env['SERVER_DIR']}"
+            return f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}"
         elif repo_name == "billing":
-            return f"{env['PARASUT_BASE_DIR']}/{env['BILLING_DIR']}"
+            return f"{self.PARASUT_BASE_DIR}/{self.BILLING_DIR}"
         elif repo_name == "e-doc-broker":
-            return f"{env['PARASUT_BASE_DIR']}/{env['E_DOC_BROKER_DIR']}"
+            return f"{self.PARASUT_BASE_DIR}/{self.E_DOC_BROKER_DIR}"
         elif repo_name == "client":
-            return f"{env['PARASUT_BASE_DIR']}/{env['CLIENT_DIR']}"
+            return f"{self.PARASUT_BASE_DIR}/{self.CLIENT_DIR}"
         elif repo_name == "phoenix":
-            return f"{env['PARASUT_BASE_DIR']}/{env['PHOENIX_DIR']}"
+            return f"{self.PARASUT_BASE_DIR}/{self.PHOENIX_DIR}"
         elif repo_name == "shared-logic":
-            return f"{env['PARASUT_BASE_DIR']}/{env['SHARED_LOGIC_DIR']}"
+            return f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
         elif repo_name == "trinity":
-            return f"{env['PARASUT_BASE_DIR']}/{env['TRINITY_DIR']}"
+            return f"{self.PARASUT_BASE_DIR}/{self.TRINITY_DIR}"
         elif repo_name == "ui-library":
-            return f"{env['PARASUT_BASE_DIR']}/{env['UI_LIBRARY_DIR']}"
+            return f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}"
         else:
             raise Exception(
                 "Exiting because of an error: wrong repo path. couldn't find the repo"
@@ -457,7 +505,7 @@ class Receiver:
         server_pane.send_keys(
             " && ".join(
                 [
-                    self._server_commands["launch_nvim"],
+                    self._server_commands["launch_text_editor"],
                 ]
             )
         )
@@ -497,7 +545,7 @@ class Receiver:
         billing_pane.send_keys(
             " && ".join(
                 [
-                    self._billing_commands["launch_nvim"],
+                    self._billing_commands["launch_text_editor"],
                 ]
             )
         )
@@ -539,7 +587,7 @@ class Receiver:
         e_doc_broker_pane.send_keys(
             " && ".join(
                 [
-                    self._e_doc_broker_commands["launch_nvim"],
+                    self._e_doc_broker_commands["launch_text_editor"],
                 ]
             )
         )
@@ -569,7 +617,7 @@ class Receiver:
         phoenix_pane.send_keys(
             " && ".join(
                 [
-                    self._phoenix_commands["launch_nvim"],
+                    self._phoenix_commands["launch_text_editor"],
                 ]
             )
         )
@@ -599,7 +647,7 @@ class Receiver:
         client_pane.send_keys(
             " && ".join(
                 [
-                    self._client_commands["launch_nvim"],
+                    self._client_commands["launch_text_editor"],
                 ]
             )
         )
@@ -629,7 +677,7 @@ class Receiver:
         trinity_pane.send_keys(
             " && ".join(
                 [
-                    self._trinity_commands["launch_nvim"],
+                    self._trinity_commands["launch_text_editor"],
                 ]
             )
         )
@@ -659,7 +707,7 @@ class Receiver:
         ui_library_pane.send_keys(
             " && ".join(
                 [
-                    self._ui_library_commands["launch_nvim"],
+                    self._ui_library_commands["launch_text_editor"],
                 ]
             )
         )
@@ -689,7 +737,7 @@ class Receiver:
         shared_logic_pane.send_keys(
             " && ".join(
                 [
-                    self._shared_logic_commands["launch_nvim"],
+                    self._shared_logic_commands["launch_text_editor"],
                 ]
             )
         )
