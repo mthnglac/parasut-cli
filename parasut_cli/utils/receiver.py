@@ -180,6 +180,7 @@ class Receiver:
                 self._launch_parasut_shared_logic_editor()
         # kill the first empty window
         self._tmux_session_parasut_ws_editor.select_window(1).kill_window()
+        self._tmux_session_parasut_ws_editor.select_window(1)
 
     def switch_server_rails(self, target_repo: str) -> None:
         server_repo = f"{config['PARASUT_BASE_DIR']}/{config['SERVER_DIR']}"
