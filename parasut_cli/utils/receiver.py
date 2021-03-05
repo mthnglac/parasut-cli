@@ -401,8 +401,7 @@ class Receiver:
             data["devDependencies"][dep_key] = dep_value
 
         with open(dep_json_file, "w+") as json_file:
-            json_file.write(json.dumps(data, indent=True))
-            json_file.close()
+            json_file.write(json.dumps(data, indent=2))
 
         return dep_ver
 
