@@ -9,3 +9,4 @@ Sphinx==3.5.1
 twine==3.3.0
 python-dotenv==0.15.0
 libtmux==0.8.5
+sphinx_rtd_theme==0.5.1
