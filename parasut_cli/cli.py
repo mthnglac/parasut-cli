@@ -94,11 +94,10 @@ def main():
         help="an reporitory name for unlinking it",
     )
     group_link.add_argument(
-        "-l",
         "--list",
         dest="list_linked_repos",
         action="store_true",
-        help="listing linked repos of base repo",
+        help="list linked repos of base repo",
     )
 
     # switch command parser
