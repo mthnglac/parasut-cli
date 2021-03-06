@@ -1,0 +1,20 @@
+update: all
+
+pin: True
+
+branch: master
+
+schedule: "every day"
+
+search: True
+
+label_prs: update
+
+assignees:
+ - mthnglac
+
+branch_prefix: pyup/
+
+pr_prefix: "Tests: Requirements:"
+
+close_prs: True
