@@ -12,7 +12,7 @@ from parasut_cli.config.settings import APP_DIR, env
 
 
 class Receiver:
-    def __init__(self):
+    def __init__(self) -> None:
         # env variables
         try:
             # core
@@ -67,7 +67,7 @@ class Receiver:
             ui_library=dict(linked=False, value=""),
             shared_logic=dict(linked=False, value=""),
         )
-        self._linking_options = dict(
+        self._linking_options: Dict[str, str] = dict(
             ui_library="ui-library",
             shared_logic="shared-logic",
         )
@@ -77,43 +77,43 @@ class Receiver:
             launch_sidekiq="bundle exec sidekiq",
             launch_rails="rails server",
         )
-        self._billing_commands = dict(
+        self._billing_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
             choose_ruby_version=f"rvm use {self.BILLING_RUBY_V}",
             launch_sidekiq="bundle exec sidekiq",
             launch_rails=f"rails server -p {self.BILLING_RAILS_PORT}",
         )
-        self._e_doc_broker_commands = dict(
+        self._e_doc_broker_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
             choose_ruby_version=f"rvm use {self.E_DOC_BROKER_RUBY_V}",
             launch_sidekiq="bundle exec sidekiq",
             launch_rails=f"rails server -p {self.E_DOC_BROKER_RAILS_PORT}",
         )
-        self._phoenix_commands = dict(
+        self._phoenix_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
             choose_yarn_version=f"yvm use {self.PHOENIX_YARN_V}",
             choose_node_version=f"nvm use {self.PHOENIX_NODE_V}",
             ember_serve="PROJECT_TARGET=phoenix ember s",
         )
-        self._client_commands = dict(
+        self._client_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
             choose_yarn_version=f"yvm use {self.CLIENT_YARN_V}",
             choose_node_version=f"nvm use {self.CLIENT_NODE_V}",
             ember_serve=f"./node_modules/ember-cli/bin/ember s --live-reload-port {self.CLIENT_EMBER_PORT}",
         )
-        self._trinity_commands = dict(
+        self._trinity_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
             choose_yarn_version=f"yvm use {self.TRINITY_YARN_V}",
             choose_node_version=f"nvm use {self.TRINITY_NODE_V}",
             ember_serve="ember s --live-reload-port 6505",
         )
-        self._ui_library_commands = dict(
+        self._ui_library_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
             choose_yarn_version=f"yvm use {self.UI_LIBRARY_YARN_V}",
             choose_node_version=f"nvm use {self.UI_LIBRARY_NODE_V}",
             ember_serve=f"PROJECT_TARGET=phoenix ember s --live-reload-port {self.UI_LIBRARY_EMBER_PORT}",
         )
-        self._shared_logic_commands = dict(
+        self._shared_logic_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
             choose_yarn_version=f"yvm use {self.SHARED_LOGIC_YARN_V}",
             choose_node_version=f"nvm use {self.SHARED_LOGIC_NODE_V}",
@@ -121,11 +121,11 @@ class Receiver:
         )
 
     def initialize_tmux_server(self) -> None:
-        self._tmux_server = Server()
+        self._tmux_server: Server = Server()
 
     def create_parasut_ws_setup(self, repos: List[str]) -> None:
         # create session
-        self._tmux_session_parasut_ws_setup = self._tmux_server.new_session(
+        self._tmux_session_parasut_ws_setup: Session = self._tmux_server.new_session(
             session_name="parasut-ws-setup", kill_session=True, attach=False
         )
         # launch relative repos
@@ -172,7 +172,7 @@ class Receiver:
 
     def create_parasut_ws_editor(self, repos: List[str]) -> None:
         # create session
-        self._tmux_session_parasut_ws_editor = self._tmux_server.new_session(
+        self._tmux_session_parasut_ws_editor: Session = self._tmux_server.new_session(
             session_name="parasut-ws-editor", kill_session=True, attach=False
         )
         # launch relative repos
@@ -218,7 +218,7 @@ class Receiver:
         self._tmux_session_parasut_ws_editor.select_window(1)
 
     def switch_server_rails_frontend(self, target_repo: str) -> None:
-        server_repo = f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}"
+        server_repo: str = f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}"
 
         self._change_directory(server_repo)
 
@@ -241,8 +241,8 @@ class Receiver:
                 ]
             )
 
-    def switch_server_rails_addling(self, target_addling: str):
-        server_repo = f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}"
+    def switch_server_rails_addling(self, target_addling: str) -> None:
+        server_repo: str = f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}"
 
         self._change_directory(server_repo)
 
@@ -265,7 +265,6 @@ class Receiver:
                 ]
             )
 
-
     def do_linking(self, base_repo: str, target_repos: List[str]) -> None:
         base_path: str = self._find_repo_path(base_repo)
 
@@ -274,10 +273,10 @@ class Receiver:
 
         for repo_name in target_repos:
             if repo_name == "ui-library":
-                dep_key = "ui-library"
-                dep_value = f"link:../{repo_name}"
-                target_path = f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}"
-                json_file = "package.json"
+                dep_key: str = "ui-library"
+                dep_value: str = f"link:../{repo_name}"
+                target_path: str = f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}"
+                json_file: str = "package.json"
 
                 if self._dep_versions["ui_library"]["linked"] == True:
                     print(
@@ -297,10 +296,10 @@ class Receiver:
                     self._apply_package_changes(force=True)
                     self._change_directory(base_path)
             elif repo_name == "shared-logic":
-                dep_key = "shared-logic"
-                dep_value = f"link:../{repo_name}"
-                target_path = f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
-                json_file = "package.json"
+                dep_key: str = "shared-logic"
+                dep_value: str = f"link:../{repo_name}"
+                target_path: str = f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
+                json_file: str = "package.json"
 
                 if self._dep_versions["shared_logic"]["linked"] == True:
                     print(
@@ -328,10 +327,10 @@ class Receiver:
 
         for repo_name in repos:
             if repo_name == "ui-library":
-                dep_key = "ui-library"
-                dep_value = self._dep_versions["ui_library"]["value"]
-                target_path = f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}"
-                json_file = "package.json"
+                dep_key: str = "ui-library"
+                dep_value: str = self._dep_versions["ui_library"]["value"]
+                target_path: str = f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}"
+                json_file: str = "package.json"
 
                 if self._dep_versions["ui_library"]["linked"] == False:
                     print(
@@ -348,10 +347,10 @@ class Receiver:
                     self._apply_package_changes(force=True)
                     self._change_directory(base_path)
             elif repo_name == "shared-logic":
-                dep_key = "shared-logic"
-                dep_value = self._dep_versions["shared_logic"]["value"]
-                target_path = f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
-                json_file = "package.json"
+                dep_key: str = "shared-logic"
+                dep_value: str = self._dep_versions["shared_logic"]["value"]
+                target_path: str = f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
+                json_file: str = "package.json"
 
                 if self._dep_versions["shared_logic"]["linked"] == False:
                     print(
@@ -428,13 +427,13 @@ class Receiver:
             )
 
     def _store_linking_info(self, dep_versions: Dict) -> None:
-        pickle_file_path = f"{APP_DIR}/state/link_info.pickle"
+        pickle_file_path: str = f"{APP_DIR}/state/link_info.pickle"
 
         with open(pickle_file_path, "wb") as handle:
             pickle.dump(dep_versions, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     def _initialize_dep_versions(self, base_repo: str) -> None:
-        pickle_file_path = f"{APP_DIR}/state/link_info.pickle"
+        pickle_file_path: str = f"{APP_DIR}/state/link_info.pickle"
 
         try:
             with open(pickle_file_path, "rb") as handle:
@@ -451,10 +450,10 @@ class Receiver:
             else:
                 self._dep_versions[i]["linked"] = False
 
-    def _is_linked(self, base_repo: str, dep_key: str):
+    def _is_linked(self, base_repo: str, dep_key: str) -> bool:
         base_path: str = self._find_repo_path(base_repo)
-        checking_word = "link"
-        json_file = "package.json"
+        checking_word: str = "link"
+        json_file: str = "package.json"
 
         self._change_directory(base_path)
 
