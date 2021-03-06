@@ -4,5 +4,5 @@ yvm --> yarn version manager
 rails --> web server
 
 # languages
-ruby
+ruby==0.0.2
 python --> 3.9.1
