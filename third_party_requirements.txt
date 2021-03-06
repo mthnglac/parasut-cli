@@ -1,8 +1,0 @@
-rvm --> ruby version manager
-nvm --> node version manager
-yvm --> yarn version manager
-rails --> web server
-
-# languages
-ruby
-python --> 3.9.1
