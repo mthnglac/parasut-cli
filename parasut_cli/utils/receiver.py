@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 from libtmux import Server, Session, Window, Pane
 from dotenv import dotenv_values
 import os
@@ -63,7 +63,7 @@ class Receiver:
         self._tmux_server: Server
         self._tmux_session_parasut_ws_setup: Session
         self._tmux_session_parasut_ws_editor: Session
-        self._dep_versions = dict(
+        self._dep_versions: Dict[str, Dict[str, Any]] = dict(
             ui_library=dict(linked=False, value=""),
             shared_logic=dict(linked=False, value=""),
         )
@@ -121,11 +121,11 @@ class Receiver:
         )
 
     def initialize_tmux_server(self) -> None:
-        self._tmux_server: Server = Server()
+        self._tmux_server = Server()
 
     def create_parasut_ws_setup(self, repos: List[str]) -> None:
         # create session
-        self._tmux_session_parasut_ws_setup: Session = self._tmux_server.new_session(
+        self._tmux_session_parasut_ws_setup = self._tmux_server.new_session(
             session_name="parasut-ws-setup", kill_session=True, attach=False
         )
         # launch relative repos
@@ -172,7 +172,7 @@ class Receiver:
 
     def create_parasut_ws_editor(self, repos: List[str]) -> None:
         # create session
-        self._tmux_session_parasut_ws_editor: Session = self._tmux_server.new_session(
+        self._tmux_session_parasut_ws_editor = self._tmux_server.new_session(
             session_name="parasut-ws-editor", kill_session=True, attach=False
         )
         # launch relative repos
@@ -267,16 +267,20 @@ class Receiver:
 
     def do_linking(self, base_repo: str, target_repos: List[str]) -> None:
         base_path: str = self._find_repo_path(base_repo)
+        dep_key: str = ""
+        dep_value: str = ""
+        target_path: str = ""
+        json_file: str = ""
 
         self._initialize_dep_versions(base_repo)
         self._change_directory(base_path)
 
         for repo_name in target_repos:
             if repo_name == "ui-library":
-                dep_key: str = "ui-library"
-                dep_value: str = f"link:../{repo_name}"
-                target_path: str = f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}"
-                json_file: str = "package.json"
+                dep_key = "ui-library"
+                dep_value = f"link:../{repo_name}"
+                target_path = f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}"
+                json_file = "package.json"
 
                 if self._dep_versions["ui_library"]["linked"] == True:
                     print(
@@ -296,10 +300,10 @@ class Receiver:
                     self._apply_package_changes(force=True)
                     self._change_directory(base_path)
             elif repo_name == "shared-logic":
-                dep_key: str = "shared-logic"
-                dep_value: str = f"link:../{repo_name}"
-                target_path: str = f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
-                json_file: str = "package.json"
+                dep_key = "shared-logic"
+                dep_value = f"link:../{repo_name}"
+                target_path = f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
+                json_file = "package.json"
 
                 if self._dep_versions["shared_logic"]["linked"] == True:
                     print(
@@ -321,16 +325,20 @@ class Receiver:
 
     def undo_linking(self, base_repo: str, repos: List[str]) -> None:
         base_path: str = self._find_repo_path(base_repo)
+        dep_key: str = ""
+        dep_value: str = ""
+        target_path: str = ""
+        json_file: str = ""
 
         self._initialize_dep_versions(base_repo)
         self._change_directory(base_path)
 
         for repo_name in repos:
             if repo_name == "ui-library":
-                dep_key: str = "ui-library"
-                dep_value: str = self._dep_versions["ui_library"]["value"]
-                target_path: str = f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}"
-                json_file: str = "package.json"
+                dep_key = "ui-library"
+                dep_value = self._dep_versions["ui_library"]["value"]
+                target_path = f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}"
+                json_file = "package.json"
 
                 if self._dep_versions["ui_library"]["linked"] == False:
                     print(
@@ -347,10 +355,10 @@ class Receiver:
                     self._apply_package_changes(force=True)
                     self._change_directory(base_path)
             elif repo_name == "shared-logic":
-                dep_key: str = "shared-logic"
-                dep_value: str = self._dep_versions["shared_logic"]["value"]
-                target_path: str = f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
-                json_file: str = "package.json"
+                dep_key = "shared-logic"
+                dep_value = self._dep_versions["shared_logic"]["value"]
+                target_path = f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
+                json_file = "package.json"
 
                 if self._dep_versions["shared_logic"]["linked"] == False:
                     print(
