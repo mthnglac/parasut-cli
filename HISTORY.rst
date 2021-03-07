@@ -2,16 +2,25 @@
 History
 =======
 
+
+0.1.12 (2021-08-27)
+-------------------
+
+* Docs improvements
+
+
 0.1.11 (2021-08-27)
-------------------
+-------------------
 
 * Docs installation and usage page improvements.
 * Sphinx upgrade.
 
+
 0.1.10 (2021-07-27)
-------------------
+-------------------
 
 * Docs improvements
+
 
 0.1.9 (2021-07-27)
 ------------------
@@ -20,6 +29,7 @@ History
 * Some minor fixings.
 * Static type checker mypy added to requirements.
 * Black code formatter used.
+
 
 0.1.8 (2021-07-27)
 ------------------
