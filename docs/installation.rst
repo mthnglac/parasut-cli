@@ -17,7 +17,7 @@ It is necessary to install and configure the 3rd tools below:
 * `nvm`_ - node version manager
 * `yvm`_ - yarn version manager
 * `rvm`_ - ruby version manager
-* `tmux`_ (if you will use start command)
+* tmux - terminal multiplexer
 
 .. _Ember.js: https://emberjs.com/
 .. _Ruby on Rails: https://rubyonrails.org/
