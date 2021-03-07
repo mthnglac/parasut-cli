@@ -13,11 +13,9 @@ given using tmux and builds workspaces into them.
     $ parasut-cli start -e <repo-name> -s <repo-name>
 
 
-* ``-e/--edit`` - a repository name to open in text editor. Choices: server,
- billing, phoenix, shared-logic, trinity, ui-library, client, e-doc-broker.
+* ``-e/--edit`` - a repository name to open in text editor. Choices: server, billing, phoenix, shared-logic, trinity, ui-library, client, e-doc-broker.
 
-* ``-s/--setup`` - a repository name to launch. Choices: server, billing,
- phoenix, shared-logic, trinity, ui-library, client, e-doc-broker.
+* ``-s/--setup`` - a repository name to launch. Choices: server, billing, phoenix, shared-logic, trinity, ui-library, client, e-doc-broker.
 
 
 Link Command
@@ -32,16 +30,13 @@ so that you can undo any changes you have made later ``(-u/--undo)``.
     $ parasut-cli link -b <repo-name> -t <repo-name>
 
 
-* ``-b/--base`` - a repository name for linking target repository. Use this
- with ``-t/--target`` option. Choices: phoenix, trinity.
+* ``-b/--base`` - a repository name for linking target repository. Use this with ``-t/--target`` option. Choices: phoenix, trinity.
 
-* ``-t/--target`` - a target repository name for linking it to base
- repository. Choices: ui-library, shared-logic.
+* ``-t/--target`` - a target repository name for linking it to base repository. Choices: ui-library, shared-logic.
 
 * ``-u/--undo`` - a repository name for unlinking. Choices: ui-library, shared-logic.
 
-* ``--list`` - a repository name for unlinking it list linked repos of base
- repo.
+* ``--list`` - a repository name for unlinking it list linked repos of base repo.
 
 .. note::
 
