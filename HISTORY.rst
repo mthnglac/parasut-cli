@@ -2,6 +2,14 @@
 History
 =======
 
+0.1.9 (2021-07-27)
+------------------
+
+* Documents added on installation.
+* Some minor fixings.
+* Static type checker mypy added to requirements.
+* Black code formatter used.
+
 0.1.8 (2021-07-27)
 ------------------
 
