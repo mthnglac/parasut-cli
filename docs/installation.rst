@@ -6,7 +6,7 @@ Installation
 
 
 Dependency Setup
---------------
+----------------
 
 There are some dependencies we need to handle before running the cli.
 
@@ -24,6 +24,75 @@ It is necessary to install and configure the 3rd tools below:
 .. _nvm: https://github.com/nvm-sh/nvm
 .. _yvm: https://yvm.js.org/
 .. _rvm: https://rvm.io/
+
+
+Workspace Structure
+-------------------
+
+Clone all repos into a folder that you will use as base. You get the idea.::
+
+    parasutcom/          # Parasut Base Directory
+        server/          # Server repo
+        billing/         # Billing repo
+        e-doc-broker/    # broker repo
+        phoenix/         # phoenix repo
+        shared-logic/    # shared repo
+        trinity/         # trinity repo
+        ui-library/      # ui repo
+
+
+Environment Variables
+--------------
+
+CLI only need these certain ``environment variables`` while working. You need
+to define them in your local shell configuration. As long as you pay attention
+here, everything goes well on CLI. Briefly define the following variables:
+
+.. code-block:: console
+
+    # parasut-cli text editor
+    export PARASUT_CLI_TEXT_EDITOR="vim"
+    # company id
+    export PARASUT_COMPANY_ID="..."
+    # switch rails names
+    export PARASUT_PHOENIX_SWITCH_NAME="..."
+    export PARASUT_TRINITY_SWITCH_NAME="..."
+    # version & ports
+    export PARASUT_SERVER_RUBY_V="..."
+    export PARASUT_BILLING_RUBY_V="..."
+    export PARASUT_BILLING_RAILS_PORT="..."
+    export PARASUT_E_DOC_BROKER_RUBY_V="..."
+    export PARASUT_E_DOC_BROKER_RAILS_PORT="..."
+    export PARASUT_PHOENIX_NODE_V="..."
+    export PARASUT_PHOENIX_YARN_V="..."
+    export PARASUT_CLIENT_NODE_V="..."
+    export PARASUT_CLIENT_YARN_V="..."
+    export PARASUT_CLIENT_EMBER_PORT="..."
+    export PARASUT_TRINITY_NODE_V="..."
+    export PARASUT_TRINITY_YARN_V="..."
+    export PARASUT_TRINITY_EMBER_PORT="..."
+    export PARASUT_UI_LIBRARY_NODE_V="..."
+    export PARASUT_UI_LIBRARY_YARN_V="..."
+    export PARASUT_UI_LIBRARY_EMBER_PORT="..."
+    export PARASUT_SHARED_LOGIC_NODE_V="..."
+    export PARASUT_SHARED_LOGIC_YARN_V="..."
+    export PARASUT_SHARED_LOGIC_EMBER_PORT="..."
+    # structure variables
+    export PARASUT_BASE_DIR="~/Code/development/parasutcom"
+    export PARASUT_SERVER_DIR="server"
+    export PARASUT_BILLING_DIR="billing"
+    export PARASUT_E_DOC_BROKER_DIR="e-doc-broker"
+    export PARASUT_PHOENIX_DIR="phoenix"
+    export PARASUT_SHARED_LOGIC_DIR="shared-logic"
+    export PARASUT_CLIENT_DIR="client"
+    export PARASUT_TRINITY_DIR="trinity"
+    export PARASUT_UI_LIBRARY_DIR="ui-library"
+
+.. warning::
+
+    CLI using text editor like ``vim, nvim, emacs, nano`` while executing
+    ``start`` command for launching tmux server. It will try to open editor in
+    tmux window. Don't use anything else.
 
 
 Stable release

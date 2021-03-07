@@ -38,7 +38,7 @@ def main():
             "client",
             "e-doc-broker",
         ],
-        help="a repository name to open in editor",
+        help="a repository name to open in text editor",
     )
     parser_start.add_argument(
         "-s",
@@ -71,7 +71,7 @@ def main():
         type=str,
         choices=["phoenix", "trinity"],
         required=True,
-        help="an base reporitory name for linking target repository. Use this with -t option",
+        help="a base reporitory name for linking target repository. Use this with -t option",
     )
     group_link.add_argument(
         "-t",
@@ -81,7 +81,7 @@ def main():
         type=str,
         nargs="+",
         choices=["ui-library", "shared-logic"],
-        help="an target reporitory name for linking it to base repository",
+        help="a target reporitory name for linking it to base repository",
     )
     group_link.add_argument(
         "-u",
@@ -91,7 +91,7 @@ def main():
         type=str,
         nargs="+",
         choices=["ui-library", "shared-logic"],
-        help="an reporitory name for unlinking it",
+        help="a reporitory name for unlinking",
     )
     group_link.add_argument(
         "--list",
@@ -102,7 +102,7 @@ def main():
 
     # switch command parser
     parser_switch = subparsers.add_parser(
-        "switch", help="command for switching server rails between phoenix & trinity"
+        "switch", help="command for switching on server side."
     )
     subparsers_switch = parser_switch.add_subparsers(
         title="switch subcommands",
@@ -126,7 +126,7 @@ def main():
         help="a repository name to switch rails frontend repo on server",
     )
     parser_switch_addlings = subparsers_switch.add_parser(
-        "addlings", help="command for switching rails between available repos"
+        "addlings", help="command for switching addlings"
     )
     parser_switch_addlings.add_argument(
         "-t",

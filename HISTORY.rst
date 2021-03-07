@@ -2,6 +2,17 @@
 History
 =======
 
+0.1.11 (2021-08-27)
+------------------
+
+* Docs installation and usage page improvements.
+* Sphinx upgrade.
+
+0.1.10 (2021-07-27)
+------------------
+
+* Docs improvements
+
 0.1.9 (2021-07-27)
 ------------------
 
