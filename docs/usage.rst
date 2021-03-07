@@ -5,8 +5,8 @@ Usage
 Start Command
 --------------
 
-This is where the CLI does its magic. It creates two sessions from the repos
-given using tmux and builds workspaces into them.
+This is where the CLI does its magic. It creates two sessions from repos given
+using tmux and builds workspaces into them.
 
 .. code-block:: console
 
@@ -47,8 +47,8 @@ so that you can undo any changes you have made later ``(-u/--undo)``.
 Switch Command
 --------------
 
-This part can be a little confusing. It's switching exactly what it does.
-Switch processes take place on the ``server``. What the command does is to
+This part can be a little confusing. It represents exactly what it does.
+Switch processes run on the ``server``. What the command does is to
 automate processes that are executed interactively in the background.
 
 .. code-block:: console

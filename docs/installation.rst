@@ -92,7 +92,9 @@ here, everything goes well on CLI. Briefly define the following variables:
 
     CLI using text editor like ``vim, nvim, emacs, nano`` while executing
     ``start`` command for launching tmux server. It will try to open editor in
-    tmux window. Don't use anything else.
+    tmux window. Don't use anything else. If you're using IDE or something else
+    that work outside of terminal, just skip ``-e/--edit`` partition of
+    ``start`` command.
 
 
 Stable release

@@ -26,4 +26,13 @@ CLI for Parasut workspace management
 Features
 --------
 
-* TODO
+* Start command for preparing workspace with all necessary options.
+* Link command for yarn linking operations. Also --undo action.
+* Switch command for rails console actions.
+
+
+TODO
+----
+
+* Clone command for cloning repos in base directory.
+* Release/Pre-release command.
