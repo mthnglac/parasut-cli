@@ -64,7 +64,8 @@ Ready to contribute? Here's how to set up `parasut-cli` for local development.
 
     $ git clone git@github.com:mthnglac/parasut-cli.git
 
-3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development::
+3. Install your local copy into a virtualenv. Assuming you have
+   virtualenvwrapper installed, this is how you set up your fork for local development::
 
     $ mkvirtualenv parasut-cli
     $ cd parasut-cli/
@@ -76,7 +77,14 @@ Ready to contribute? Here's how to set up `parasut-cli` for local development.
 
    Now you can make your changes locally.
 
-5. When you're done making changes, check that your changes pass flake8 and the
+5. Check typings with mypy. It will check all relative files
+   through cli.py::
+
+    $ mypy parasut_cli/cli.py
+
+   To get mypy, just pip install them into your virtualenv.
+
+6. When you're done making changes, check that your changes pass flake8 and the
    tests, including testing other Python versions with tox::
 
     $ flake8 parasut-cli tests
@@ -85,13 +93,13 @@ Ready to contribute? Here's how to set up `parasut-cli` for local development.
 
    To get flake8 and tox, just pip install them into your virtualenv.
 
-6. Commit your changes and push your branch to GitHub::
+7. Commit your changes and push your branch to GitHub::
 
     $ git add .
     $ git commit -m "Your detailed description of your changes."
     $ git push origin name-of-your-bugfix-or-feature
 
-7. Submit a pull request through the GitHub website.
+8. Submit a pull request through the GitHub website.
 
 Pull Request Guidelines
 -----------------------

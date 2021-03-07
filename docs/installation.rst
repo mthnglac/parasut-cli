@@ -5,6 +5,27 @@ Installation
 ============
 
 
+Dependency Setup
+--------------
+
+There are some dependencies we need to handle before running the cli.
+
+It is necessary to install and configure the 3rd tools below:
+
+* `Ember.js`_
+* `Ruby on Rails`_
+* `nvm`_ - node version manager
+* `yvm`_ - yarn version manager
+* `rvm`_ - ruby version manager
+* `tmux`_ (if you will use start command)
+
+.. _Ember.js: https://emberjs.com/
+.. _Ruby on Rails: https://rubyonrails.org/
+.. _nvm: https://github.com/nvm-sh/nvm
+.. _yvm: https://yvm.js.org/
+.. _rvm: https://rvm.io/
+
+
 Stable release
 --------------
 
