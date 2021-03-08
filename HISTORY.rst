@@ -3,6 +3,11 @@ History
 =======
 
 
+0.1.16 (2021-08-27)
+-------------------
+
+* FIX: tmux exception problem when there is no server.
+
 0.1.15 (2021-08-27)
 -------------------
 
