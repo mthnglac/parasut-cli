@@ -11,6 +11,7 @@ History
 * FIX: dependencies now installing at installation.
 * FIX: state mechanism refactored. There was a FileNotFoundError.
 * FIX: ``start`` command now appending new windows existing session if you run start command in detached mode.
+* UPDATE: note added to start command.
 
 0.1.14 (2021-08-27)
 -------------------
