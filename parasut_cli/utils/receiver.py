@@ -2,7 +2,6 @@ from __future__ import annotations
 from typing import Dict, List, Optional, Any
 from libtmux import Server, Session, Window, Pane
 from libtmux.exc import LibTmuxException
-from dotenv import dotenv_values
 import os
 import sys
 import json
@@ -307,7 +306,7 @@ class Receiver:
                 target_path = f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}"
                 json_file = "package.json"
 
-                if self._dep_versions["ui_library"]["linked"] == True:
+                if self._dep_versions["ui_library"]["linked"] is True:
                     print(
                         f"{repo_name} has been linked before. Try --list to check linked repos."
                     )
@@ -330,7 +329,7 @@ class Receiver:
                 target_path = f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
                 json_file = "package.json"
 
-                if self._dep_versions["shared_logic"]["linked"] == True:
+                if self._dep_versions["shared_logic"]["linked"] is True:
                     print(
                         f"{repo_name} has been linked before. Try --list to check linked repos."
                     )
@@ -365,7 +364,7 @@ class Receiver:
                 target_path = f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}"
                 json_file = "package.json"
 
-                if self._dep_versions["ui_library"]["linked"] == False:
+                if self._dep_versions["ui_library"]["linked"] is False:
                     print(
                         f"{repo_name} has not been linked before. Try listing linked repos."
                     )
@@ -385,7 +384,7 @@ class Receiver:
                 target_path = f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
                 json_file = "package.json"
 
-                if self._dep_versions["shared_logic"]["linked"] == False:
+                if self._dep_versions["shared_logic"]["linked"] is False:
                     print(
                         f"{repo_name} has not been linked before. Try listing linked repos."
                     )

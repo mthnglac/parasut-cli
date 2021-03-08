@@ -42,7 +42,7 @@ Clone all repos into a folder that you will use as base. You get the idea.::
 
 
 Environment Variables
---------------
+---------------------
 
 CLI only need these certain ``environment variables`` while working. You need
 to define them in your local shell configuration. As long as you pay attention

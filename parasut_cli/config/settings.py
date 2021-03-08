@@ -1,5 +1,4 @@
 from pathlib import Path
-from dotenv import dotenv_values
 import os
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent

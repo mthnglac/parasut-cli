@@ -1,5 +1,5 @@
 Welcome to Parasut CLI's documentation!
-======================================
+=======================================
 
 .. toctree::
    :maxdepth: 2

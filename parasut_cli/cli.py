@@ -162,9 +162,9 @@ def main():
     # link
     elif hasattr(args, "subcommand") and args.subcommand == "link":
         if (
-            getattr(args, "target_repos", False)
-            or getattr(args, "undo_linked_repos", False)
-            or getattr(args, "list_linked_repos", False)
+            getattr(args, "target_repos", False) or
+            getattr(args, "undo_linked_repos", False) or
+            getattr(args, "list_linked_repos", False)
         ):
             invoker.do_something_important(
                 LinkCommand(
@@ -187,7 +187,9 @@ def main():
                 )
             else:
                 parser_switch.print_help()
-        elif hasattr(args, "switch_subcommand") and args.switch_subcommand == "addlings":
+        elif (
+            hasattr(args, "switch_subcommand") and args.switch_subcommand == "addlings"
+        ):
             if getattr(args, "switch_addling", False):
                 invoker.do_something_important(
                     SwitchCommand(receiver, target_addling=args.switch_addling)

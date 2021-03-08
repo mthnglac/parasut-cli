@@ -1,5 +1,4 @@
 from __future__ import annotations
-from libtmux import Server, Session, Window, Pane
 
 from parasut_cli.utils.command import Command
 
