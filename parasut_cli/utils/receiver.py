@@ -124,10 +124,18 @@ class Receiver:
         self._tmux_server = Server()
 
     def create_parasut_ws_setup(self, repos: List[str]) -> None:
-        # create session
-        self._tmux_session_parasut_ws_setup = self._tmux_server.new_session(
-            session_name="parasut-ws-setup", kill_session=True, attach=False
-        )
+        # get or create session
+        session = self._tmux_server.find_where({"session_name": "parasut-ws-setup"})
+        if session:
+            print('buldum')
+            print(session)
+            self._tmux_session_parasut_ws_setup = session
+        else:
+            print('bulamadim')
+            print(session)
+            self._tmux_session_parasut_ws_setup = self._tmux_server.new_session(
+                session_name="parasut-ws-setup", kill_session=True, attach=False
+            )
         # launch relative repos
         for repo_name in repos:
             if "server" == repo_name:
@@ -167,14 +175,19 @@ class Receiver:
                 )
                 self._launch_parasut_shared_logic_repo()
 
-        # kill the first empty window
-        self._tmux_session_parasut_ws_setup.select_window(1).kill_window()
+        # kill the first empty window if new session initialized
+        if not session:
+            self._tmux_session_parasut_ws_setup.select_window(1).kill_window()
 
     def create_parasut_ws_editor(self, repos: List[str]) -> None:
-        # create session
-        self._tmux_session_parasut_ws_editor = self._tmux_server.new_session(
-            session_name="parasut-ws-editor", kill_session=True, attach=False
-        )
+        # get or create session
+        session = self._tmux_server.find_where({"session_name": "parasut-ws-editor"})
+        if session:
+            self._tmux_session_parasut_ws_editor = session
+        else:
+            self._tmux_session_parasut_ws_editor = self._tmux_server.new_session(
+                session_name="parasut-ws-editor", kill_session=True, attach=False
+            )
         # launch relative repos
         for repo_name in repos:
             if "server" == repo_name:
@@ -213,8 +226,9 @@ class Receiver:
                     f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
                 )
                 self._launch_parasut_shared_logic_editor()
-        # kill the first empty window
-        self._tmux_session_parasut_ws_editor.select_window(1).kill_window()
+        # kill the first empty window if new session initialized
+        if not session:
+            self._tmux_session_parasut_ws_editor.select_window(1).kill_window()
         self._tmux_session_parasut_ws_editor.select_window(1)
 
     def switch_server_rails_frontend(self, target_repo: str) -> None:

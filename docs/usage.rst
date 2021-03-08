@@ -56,7 +56,7 @@ automate processes that are executed interactively in the background.
     $ parasut-cli switch <switch-name> -t <switch-choice>
 
 
-* ``rails`` - a repository name to switch rails frontend repo on server.
+* ``frontend`` - a repository name to switch frontend repo on server.
 
     * ``-t/--target`` - target prefix for choosing choices. Choices: phoenix, trinity.
 

@@ -3,6 +3,20 @@ History
 =======
 
 
+0.1.15 (2021-08-27)
+-------------------
+
+* REFACTOR: ``rails`` subcommand changed as ``frontend``.
+* FIX: typos in core.
+* FIX: dependencies now installing at installation.
+* FIX: state mechanism refactored. There was a FileNotFoundError.
+* FIX: ``start`` command now appending new windows existing session if you run start command in detached mode.
+
+0.1.14 (2021-08-27)
+-------------------
+
+* Docs improvements
+
 0.1.13 (2021-08-27)
 -------------------
 

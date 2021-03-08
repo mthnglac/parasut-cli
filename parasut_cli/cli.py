@@ -71,7 +71,7 @@ def main():
         type=str,
         choices=["phoenix", "trinity"],
         required=True,
-        help="a base reporitory name for linking target repository. Use this with -t option",
+        help="a base repository name for linking target repository. Use this with -t option",
     )
     group_link.add_argument(
         "-t",
@@ -81,7 +81,7 @@ def main():
         type=str,
         nargs="+",
         choices=["ui-library", "shared-logic"],
-        help="a target reporitory name for linking it to base repository",
+        help="a target repository name for linking it to base repository",
     )
     group_link.add_argument(
         "-u",
@@ -91,7 +91,7 @@ def main():
         type=str,
         nargs="+",
         choices=["ui-library", "shared-logic"],
-        help="a reporitory name for unlinking",
+        help="a repository name for unlinking",
     )
     group_link.add_argument(
         "--list",
@@ -110,20 +110,20 @@ def main():
         help="switch sub-command help",
         dest="switch_subcommand",
     )
-    parser_switch_rails = subparsers_switch.add_parser(
-        "rails", help="command for switching rails between available repos"
+    parser_switch_frontend = subparsers_switch.add_parser(
+        "frontend", help="command for switching frontend between available repos"
     )
-    parser_switch_rails.add_argument(
+    parser_switch_frontend.add_argument(
         "-t",
         "--target",
-        dest="switch_rails",
+        dest="switch_frontend",
         metavar="<repo-name>",
         type=str,
         choices=[
             "phoenix",
             "trinity",
         ],
-        help="a repository name to switch rails frontend repo on server",
+        help="a repository name to switch frontend repo on server",
     )
     parser_switch_addlings = subparsers_switch.add_parser(
         "addlings", help="command for switching addlings"
@@ -138,7 +138,7 @@ def main():
             "receipt",
             "invoice",
         ],
-        help="a addling name to switch rails addlings on server",
+        help="a addling name to switch addlings on server",
     )
 
     args = parent_parser.parse_args()
@@ -179,11 +179,11 @@ def main():
             parser_link.print_help()
     # switch
     elif hasattr(args, "subcommand") and args.subcommand == "switch":
-        # switch rails sub-command
-        if hasattr(args, "switch_subcommand") and args.switch_subcommand == "rails":
-            if getattr(args, "switch_rails", False):
+        # switch_frontend sub-command
+        if hasattr(args, "switch_subcommand") and args.switch_subcommand == "frontend":
+            if getattr(args, "switch_frontend", False):
                 invoker.do_something_important(
-                    SwitchCommand(receiver, target_repo=args.switch_rails)
+                    SwitchCommand(receiver, target_repo=args.switch_frontend)
                 )
             else:
                 parser_switch.print_help()
