@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Dict, List, Optional, Any
 from libtmux import Server, Session, Window, Pane
+from libtmux.exc import LibTmuxException
 from dotenv import dotenv_values
 import os
 import sys
@@ -124,18 +125,21 @@ class Receiver:
         self._tmux_server = Server()
 
     def create_parasut_ws_setup(self, repos: List[str]) -> None:
+        session: Optional[Session]
+
         # get or create session
-        session = self._tmux_server.find_where({"session_name": "parasut-ws-setup"})
-        if session:
-            print('buldum')
-            print(session)
-            self._tmux_session_parasut_ws_setup = session
-        else:
-            print('bulamadim')
-            print(session)
-            self._tmux_session_parasut_ws_setup = self._tmux_server.new_session(
-                session_name="parasut-ws-setup", kill_session=True, attach=False
-            )
+        try:
+            session = self._tmux_server.find_where({"session_name": "parasut-ws-setup"})
+        except LibTmuxException:
+            session = None
+        finally:
+            if session:
+                self._tmux_session_parasut_ws_setup = session
+            else:
+                self._tmux_session_parasut_ws_setup = self._tmux_server.new_session(
+                    session_name="parasut-ws-setup", kill_session=True, attach=False
+                )
+
         # launch relative repos
         for repo_name in repos:
             if "server" == repo_name:
@@ -180,14 +184,21 @@ class Receiver:
             self._tmux_session_parasut_ws_setup.select_window(1).kill_window()
 
     def create_parasut_ws_editor(self, repos: List[str]) -> None:
+        session: Optional[Session]
+
         # get or create session
-        session = self._tmux_server.find_where({"session_name": "parasut-ws-editor"})
-        if session:
-            self._tmux_session_parasut_ws_editor = session
-        else:
-            self._tmux_session_parasut_ws_editor = self._tmux_server.new_session(
-                session_name="parasut-ws-editor", kill_session=True, attach=False
-            )
+        try:
+            session = self._tmux_server.find_where({"session_name": "parasut-ws-editor"})
+        except LibTmuxException:
+            session = None
+        finally:
+            if session:
+                self._tmux_session_parasut_ws_editor = session
+            else:
+                self._tmux_session_parasut_ws_editor = self._tmux_server.new_session(
+                    session_name="parasut-ws-editor", kill_session=True, attach=False
+                )
+
         # launch relative repos
         for repo_name in repos:
             if "server" == repo_name:
