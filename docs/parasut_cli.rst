@@ -1,6 +1,11 @@
 parasut\_cli package
 ====================
 
+.. automodule:: parasut_cli
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Subpackages
 -----------
 
@@ -14,18 +19,7 @@ Subpackages
 Submodules
 ----------
 
-parasut\_cli.cli module
------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: parasut_cli.cli
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: parasut_cli
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   parasut_cli.cli

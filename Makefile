@@ -65,7 +65,7 @@ coverage: ## check code coverage quickly with the default Python
 docs: ## generate Sphinx HTML documentation, including API docs
 	rm -f docs/parasut_cli.rst
 	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ parasut_cli
+	sphinx-apidoc -M -e -E -H "API Reference" -o docs/ parasut_cli
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	$(BROWSER) docs/_build/html/index.html

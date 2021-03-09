@@ -1,5 +1,5 @@
-parasut_cli
-===========
+API Reference
+=============
 
 .. toctree::
    :maxdepth: 4
