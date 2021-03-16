@@ -74,6 +74,20 @@ automate processes that are executed interactively in the background.
     * ``-t/--target`` - target prefix for choosing choices. Choices: receipt, invoice.
 
 
+Run Command
+--------------
+
+This command runs the chain of commands required to instantiate the repository.
+Selects yarn, node and ruby versions and related options for the target repo.
+
+.. code-block:: console
+
+    $ parasut-cli run -r <repo-name>
+
+
+* ``-t/--target`` - a repository name for running target repository with necessary options.
+
+
 Help Command
 --------------
 

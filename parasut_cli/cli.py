@@ -147,8 +147,8 @@ def main():
         "run", help="command for running repo with necessary options"
     )
     parser_run.add_argument(
-        "-r",
-        "--repo",
+        "-t",
+        "--target",
         dest="run_repo",
         metavar="<repo-name>",
         type=str,
@@ -226,6 +226,7 @@ def main():
                 parser_switch.print_help()
         else:
             parent_parser.print_help()
+    # run
     elif hasattr(args, "subcommand") and args.subcommand == "run":
         if getattr(args, "run_repo", False):
             invoker.do_something_important(
