@@ -123,6 +123,85 @@ class Receiver:
     def initialize_tmux_server(self) -> None:
         self._tmux_server = Server()
 
+    def run_repo(self, repo_name: str) -> None:
+        base_path: str = self._find_repo_path(repo_name)
+
+        source_nvm = f"source ~/.nvm/nvm.sh"
+        source_yvm = f"source ~/.yvm/yvm.sh"
+        source_rvm = f"source ~/.rvm/scripts/rvm"
+
+        self._change_directory(base_path)
+
+        try:
+            if "server" == repo_name:
+                subprocess.run([
+                    "/bin/zsh",
+                    "-c",
+                    f"{source_rvm} && {self._server_commands['choose_ruby_version']} && {self._server_commands['launch_rails']}"
+                ])
+            elif "server-sidekiq" == repo_name:
+                subprocess.run([
+                    "/bin/zsh",
+                    "-c",
+                    f"{source_rvm} && {self._server_commands['choose_ruby_version']} && {self._server_commands['launch_sidekiq']}"
+                ])
+            elif "billing" == repo_name:
+                subprocess.run([
+                    "/bin/zsh",
+                    "-c",
+                    f"{source_rvm} && {self._billing_commands['choose_ruby_version']} && {self._billing_commands['launch_rails']}"
+                ])
+            elif "billing-sidekiq" == repo_name:
+                subprocess.run([
+                    "/bin/zsh",
+                    "-c",
+                    f"{source_rvm} && {self._billing_commands['choose_ruby_version']} && {self._billing_commands['launch_sidekiq']}"
+                ])
+            elif "e-doc-broker" == repo_name:
+                subprocess.run([
+                    "/bin/zsh",
+                    "-c",
+                    f"{source_rvm} && {self._e_doc_broker_commands['choose_ruby_version']} && {self._e_doc_broker_commands['launch_rails']}"
+                ])
+            elif "e-doc-broker-sidekiq" == repo_name:
+                subprocess.run([
+                    "/bin/zsh",
+                    "-c",
+                    f"{source_rvm} && {self._e_doc_broker_commands['choose_ruby_version']} && {self._e_doc_broker_commands['launch_sidekiq']}"
+                ])
+            elif "phoenix" == repo_name:
+                subprocess.run([
+                    "/bin/zsh",
+                    "-c",
+                    f"{source_yvm} && {source_nvm} && {self._phoenix_commands['choose_yarn_version']} && {self._phoenix_commands['choose_node_version']} && {self._phoenix_commands['ember_serve']}"
+                ])
+            elif "shared-logic" == repo_name:
+                subprocess.run([
+                    "/bin/zsh",
+                    "-c",
+                    f"{source_yvm} && {source_nvm} && {self._shared_logic_commands['choose_yarn_version']} && {self._shared_logic_commands['choose_node_version']} && {self._shared_logic_commands['ember_serve']}"
+                ])
+            elif "trinity" == repo_name:
+                subprocess.run([
+                    "/bin/zsh",
+                    "-c",
+                    f"{source_yvm} && {source_nvm} && {self._trinity_commands['choose_yarn_version']} && {self._trinity_commands['choose_node_version']} && {self._trinity_commands['ember_serve']}"
+                ])
+            elif "ui-library" == repo_name:
+                subprocess.run([
+                    "/bin/zsh",
+                    "-c",
+                    f"{source_yvm} && {source_nvm} && {self._ui_library_commands['choose_yarn_version']} && {self._ui_library_commands['choose_node_version']} && {self._ui_library_commands['ember_serve']}"
+                ])
+            elif "client" == repo_name:
+                subprocess.run([
+                    "/bin/zsh",
+                    "-c",
+                    f"{source_yvm} && {source_nvm} && {self._client_commands['choose_yarn_version']} && {self._client_commands['choose_node_version']} && {self._client_commands['ember_serve']}"
+                ])
+        except KeyboardInterrupt:
+            pass
+
     def create_parasut_ws_setup(self, repos: List[str]) -> None:
         session: Optional[Session]
 
@@ -244,29 +323,37 @@ class Receiver:
     def switch_server_rails_frontend(self, target_repo: str) -> None:
         server_repo: str = f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}"
 
+        source_rvm = f"source ~/.rvm/scripts/rvm"
+        choose_ruby_v = f"rvm use {self.SERVER_RUBY_V}"
+        switch_to_phoenix = f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.PHOENIX_SWITCH_NAME}\")'"
+        switch_to_trinity = f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.TRINITY_SWITCH_NAME}\")'"
+
         self._change_directory(server_repo)
 
         if target_repo == "phoenix":
             subprocess.run(
                 [
                     "/bin/zsh",
-                    "-i",
                     "-c",
-                    f"rvm use {self.SERVER_RUBY_V} && rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.PHOENIX_SWITCH_NAME}\")'",
+                    f"{source_rvm} && {choose_ruby_v} && {switch_to_phoenix}",
                 ]
             )
         if target_repo == "trinity":
             subprocess.run(
                 [
                     "/bin/zsh",
-                    "-i",
                     "-c",
-                    f"rvm use {self.SERVER_RUBY_V} && rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.TRINITY_SWITCH_NAME}\")'",
+                    f"{source_rvm} && {choose_ruby_v} && {switch_to_trinity}",
                 ]
             )
 
     def switch_server_rails_addling(self, target_addling: str) -> None:
         server_repo: str = f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}"
+
+        source_rvm = f"source ~/.rvm/scripts/rvm"
+        choose_ruby_v = f"rvm use {self.SERVER_RUBY_V}"
+        switch_to_receipt = f"rails runner 'puts company=Company.find({self.COMPANY_ID}); company.feature_flags[\"using_sales_receipt\"]=true; company.save!'"
+        switch_to_invoice = f"rails runner 'puts company=Company.find({self.COMPANY_ID}); company.feature_flags[\"using_sales_receipt\"]=false; company.save!'"
 
         self._change_directory(server_repo)
 
@@ -274,18 +361,16 @@ class Receiver:
             subprocess.run(
                 [
                     "/bin/zsh",
-                    "-i",
                     "-c",
-                    f"rvm use {self.SERVER_RUBY_V} && rails runner 'puts company=Company.find({self.COMPANY_ID}); company.feature_flags[\"using_sales_receipt\"]=true; company.save!'",
+                    f"{source_rvm} && {choose_ruby_v} && {switch_to_receipt}",
                 ]
             )
         if target_addling == "invoice":
             subprocess.run(
                 [
                     "/bin/zsh",
-                    "-i",
                     "-c",
-                    f"rvm use {self.SERVER_RUBY_V} && rails runner 'puts company=Company.find({self.COMPANY_ID}); company.feature_flags[\"using_sales_receipt\"]=false; company.save!'",
+                    f"{source_rvm} && {choose_ruby_v} && {switch_to_invoice}",
                 ]
             )
 
@@ -437,11 +522,11 @@ class Receiver:
         return dep_ver
 
     def _find_repo_path(self, repo_name: str) -> str:
-        if repo_name == "server":
+        if repo_name == "server" or "server" in repo_name:
             return f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}"
-        elif repo_name == "billing":
+        elif repo_name == "billing" or "billing" in repo_name:
             return f"{self.PARASUT_BASE_DIR}/{self.BILLING_DIR}"
-        elif repo_name == "e-doc-broker":
+        elif repo_name == "e-doc-broker" or "e-doc-broker" in repo_name:
             return f"{self.PARASUT_BASE_DIR}/{self.E_DOC_BROKER_DIR}"
         elif repo_name == "client":
             return f"{self.PARASUT_BASE_DIR}/{self.CLIENT_DIR}"

@@ -6,6 +6,7 @@ from parasut_cli.utils.receiver import Receiver
 from parasut_cli.commands.start import StartCommand
 from parasut_cli.commands.link import LinkCommand
 from parasut_cli.commands.switch import SwitchCommand
+from parasut_cli.commands.run import RunCommand
 
 
 def main():
@@ -141,6 +142,33 @@ def main():
         help="a addling name to switch addlings on server",
     )
 
+    # run command parser
+    parser_run = subparsers.add_parser(
+        "run", help="command for running repo with necessary options"
+    )
+    parser_run.add_argument(
+        "-r",
+        "--repo",
+        dest="run_repo",
+        metavar="<repo-name>",
+        type=str,
+        choices=[
+            "server",
+            "server-sidekiq",
+            "billing",
+            "billing-sidekiq",
+            "e-doc-broker",
+            "e-doc-broker-sidekiq",
+            "phoenix",
+            "shared-logic",
+            "trinity",
+            "ui-library",
+            "client",
+        ],
+        required=True,
+        help="a repository name",
+    )
+
     args = parent_parser.parse_args()
 
     invoker = Invoker()
@@ -198,6 +226,16 @@ def main():
                 parser_switch.print_help()
         else:
             parent_parser.print_help()
+    elif hasattr(args, "subcommand") and args.subcommand == "run":
+        if getattr(args, "run_repo", False):
+            invoker.do_something_important(
+                RunCommand(
+                    receiver,
+                    repo_name=args.run_repo,
+                )
+            )
+        else:
+            parser_link.print_help()
 
     return 0
 
