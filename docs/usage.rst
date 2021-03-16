@@ -82,7 +82,7 @@ Selects yarn, node and ruby versions and related options for the target repo.
 
 .. code-block:: console
 
-    $ parasut-cli run -r <repo-name>
+    $ parasut-cli run -t <repo-name>
 
 
 * ``-t/--target`` - a repository name for running target repository with necessary options.
