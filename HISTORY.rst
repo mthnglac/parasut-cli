@@ -3,12 +3,19 @@ History
 =======
 
 
-0.1.16 (2021-08-27)
+0.2.0 (2021-03-17)
+-------------------
+
+* CREATE: API Reference page added.
+* CREATE: ``run`` command added.
+* UPDATE: pkg updates.
+
+0.1.16 (2021-03-09)
 -------------------
 
 * FIX: tmux exception problem when there is no server.
 
-0.1.15 (2021-08-27)
+0.1.15 (2021-03-09)
 -------------------
 
 * REFACTOR: ``rails`` subcommand changed as ``frontend``.
@@ -18,37 +25,37 @@ History
 * FIX: ``start`` command now appending new windows existing session if you run start command in detached mode.
 * UPDATE: note added to start command.
 
-0.1.14 (2021-08-27)
+0.1.14 (2021-03-08)
 -------------------
 
 * Docs improvements
 
-0.1.13 (2021-08-27)
--------------------
-
-* Docs improvements
-
-
-0.1.12 (2021-08-27)
+0.1.13 (2021-03-08)
 -------------------
 
 * Docs improvements
 
 
-0.1.11 (2021-08-27)
+0.1.12 (2021-03-08)
+-------------------
+
+* Docs improvements
+
+
+0.1.11 (2021-03-08)
 -------------------
 
 * Docs installation and usage page improvements.
 * Sphinx upgrade.
 
 
-0.1.10 (2021-07-27)
+0.1.10 (2021-03-07)
 -------------------
 
 * Docs improvements
 
 
-0.1.9 (2021-07-27)
+0.1.9 (2021-03-07)
 ------------------
 
 * Documents added on installation.
@@ -57,7 +64,7 @@ History
 * Black code formatter used.
 
 
-0.1.8 (2021-07-27)
+0.1.8 (2021-03-07)
 ------------------
 
 * Theme changed
