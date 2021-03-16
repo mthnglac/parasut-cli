@@ -85,7 +85,7 @@ Selects yarn, node and ruby versions and related options for the target repo.
     $ parasut-cli run -t <repo-name>
 
 
-* ``-t/--target`` - a repository name for running target repository with necessary options.
+* ``-t/--target`` - a repository name for running target repository with necessary options. Choices: server, server-sidekiq, billing, billing-sidekiq, e-doc-broker, e-doc-broker-sidekiq, phoenix, shared-logic, trinity, ui-library, client.
 
 
 Help Command
