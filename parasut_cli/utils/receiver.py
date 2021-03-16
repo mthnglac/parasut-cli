@@ -134,73 +134,97 @@ class Receiver:
 
         try:
             if "server" == repo_name:
-                subprocess.run([
-                    "/bin/zsh",
-                    "-c",
-                    f"{source_rvm} && {self._server_commands['choose_ruby_version']} && {self._server_commands['launch_rails']}"
-                ])
+                subprocess.run(
+                    [
+                        "/bin/zsh",
+                        "-c",
+                        f"{source_rvm} && {self._server_commands['choose_ruby_version']} && {self._server_commands['launch_rails']}",
+                    ]
+                )
             elif "server-sidekiq" == repo_name:
-                subprocess.run([
-                    "/bin/zsh",
-                    "-c",
-                    f"{source_rvm} && {self._server_commands['choose_ruby_version']} && {self._server_commands['launch_sidekiq']}"
-                ])
+                subprocess.run(
+                    [
+                        "/bin/zsh",
+                        "-c",
+                        f"{source_rvm} && {self._server_commands['choose_ruby_version']} && {self._server_commands['launch_sidekiq']}",
+                    ]
+                )
             elif "billing" == repo_name:
-                subprocess.run([
-                    "/bin/zsh",
-                    "-c",
-                    f"{source_rvm} && {self._billing_commands['choose_ruby_version']} && {self._billing_commands['launch_rails']}"
-                ])
+                subprocess.run(
+                    [
+                        "/bin/zsh",
+                        "-c",
+                        f"{source_rvm} && {self._billing_commands['choose_ruby_version']} && {self._billing_commands['launch_rails']}",
+                    ]
+                )
             elif "billing-sidekiq" == repo_name:
-                subprocess.run([
-                    "/bin/zsh",
-                    "-c",
-                    f"{source_rvm} && {self._billing_commands['choose_ruby_version']} && {self._billing_commands['launch_sidekiq']}"
-                ])
+                subprocess.run(
+                    [
+                        "/bin/zsh",
+                        "-c",
+                        f"{source_rvm} && {self._billing_commands['choose_ruby_version']} && {self._billing_commands['launch_sidekiq']}",
+                    ]
+                )
             elif "e-doc-broker" == repo_name:
-                subprocess.run([
-                    "/bin/zsh",
-                    "-c",
-                    f"{source_rvm} && {self._e_doc_broker_commands['choose_ruby_version']} && {self._e_doc_broker_commands['launch_rails']}"
-                ])
+                subprocess.run(
+                    [
+                        "/bin/zsh",
+                        "-c",
+                        f"{source_rvm} && {self._e_doc_broker_commands['choose_ruby_version']} && {self._e_doc_broker_commands['launch_rails']}",
+                    ]
+                )
             elif "e-doc-broker-sidekiq" == repo_name:
-                subprocess.run([
-                    "/bin/zsh",
-                    "-c",
-                    f"{source_rvm} && {self._e_doc_broker_commands['choose_ruby_version']} && {self._e_doc_broker_commands['launch_sidekiq']}"
-                ])
+                subprocess.run(
+                    [
+                        "/bin/zsh",
+                        "-c",
+                        f"{source_rvm} && {self._e_doc_broker_commands['choose_ruby_version']} && {self._e_doc_broker_commands['launch_sidekiq']}",
+                    ]
+                )
             elif "phoenix" == repo_name:
-                subprocess.run([
-                    "/bin/zsh",
-                    "-c",
-                    f"{source_yvm} && {source_nvm} && {self._phoenix_commands['choose_yarn_version']} && {self._phoenix_commands['choose_node_version']} && {self._phoenix_commands['ember_serve']}"
-                ])
+                subprocess.run(
+                    [
+                        "/bin/zsh",
+                        "-c",
+                        f"{source_yvm} && {source_nvm} && {self._phoenix_commands['choose_yarn_version']} && {self._phoenix_commands['choose_node_version']} && {self._phoenix_commands['ember_serve']}",
+                    ]
+                )
             elif "shared-logic" == repo_name:
-                subprocess.run([
-                    "/bin/zsh",
-                    "-c",
-                    f"{source_yvm} && {source_nvm} && {self._shared_logic_commands['choose_yarn_version']} && {self._shared_logic_commands['choose_node_version']} && {self._shared_logic_commands['ember_serve']}"
-                ])
+                subprocess.run(
+                    [
+                        "/bin/zsh",
+                        "-c",
+                        f"{source_yvm} && {source_nvm} && {self._shared_logic_commands['choose_yarn_version']} && {self._shared_logic_commands['choose_node_version']} && {self._shared_logic_commands['ember_serve']}",
+                    ]
+                )
             elif "trinity" == repo_name:
-                subprocess.run([
-                    "/bin/zsh",
-                    "-c",
-                    f"{source_yvm} && {source_nvm} && {self._trinity_commands['choose_yarn_version']} && {self._trinity_commands['choose_node_version']} && {self._trinity_commands['ember_serve']}"
-                ])
+                subprocess.run(
+                    [
+                        "/bin/zsh",
+                        "-c",
+                        f"{source_yvm} && {source_nvm} && {self._trinity_commands['choose_yarn_version']} && {self._trinity_commands['choose_node_version']} && {self._trinity_commands['ember_serve']}",
+                    ]
+                )
             elif "ui-library" == repo_name:
-                subprocess.run([
-                    "/bin/zsh",
-                    "-c",
-                    f"{source_yvm} && {source_nvm} && {self._ui_library_commands['choose_yarn_version']} && {self._ui_library_commands['choose_node_version']} && {self._ui_library_commands['ember_serve']}"
-                ])
+                subprocess.run(
+                    [
+                        "/bin/zsh",
+                        "-c",
+                        f"{source_yvm} && {source_nvm} && {self._ui_library_commands['choose_yarn_version']} && {self._ui_library_commands['choose_node_version']} && {self._ui_library_commands['ember_serve']}",
+                    ]
+                )
             elif "client" == repo_name:
-                subprocess.run([
-                    "/bin/zsh",
-                    "-c",
-                    f"{source_yvm} && {source_nvm} && {self._client_commands['choose_yarn_version']} && {self._client_commands['choose_node_version']} && {self._client_commands['ember_serve']}"
-                ])
+                subprocess.run(
+                    [
+                        "/bin/zsh",
+                        "-c",
+                        f"{source_yvm} && {source_nvm} && {self._client_commands['choose_yarn_version']} && {self._client_commands['choose_node_version']} && {self._client_commands['ember_serve']}",
+                    ]
+                )
         except KeyboardInterrupt:
             pass
+        except Exception as e:
+            print(e)
 
     def create_parasut_ws_setup(self, repos: List[str]) -> None:
         session: Optional[Session]
@@ -224,9 +248,7 @@ class Receiver:
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}")
                 self._launch_parasut_server_repo()
             elif "billing" == repo_name:
-                self._change_directory(
-                    f"{self.PARASUT_BASE_DIR}/{self.BILLING_DIR}"
-                )
+                self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.BILLING_DIR}")
                 self._launch_parasut_billing_repo()
             elif "e-doc-broker" == repo_name:
                 self._change_directory(
@@ -234,22 +256,16 @@ class Receiver:
                 )
                 self._launch_parasut_e_doc_broker_repo()
             elif "phoenix" == repo_name:
-                self._change_directory(
-                    f"{self.PARASUT_BASE_DIR}/{self.PHOENIX_DIR}"
-                )
+                self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.PHOENIX_DIR}")
                 self._launch_parasut_phoenix_repo()
             elif "client" == repo_name:
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.CLIENT_DIR}")
                 self._launch_parasut_client_repo()
             elif "trinity" == repo_name:
-                self._change_directory(
-                    f"{self.PARASUT_BASE_DIR}/{self.TRINITY_DIR}"
-                )
+                self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.TRINITY_DIR}")
                 self._launch_parasut_trinity_repo()
             elif "ui-library" == repo_name:
-                self._change_directory(
-                    f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}"
-                )
+                self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}")
                 self._launch_parasut_ui_library_repo()
             elif "shared-logic" == repo_name:
                 self._change_directory(
@@ -266,7 +282,9 @@ class Receiver:
 
         # get or create session
         try:
-            session = self._tmux_server.find_where({"session_name": "parasut-ws-editor"})
+            session = self._tmux_server.find_where(
+                {"session_name": "parasut-ws-editor"}
+            )
         except LibTmuxException:
             session = None
         finally:
@@ -283,9 +301,7 @@ class Receiver:
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}")
                 self._launch_parasut_server_editor()
             elif "billing" == repo_name:
-                self._change_directory(
-                    f"{self.PARASUT_BASE_DIR}/{self.BILLING_DIR}"
-                )
+                self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.BILLING_DIR}")
                 self._launch_parasut_billing_editor()
             elif "e-doc-broker" == repo_name:
                 self._change_directory(
@@ -293,22 +309,16 @@ class Receiver:
                 )
                 self._launch_parasut_e_doc_broker_editor()
             elif "phoenix" == repo_name:
-                self._change_directory(
-                    f"{self.PARASUT_BASE_DIR}/{self.PHOENIX_DIR}"
-                )
+                self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.PHOENIX_DIR}")
                 self._launch_parasut_phoenix_editor()
             elif "client" == repo_name:
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.CLIENT_DIR}")
                 self._launch_parasut_client_editor()
             elif "trinity" == repo_name:
-                self._change_directory(
-                    f"{self.PARASUT_BASE_DIR}/{self.TRINITY_DIR}"
-                )
+                self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.TRINITY_DIR}")
                 self._launch_parasut_trinity_editor()
             elif "ui-library" == repo_name:
-                self._change_directory(
-                    f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}"
-                )
+                self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}")
                 self._launch_parasut_ui_library_editor()
             elif "shared-logic" == repo_name:
                 self._change_directory(

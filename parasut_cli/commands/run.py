@@ -16,4 +16,4 @@ class RunCommand(Command):
 
     def execute(self) -> None:
         if self._repo_name:
-            self._receiver.run_repo(self._repo_name)
+            self._receiver.run_repo(repo_name=self._repo_name)

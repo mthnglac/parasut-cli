@@ -190,9 +190,9 @@ def main():
     # link
     elif hasattr(args, "subcommand") and args.subcommand == "link":
         if (
-            getattr(args, "target_repos", False) or
-            getattr(args, "undo_linked_repos", False) or
-            getattr(args, "list_linked_repos", False)
+            getattr(args, "target_repos", False)
+            or getattr(args, "undo_linked_repos", False)
+            or getattr(args, "list_linked_repos", False)
         ):
             invoker.do_something_important(
                 LinkCommand(
