@@ -1,5 +1,4 @@
 from __future__ import annotations
-from typing import List, Optional
 
 from parasut_cli.utils.receiver import Receiver
 from parasut_cli.utils.command import Command

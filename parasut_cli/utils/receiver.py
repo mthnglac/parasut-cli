@@ -84,10 +84,10 @@ class Receiver:
             choose_ruby_version=f"rvm use {self.SERVER_RUBY_V}",
             launch_sidekiq="bundle exec sidekiq",
             launch_rails="rails server",
-            switch_to_phoenix=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.PHOENIX_SWITCH_NAME}\")'",
-            switch_to_trinity=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.TRINITY_SWITCH_NAME}\")'",
-            switch_to_receipt=f"rails runner 'puts company=Company.find({self.COMPANY_ID}); company.feature_flags[\"using_sales_receipt\"]=true; company.save!'",
-            switch_to_invoice=f"rails runner 'puts company=Company.find({self.COMPANY_ID}); company.feature_flags[\"using_sales_receipt\"]=false; company.save!'",
+            switch_to_phoenix=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.PHOENIX_SWITCH_NAME}\")'",  # noqa: E501
+            switch_to_trinity=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.TRINITY_SWITCH_NAME}\")'",  # noqa: E501
+            switch_to_receipt=f"rails runner 'puts company=Company.find({self.COMPANY_ID}); company.feature_flags[\"using_sales_receipt\"]=true; company.save!'",  # noqa: E501
+            switch_to_invoice=f"rails runner 'puts company=Company.find({self.COMPANY_ID}); company.feature_flags[\"using_sales_receipt\"]=false; company.save!'",  # noqa: E501
         )
         self._billing_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
@@ -111,7 +111,7 @@ class Receiver:
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
             choose_yarn_version=f"yvm use {self.CLIENT_YARN_V}",
             choose_node_version=f"nvm use {self.CLIENT_NODE_V}",
-            ember_serve=f"./node_modules/ember-cli/bin/ember s --live-reload-port {self.CLIENT_EMBER_PORT}",
+            ember_serve=f"./node_modules/ember-cli/bin/ember s --live-reload-port {self.CLIENT_EMBER_PORT}",  # noqa: E501
         )
         self._trinity_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
@@ -123,7 +123,7 @@ class Receiver:
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
             choose_yarn_version=f"yvm use {self.UI_LIBRARY_YARN_V}",
             choose_node_version=f"nvm use {self.UI_LIBRARY_NODE_V}",
-            ember_serve=f"PROJECT_TARGET=phoenix ember s --live-reload-port {self.UI_LIBRARY_EMBER_PORT}",
+            ember_serve=f"PROJECT_TARGET=phoenix ember s --live-reload-port {self.UI_LIBRARY_EMBER_PORT}",  # noqa: E501
         )
         self._shared_logic_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
@@ -401,17 +401,18 @@ class Receiver:
                     show_output=show_output,
                 )
                 if show_output is False:
-                    console.print(f":clinking_beer_mugs: Demand accomplished.")
+                    console.print(":clinking_beer_mugs: Demand accomplished.")
             if target_repo == "trinity":
                 self._run_process(
                     tasks=[self._task_switch_frontend_to_trinity],
                     show_output=show_output,
                 )
                 if show_output is False:
-                    console.print(f":clinking_beer_mugs: Demand accomplished.")
+                    console.print(":clinking_beer_mugs: Demand accomplished.")
         except KeyboardInterrupt:
             console.print(
-                f":pile_of_poo: You interrupted process. Manually check your demand steps."
+                ":pile_of_poo: You interrupted process. \
+                          Manually check your demand steps."
             )
             sys.exit(0)
 
@@ -429,17 +430,18 @@ class Receiver:
                     show_output=show_output,
                 )
                 if show_output is False:
-                    console.print(f":clinking_beer_mugs: Demand accomplished.")
+                    console.print(":clinking_beer_mugs: Demand accomplished.")
             if target_addling == "invoice":
                 self._run_process(
                     tasks=[self._task_switch_addling_to_invoice],
                     show_output=show_output,
                 )
                 if show_output is False:
-                    console.print(f":clinking_beer_mugs: Demand accomplished.")
+                    console.print(":clinking_beer_mugs: Demand accomplished.")
         except KeyboardInterrupt:
             console.print(
-                f":pile_of_poo: You interrupted process. Manually check your demand steps."
+                ":pile_of_poo: You interrupted process. \
+                          Manually check your demand steps."
             )
             sys.exit(0)
 
@@ -464,7 +466,8 @@ class Receiver:
 
                 if self._dep_versions["ui_library"]["linked"] is True:
                     print(
-                        f"{repo_name} has been linked before. Try --list to check linked repos."
+                        f"{repo_name} has been linked before. \
+                          Try --list to check linked repos."
                     )
                 else:
                     self._dep_versions["ui_library"][
@@ -477,14 +480,14 @@ class Receiver:
                     self._store_linking_info(self._dep_versions)
                     self._apply_package_changes(show_output=show_output)
                     if show_output is False:
-                        console.print(f":ok_hand: Base repo linked.")
+                        console.print(":ok_hand: Base repo linked.")
                     self._change_directory(target_path)
                     self._apply_package_changes(show_output=show_output, force=True)
                     if show_output is False:
-                        console.print(f":ok_hand: Target repo reloaded.")
+                        console.print(":ok_hand: Target repo reloaded.")
                     self._change_directory(base_path)
                     if show_output is False:
-                        console.print(f":clinking_beer_mugs: Demand accomplished.")
+                        console.print(":clinking_beer_mugs: Demand accomplished.")
             elif repo_name == "shared-logic":
                 dep_key = "shared-logic"
                 dep_value = f"link:../{repo_name}"
@@ -493,7 +496,8 @@ class Receiver:
 
                 if self._dep_versions["shared_logic"]["linked"] is True:
                     print(
-                        f"{repo_name} has been linked before. Try --list to check linked repos."
+                        f"{repo_name} has been linked before. \
+                          Try --list to check linked repos."
                     )
                 else:
                     self._dep_versions["shared_logic"][
@@ -506,14 +510,14 @@ class Receiver:
                     self._store_linking_info(self._dep_versions)
                     self._apply_package_changes(show_output=show_output)
                     if show_output is False:
-                        console.print(f":ok_hand: Base repo linked.")
+                        console.print(":ok_hand: Base repo linked.")
                     self._change_directory(target_path)
                     self._apply_package_changes(show_output=show_output, force=True)
                     if show_output is False:
-                        console.print(f":ok_hand: Target repo reloaded.")
+                        console.print(":ok_hand: Target repo reloaded.")
                     self._change_directory(base_path)
                     if show_output is False:
-                        console.print(f":clinking_beer_mugs: Demand accomplished.")
+                        console.print(":clinking_beer_mugs: Demand accomplished.")
 
     def undo_linking(self, base_repo: str, repos: List[str], show_output: bool) -> None:
         base_path: str = self._find_repo_path(base_repo)
@@ -534,7 +538,8 @@ class Receiver:
 
                 if self._dep_versions["ui_library"]["linked"] is False:
                     print(
-                        f"{repo_name} has not been linked before. Try listing linked repos."
+                        f"{repo_name} has not been linked before. \
+                          Try listing linked repos."
                     )
                 else:
                     self._change_dependency_value(
@@ -544,14 +549,14 @@ class Receiver:
 
                     self._apply_package_changes(show_output=show_output)
                     if show_output is False:
-                        console.print(f":ok_hand: Base repo unlinked.")
+                        console.print(":ok_hand: Base repo unlinked.")
                     self._change_directory(target_path)
                     self._apply_package_changes(show_output=show_output, force=True)
                     if show_output is False:
-                        console.print(f":ok_hand: Undoed target repo reloaded.")
+                        console.print(":ok_hand: Undoed target repo reloaded.")
                     self._change_directory(base_path)
                     if show_output is False:
-                        console.print(f":clinking_beer_mugs: Demand accomplished.")
+                        console.print(":clinking_beer_mugs: Demand accomplished.")
             elif repo_name == "shared-logic":
                 dep_key = "shared-logic"
                 dep_value = self._dep_versions["shared_logic"]["value"]
@@ -560,7 +565,8 @@ class Receiver:
 
                 if self._dep_versions["shared_logic"]["linked"] is False:
                     print(
-                        f"{repo_name} has not been linked before. Try listing linked repos."
+                        f"{repo_name} has not been linked before. \
+                          Try listing linked repos."
                     )
                 else:
                     self._change_dependency_value(
@@ -570,14 +576,14 @@ class Receiver:
 
                     self._apply_package_changes(show_output=show_output)
                     if show_output is False:
-                        console.print(f":ok_hand: Base repo unlinked.")
+                        console.print(":ok_hand: Base repo unlinked.")
                     self._change_directory(target_path)
                     self._apply_package_changes(show_output=show_output, force=True)
                     if show_output is False:
-                        console.print(f":ok_hand: Undoed target repo reloaded.")
+                        console.print(":ok_hand: Undoed target repo reloaded.")
                     self._change_directory(base_path)
                     if show_output is False:
-                        console.print(f":clinking_beer_mugs: Demand accomplished.")
+                        console.print(":clinking_beer_mugs: Demand accomplished.")
 
     def get_linked_repos(self, base_repo: str) -> None:
         for key, value in self._dep_versions.items():
@@ -588,7 +594,7 @@ class Receiver:
 
     def _run_process(self, tasks: List[str], show_output=False):
         if show_output is False:
-            with console.status("[bold green] Working on process...") as status:
+            with console.status("[bold green] Working on process..."):
                 for task in tasks:
                     result = subprocess.run(
                         ["/bin/zsh", "-c", f"{task}"],
@@ -614,19 +620,19 @@ class Receiver:
             except subprocess.CalledProcessError:
                 if show_output is False:
                     console.print(
-                        f":thumbs_down: Yarn had a problem with an dependent package."
+                        ":thumbs_down: Yarn had a problem with an dependent package."
                     )
                     if attempts == 2:
                         sleep(1)
-                        console.print(f":goblin: &$!#%")
+                        console.print(":goblin: &$!#%")
                         sleep(1)
-                        console.print(f":goblin::fire: Trying last time..")
+                        console.print(":goblin::fire: Trying last time..")
                     else:
-                        console.print(f":fire: Trying again..")
+                        console.print(":fire: Trying again..")
                 attempts += 1
         else:
             console.print(
-                f":broken_heart: Yarn couldn't install dependencies on related repo."
+                ":broken_heart: Yarn couldn't install dependencies on related repo."
             )
 
     def _change_dependency_value(

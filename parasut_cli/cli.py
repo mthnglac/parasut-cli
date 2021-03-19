@@ -72,7 +72,7 @@ def main():
         type=str,
         choices=["phoenix", "trinity"],
         required=True,
-        help="a base repository name for linking target repository. Use this with -t option",
+        help="a base repository name for linking target repository.",
     )
     group_parser_link.add_argument(
         "-t",
