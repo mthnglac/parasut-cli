@@ -1,7 +1,9 @@
 from __future__ import annotations
 from typing import Dict, List, Optional, Any
+from time import sleep
 from libtmux import Server, Session, Window, Pane
 from libtmux.exc import LibTmuxException
+from rich.console import Console
 import os
 import sys
 import json
@@ -9,6 +11,8 @@ import subprocess
 import pickle
 
 from parasut_cli.config.settings import APP_DIR, env
+
+console = Console()
 
 
 class Receiver:
@@ -59,7 +63,6 @@ class Receiver:
         except KeyError as e:
             print(f"Please set environment variable: {e}")
             sys.exit(0)
-
         self._tmux_server: Server
         self._tmux_session_parasut_ws_setup: Session
         self._tmux_session_parasut_ws_editor: Session
@@ -71,11 +74,20 @@ class Receiver:
             ui_library="ui-library",
             shared_logic="shared-logic",
         )
+        self._core_commands: Dict[str, str] = dict(
+            source_nvm="source ~/.nvm/nvm.sh",
+            source_yvm="source ~/.yvm/yvm.sh",
+            source_rvm="source ~/.rvm/scripts/rvm",
+        )
         self._server_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
             choose_ruby_version=f"rvm use {self.SERVER_RUBY_V}",
             launch_sidekiq="bundle exec sidekiq",
             launch_rails="rails server",
+            switch_to_phoenix=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.PHOENIX_SWITCH_NAME}\")'",
+            switch_to_trinity=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.TRINITY_SWITCH_NAME}\")'",
+            switch_to_receipt=f"rails runner 'puts company=Company.find({self.COMPANY_ID}); company.feature_flags[\"using_sales_receipt\"]=true; company.save!'",
+            switch_to_invoice=f"rails runner 'puts company=Company.find({self.COMPANY_ID}); company.feature_flags[\"using_sales_receipt\"]=false; company.save!'",
         )
         self._billing_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
@@ -119,6 +131,123 @@ class Receiver:
             choose_node_version=f"nvm use {self.SHARED_LOGIC_NODE_V}",
             ember_serve=f"ember s --live-reload-port {self.SHARED_LOGIC_EMBER_PORT}",
         )
+        # run tasks
+        self._task_run_server = " && ".join(
+            [
+                self._core_commands["source_rvm"],
+                self._server_commands["choose_ruby_version"],
+                self._server_commands["launch_rails"],
+            ]
+        )
+        self._task_run_server_sidekiq = " && ".join(
+            [
+                self._core_commands["source_rvm"],
+                self._server_commands["choose_ruby_version"],
+                self._server_commands["launch_sidekiq"],
+            ]
+        )
+        self._task_run_billing = " && ".join(
+            [
+                self._core_commands["source_rvm"],
+                self._billing_commands["choose_ruby_version"],
+                self._billing_commands["launch_rails"],
+            ]
+        )
+        self._task_run_billing_sidekiq = " && ".join(
+            [
+                self._core_commands["source_rvm"],
+                self._billing_commands["choose_ruby_version"],
+                self._billing_commands["launch_sidekiq"],
+            ]
+        )
+        self._task_run_e_doc_broker = " && ".join(
+            [
+                self._core_commands["source_rvm"],
+                self._e_doc_broker_commands["choose_ruby_version"],
+                self._e_doc_broker_commands["launch_rails"],
+            ]
+        )
+        self._task_run_e_doc_broker_sidekiq = " && ".join(
+            [
+                self._core_commands["source_rvm"],
+                self._e_doc_broker_commands["choose_ruby_version"],
+                self._e_doc_broker_commands["launch_sidekiq"],
+            ]
+        )
+        self._task_run_phoenix = " && ".join(
+            [
+                self._core_commands["source_yvm"],
+                self._core_commands["source_nvm"],
+                self._phoenix_commands["choose_yarn_version"],
+                self._phoenix_commands["choose_node_version"],
+                self._phoenix_commands["ember_serve"],
+            ]
+        )
+        self._task_run_shared_logic = " && ".join(
+            [
+                self._core_commands["source_yvm"],
+                self._core_commands["source_nvm"],
+                self._shared_logic_commands["choose_yarn_version"],
+                self._shared_logic_commands["choose_node_version"],
+                self._shared_logic_commands["ember_serve"],
+            ]
+        )
+        self._task_run_trinity = " && ".join(
+            [
+                self._core_commands["source_yvm"],
+                self._core_commands["source_nvm"],
+                self._trinity_commands["choose_yarn_version"],
+                self._trinity_commands["choose_node_version"],
+                self._trinity_commands["ember_serve"],
+            ]
+        )
+        self._task_run_ui_library = " && ".join(
+            [
+                self._core_commands["source_yvm"],
+                self._core_commands["source_nvm"],
+                self._ui_library_commands["choose_yarn_version"],
+                self._ui_library_commands["choose_node_version"],
+                self._ui_library_commands["ember_serve"],
+            ]
+        )
+        self._task_run_client = " && ".join(
+            [
+                self._core_commands["source_yvm"],
+                self._core_commands["source_nvm"],
+                self._client_commands["choose_yarn_version"],
+                self._client_commands["choose_node_version"],
+                self._client_commands["ember_serve"],
+            ]
+        )
+        # switch tasks
+        self._task_switch_frontend_to_phoenix = " && ".join(
+            [
+                self._core_commands["source_rvm"],
+                self._server_commands["choose_ruby_version"],
+                self._server_commands["switch_to_phoenix"],
+            ]
+        )
+        self._task_switch_frontend_to_trinity = " && ".join(
+            [
+                self._core_commands["source_rvm"],
+                self._server_commands["choose_ruby_version"],
+                self._server_commands["switch_to_trinity"],
+            ]
+        )
+        self._task_switch_addling_to_invoice = " && ".join(
+            [
+                self._core_commands["source_rvm"],
+                self._server_commands["choose_ruby_version"],
+                self._server_commands["switch_to_invoice"],
+            ]
+        )
+        self._task_switch_addling_to_receipt = " && ".join(
+            [
+                self._core_commands["source_rvm"],
+                self._server_commands["choose_ruby_version"],
+                self._server_commands["switch_to_receipt"],
+            ]
+        )
 
     def initialize_tmux_server(self) -> None:
         self._tmux_server = Server()
@@ -126,101 +255,31 @@ class Receiver:
     def run_repo(self, repo_name: str) -> None:
         base_path: str = self._find_repo_path(repo_name)
 
-        source_nvm = f"source ~/.nvm/nvm.sh"
-        source_yvm = f"source ~/.yvm/yvm.sh"
-        source_rvm = f"source ~/.rvm/scripts/rvm"
-
         self._change_directory(base_path)
 
         try:
             if "server" == repo_name:
-                subprocess.run(
-                    [
-                        "/bin/zsh",
-                        "-c",
-                        f"{source_rvm} && {self._server_commands['choose_ruby_version']} && {self._server_commands['launch_rails']}",
-                    ]
-                )
+                self._run_process([self._task_run_server])
             elif "server-sidekiq" == repo_name:
-                subprocess.run(
-                    [
-                        "/bin/zsh",
-                        "-c",
-                        f"{source_rvm} && {self._server_commands['choose_ruby_version']} && {self._server_commands['launch_sidekiq']}",
-                    ]
-                )
+                self._run_process([self._task_run_server_sidekiq])
             elif "billing" == repo_name:
-                subprocess.run(
-                    [
-                        "/bin/zsh",
-                        "-c",
-                        f"{source_rvm} && {self._billing_commands['choose_ruby_version']} && {self._billing_commands['launch_rails']}",
-                    ]
-                )
+                self._run_process([self._task_run_billing])
             elif "billing-sidekiq" == repo_name:
-                subprocess.run(
-                    [
-                        "/bin/zsh",
-                        "-c",
-                        f"{source_rvm} && {self._billing_commands['choose_ruby_version']} && {self._billing_commands['launch_sidekiq']}",
-                    ]
-                )
+                self._run_process([self._task_run_billing_sidekiq])
             elif "e-doc-broker" == repo_name:
-                subprocess.run(
-                    [
-                        "/bin/zsh",
-                        "-c",
-                        f"{source_rvm} && {self._e_doc_broker_commands['choose_ruby_version']} && {self._e_doc_broker_commands['launch_rails']}",
-                    ]
-                )
+                self._run_process([self._task_run_e_doc_broker])
             elif "e-doc-broker-sidekiq" == repo_name:
-                subprocess.run(
-                    [
-                        "/bin/zsh",
-                        "-c",
-                        f"{source_rvm} && {self._e_doc_broker_commands['choose_ruby_version']} && {self._e_doc_broker_commands['launch_sidekiq']}",
-                    ]
-                )
+                self._run_process([self._task_run_e_doc_broker_sidekiq])
             elif "phoenix" == repo_name:
-                subprocess.run(
-                    [
-                        "/bin/zsh",
-                        "-c",
-                        f"{source_yvm} && {source_nvm} && {self._phoenix_commands['choose_yarn_version']} && {self._phoenix_commands['choose_node_version']} && {self._phoenix_commands['ember_serve']}",
-                    ]
-                )
+                self._run_process([self._task_run_phoenix])
             elif "shared-logic" == repo_name:
-                subprocess.run(
-                    [
-                        "/bin/zsh",
-                        "-c",
-                        f"{source_yvm} && {source_nvm} && {self._shared_logic_commands['choose_yarn_version']} && {self._shared_logic_commands['choose_node_version']} && {self._shared_logic_commands['ember_serve']}",
-                    ]
-                )
+                self._run_process([self._task_run_shared_logic])
             elif "trinity" == repo_name:
-                subprocess.run(
-                    [
-                        "/bin/zsh",
-                        "-c",
-                        f"{source_yvm} && {source_nvm} && {self._trinity_commands['choose_yarn_version']} && {self._trinity_commands['choose_node_version']} && {self._trinity_commands['ember_serve']}",
-                    ]
-                )
+                self._run_process([self._task_run_trinity])
             elif "ui-library" == repo_name:
-                subprocess.run(
-                    [
-                        "/bin/zsh",
-                        "-c",
-                        f"{source_yvm} && {source_nvm} && {self._ui_library_commands['choose_yarn_version']} && {self._ui_library_commands['choose_node_version']} && {self._ui_library_commands['ember_serve']}",
-                    ]
-                )
+                self._run_process([self._task_run_ui_library])
             elif "client" == repo_name:
-                subprocess.run(
-                    [
-                        "/bin/zsh",
-                        "-c",
-                        f"{source_yvm} && {source_nvm} && {self._client_commands['choose_yarn_version']} && {self._client_commands['choose_node_version']} && {self._client_commands['ember_serve']}",
-                    ]
-                )
+                self._run_process([self._task_run_client])
         except KeyboardInterrupt:
             pass
         except Exception as e:
@@ -330,61 +389,55 @@ class Receiver:
             self._tmux_session_parasut_ws_editor.select_window(1).kill_window()
         self._tmux_session_parasut_ws_editor.select_window(1)
 
-    def switch_server_rails_frontend(self, target_repo: str) -> None:
+    def switch_server_rails_frontend(self, target_repo: str, show_output: bool) -> None:
         server_repo: str = f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}"
-
-        source_rvm = f"source ~/.rvm/scripts/rvm"
-        choose_ruby_v = f"rvm use {self.SERVER_RUBY_V}"
-        switch_to_phoenix = f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.PHOENIX_SWITCH_NAME}\")'"
-        switch_to_trinity = f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.TRINITY_SWITCH_NAME}\")'"
 
         self._change_directory(server_repo)
 
-        if target_repo == "phoenix":
-            subprocess.run(
-                [
-                    "/bin/zsh",
-                    "-c",
-                    f"{source_rvm} && {choose_ruby_v} && {switch_to_phoenix}",
-                ]
+        try:
+            if target_repo == "phoenix":
+                self._run_process(
+                    tasks=[self._task_switch_frontend_to_phoenix],
+                    show_output=show_output,
+                )
+            if target_repo == "trinity":
+                self._run_process(
+                    tasks=[self._task_switch_frontend_to_trinity],
+                    show_output=show_output,
+                )
+        except KeyboardInterrupt:
+            console.print(
+                f":pile_of_poo: You interrupted process. Manually check your demand steps."
             )
-        if target_repo == "trinity":
-            subprocess.run(
-                [
-                    "/bin/zsh",
-                    "-c",
-                    f"{source_rvm} && {choose_ruby_v} && {switch_to_trinity}",
-                ]
-            )
+            sys.exit(0)
 
-    def switch_server_rails_addling(self, target_addling: str) -> None:
+    def switch_server_rails_addling(
+        self, target_addling: str, show_output: bool
+    ) -> None:
         server_repo: str = f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}"
-
-        source_rvm = f"source ~/.rvm/scripts/rvm"
-        choose_ruby_v = f"rvm use {self.SERVER_RUBY_V}"
-        switch_to_receipt = f"rails runner 'puts company=Company.find({self.COMPANY_ID}); company.feature_flags[\"using_sales_receipt\"]=true; company.save!'"
-        switch_to_invoice = f"rails runner 'puts company=Company.find({self.COMPANY_ID}); company.feature_flags[\"using_sales_receipt\"]=false; company.save!'"
 
         self._change_directory(server_repo)
 
-        if target_addling == "receipt":
-            subprocess.run(
-                [
-                    "/bin/zsh",
-                    "-c",
-                    f"{source_rvm} && {choose_ruby_v} && {switch_to_receipt}",
-                ]
+        try:
+            if target_addling == "receipt":
+                self._run_process(
+                    tasks=[self._task_switch_addling_to_receipt],
+                    show_output=show_output,
+                )
+            if target_addling == "invoice":
+                self._run_process(
+                    tasks=[self._task_switch_addling_to_invoice],
+                    show_output=show_output,
+                )
+        except KeyboardInterrupt:
+            console.print(
+                f":pile_of_poo: You interrupted process. Manually check your demand steps."
             )
-        if target_addling == "invoice":
-            subprocess.run(
-                [
-                    "/bin/zsh",
-                    "-c",
-                    f"{source_rvm} && {choose_ruby_v} && {switch_to_invoice}",
-                ]
-            )
+            sys.exit(0)
 
-    def do_linking(self, base_repo: str, target_repos: List[str]) -> None:
+    def do_linking(
+        self, base_repo: str, target_repos: List[str], show_output: bool
+    ) -> None:
         base_path: str = self._find_repo_path(base_repo)
         dep_key: str = ""
         dep_value: str = ""
@@ -414,10 +467,16 @@ class Receiver:
                     self._dep_versions["ui_library"]["linked"] = True
 
                     self._store_linking_info(self._dep_versions)
-                    self._apply_package_changes()
+                    self._apply_package_changes(show_output=show_output)
+                    if show_output is not False:
+                        console.print(f":ok_hand: Base repo linked.")
                     self._change_directory(target_path)
-                    self._apply_package_changes(force=True)
+                    self._apply_package_changes(show_output=show_output, force=True)
+                    if show_output is not False:
+                        console.print(f":ok_hand: Target repo reloaded.")
                     self._change_directory(base_path)
+                    if show_output is not False:
+                        console.print(f":clinking_beer_mugs: Demand accomplished.")
             elif repo_name == "shared-logic":
                 dep_key = "shared-logic"
                 dep_value = f"link:../{repo_name}"
@@ -437,12 +496,18 @@ class Receiver:
                     self._dep_versions["shared_logic"]["linked"] = True
 
                     self._store_linking_info(self._dep_versions)
-                    self._apply_package_changes()
+                    self._apply_package_changes(show_output=show_output)
+                    if show_output is not False:
+                        console.print(f":ok_hand: Base repo linked.")
                     self._change_directory(target_path)
-                    self._apply_package_changes(force=True)
+                    self._apply_package_changes(show_output=show_output, force=True)
+                    if show_output is not False:
+                        console.print(f":ok_hand: Target repo reloaded.")
                     self._change_directory(base_path)
+                    if show_output is not False:
+                        console.print(f":clinking_beer_mugs: Demand accomplished.")
 
-    def undo_linking(self, base_repo: str, repos: List[str]) -> None:
+    def undo_linking(self, base_repo: str, repos: List[str], show_output: bool) -> None:
         base_path: str = self._find_repo_path(base_repo)
         dep_key: str = ""
         dep_value: str = ""
@@ -469,10 +534,16 @@ class Receiver:
                     )
                     self._dep_versions["ui_library"]["linked"] = False
 
-                    self._apply_package_changes()
+                    self._apply_package_changes(show_output=show_output)
+                    if show_output is not False:
+                        console.print(f":ok_hand: Base repo unlinked.")
                     self._change_directory(target_path)
-                    self._apply_package_changes(force=True)
+                    self._apply_package_changes(show_output=show_output, force=True)
+                    if show_output is not False:
+                        console.print(f":ok_hand: Undoed target repo reloaded.")
                     self._change_directory(base_path)
+                    if show_output is not False:
+                        console.print(f":clinking_beer_mugs: Demand accomplished.")
             elif repo_name == "shared-logic":
                 dep_key = "shared-logic"
                 dep_value = self._dep_versions["shared_logic"]["value"]
@@ -489,33 +560,61 @@ class Receiver:
                     )
                     self._dep_versions["shared_logic"]["linked"] = False
 
-                    self._apply_package_changes()
+                    self._apply_package_changes(show_output=show_output)
+                    if show_output is not False:
+                        console.print(f":ok_hand: Base repo unlinked.")
                     self._change_directory(target_path)
-                    self._apply_package_changes(force=True)
+                    self._apply_package_changes(show_output=show_output, force=True)
+                    if show_output is not False:
+                        console.print(f":ok_hand: Undoed target repo reloaded.")
                     self._change_directory(base_path)
+                    if show_output is not False:
+                        console.print(f":clinking_beer_mugs: Demand accomplished.")
 
     def get_linked_repos(self, base_repo: str) -> None:
         for key, value in self._dep_versions.items():
             if self._dep_versions[key]["linked"]:
                 print(key)
         else:
-            print("There is no repo linked by this cli.")
+            print("There is no repo linking to this repo.")
 
-    def _apply_package_changes(self, force=False) -> None:
+    def _run_process(self, tasks: List[str], check=False, show_output=False):
+        if show_output is False:
+            with console.status("[bold green] Working on process...") as status:
+                for task in tasks:
+                    result = subprocess.run(
+                        ["/bin/zsh", "-c", f"{task}"],
+                        capture_output=True,
+                    )
+                    result.check_returncode()
+        else:
+            for task in tasks:
+                subprocess.run(["/bin/zsh", "-c", f"{task}"], check=check)
+
+    def _apply_package_changes(self, show_output: bool, force: bool = False) -> None:
         attempts = 0
+        command = f"yarn install{' --force' if force else ''}"
 
         while attempts < 3:
             try:
-                subprocess.run(
-                    ["/bin/zsh", "-c", f'yarn install{" --force" if force else ""}'],
-                    check=True,
-                )
+                self._run_process(tasks=[command], check=True, show_output=show_output)
                 break
             except subprocess.CalledProcessError:
+                if show_output is not False:
+                    console.print(
+                        f":thumbs_down: Yarn had a problem with an dependent package."
+                    )
+                    if attempts == 2:
+                        sleep(1)
+                        console.print(f":goblin: &$!#%")
+                        sleep(1)
+                        console.print(f":goblin::fire: Trying last time..")
+                    else:
+                        console.print(f":fire: Trying again..")
                 attempts += 1
         else:
-            raise Exception(
-                "Exiting because of an error: yarn couldn't install dependencies on related repo"
+            console.print(
+                f":broken_heart: Yarn couldn't install dependencies on related repo."
             )
 
     def _change_dependency_value(

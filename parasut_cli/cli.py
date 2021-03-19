@@ -63,7 +63,7 @@ def main():
 
     # link command parser
     parser_link = subparsers.add_parser("link", help="command for linking")
-    group_link = parser_link.add_mutually_exclusive_group(required=True)
+    group_parser_link = parser_link.add_mutually_exclusive_group(required=True)
     parser_link.add_argument(
         "-b",
         "--base",
@@ -74,7 +74,7 @@ def main():
         required=True,
         help="a base repository name for linking target repository. Use this with -t option",
     )
-    group_link.add_argument(
+    group_parser_link.add_argument(
         "-t",
         "--target",
         dest="target_repos",
@@ -84,7 +84,7 @@ def main():
         choices=["ui-library", "shared-logic"],
         help="a target repository name for linking it to base repository",
     )
-    group_link.add_argument(
+    group_parser_link.add_argument(
         "-u",
         "--undo",
         dest="undo_linked_repos",
@@ -94,11 +94,17 @@ def main():
         choices=["ui-library", "shared-logic"],
         help="a repository name for unlinking",
     )
-    group_link.add_argument(
+    group_parser_link.add_argument(
         "--list",
         dest="list_linked_repos",
         action="store_true",
         help="list linked repos of base repo",
+    )
+    parser_link.add_argument(
+        "--output",
+        dest="show_output_link",
+        action="store_true",
+        help="show output of linking action",
     )
 
     # switch command parser
@@ -111,10 +117,10 @@ def main():
         help="switch sub-command help",
         dest="switch_subcommand",
     )
-    parser_switch_frontend = subparsers_switch.add_parser(
+    subparser_switch_frontend = subparsers_switch.add_parser(
         "frontend", help="command for switching frontend between available repos"
     )
-    parser_switch_frontend.add_argument(
+    subparser_switch_frontend.add_argument(
         "-t",
         "--target",
         dest="switch_frontend",
@@ -124,12 +130,19 @@ def main():
             "phoenix",
             "trinity",
         ],
+        required=True,
         help="a repository name to switch frontend repo on server",
     )
-    parser_switch_addlings = subparsers_switch.add_parser(
+    subparser_switch_frontend.add_argument(
+        "--output",
+        dest="show_output_frontend",
+        action="store_true",
+        help="show output of switch frontend action",
+    )
+    subparser_switch_addlings = subparsers_switch.add_parser(
         "addlings", help="command for switching addlings"
     )
-    parser_switch_addlings.add_argument(
+    subparser_switch_addlings.add_argument(
         "-t",
         "--target",
         dest="switch_addling",
@@ -139,7 +152,14 @@ def main():
             "receipt",
             "invoice",
         ],
+        required=True,
         help="a addling name to switch addlings on server",
+    )
+    subparser_switch_addlings.add_argument(
+        "--output",
+        dest="show_output_addlings",
+        action="store_true",
+        help="show output of switch addling action",
     )
 
     # run command parser
@@ -201,6 +221,7 @@ def main():
                     target_repos=args.target_repos,
                     undo_linked_repos=args.undo_linked_repos,
                     list_linked_repos=args.list_linked_repos,
+                    show_output=args.show_output_link,
                 )
             )
         else:
@@ -211,7 +232,11 @@ def main():
         if hasattr(args, "switch_subcommand") and args.switch_subcommand == "frontend":
             if getattr(args, "switch_frontend", False):
                 invoker.do_something_important(
-                    SwitchCommand(receiver, target_repo=args.switch_frontend)
+                    SwitchCommand(
+                        receiver,
+                        target_repo=args.switch_frontend,
+                        show_output=args.show_output_frontend,
+                    )
                 )
             else:
                 parser_switch.print_help()
@@ -220,7 +245,11 @@ def main():
         ):
             if getattr(args, "switch_addling", False):
                 invoker.do_something_important(
-                    SwitchCommand(receiver, target_addling=args.switch_addling)
+                    SwitchCommand(
+                        receiver,
+                        target_addling=args.switch_addling,
+                        show_output=args.show_output_addlings,
+                    )
                 )
             else:
                 parser_switch.print_help()
