@@ -30,7 +30,6 @@ Features
 * Link command for yarn linking operations. Also --undo action.
 * Switch command for rails console actions.
 * Run command for executing repo command chains manually.
-* Run command for executing repo command chains manually.
 * `rich`_ integrated.
 
 .. _rich: https://github.com/willmcgugan/rich
@@ -38,5 +37,7 @@ Features
 TODO
 ----
 
-* Clone command for cloning repos in base directory.
-* Release/Pre-release command.
+* ``clone`` command for cloning repos in base directory.
+* ``Release`` & ``pre-release`` command.
+* unit tests.
+* mypy & black connection to tox.
