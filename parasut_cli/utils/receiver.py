@@ -400,11 +400,13 @@ class Receiver:
                     tasks=[self._task_switch_frontend_to_phoenix],
                     show_output=show_output,
                 )
+                if show_output is not True : console.print(f":clinking_beer_mugs: Demand accomplished.")
             if target_repo == "trinity":
                 self._run_process(
                     tasks=[self._task_switch_frontend_to_trinity],
                     show_output=show_output,
                 )
+                if show_output is not True : console.print(f":clinking_beer_mugs: Demand accomplished.")
         except KeyboardInterrupt:
             console.print(
                 f":pile_of_poo: You interrupted process. Manually check your demand steps."
@@ -424,11 +426,13 @@ class Receiver:
                     tasks=[self._task_switch_addling_to_receipt],
                     show_output=show_output,
                 )
+                if show_output is not True : console.print(f":clinking_beer_mugs: Demand accomplished.")
             if target_addling == "invoice":
                 self._run_process(
                     tasks=[self._task_switch_addling_to_invoice],
                     show_output=show_output,
                 )
+                if show_output is not True : console.print(f":clinking_beer_mugs: Demand accomplished.")
         except KeyboardInterrupt:
             console.print(
                 f":pile_of_poo: You interrupted process. Manually check your demand steps."
