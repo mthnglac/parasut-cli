@@ -29,7 +29,11 @@ Features
 * Start command for preparing workspace with all necessary options.
 * Link command for yarn linking operations. Also --undo action.
 * Switch command for rails console actions.
+* Run command for executing repo command chains manually.
+* Run command for executing repo command chains manually.
+* `rich`_ integrated.
 
+.. _rich: https://github.com/willmcgugan/rich
 
 TODO
 ----

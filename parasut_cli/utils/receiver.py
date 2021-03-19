@@ -400,13 +400,15 @@ class Receiver:
                     tasks=[self._task_switch_frontend_to_phoenix],
                     show_output=show_output,
                 )
-                if show_output is not True : console.print(f":clinking_beer_mugs: Demand accomplished.")
+                if show_output is False:
+                    console.print(f":clinking_beer_mugs: Demand accomplished.")
             if target_repo == "trinity":
                 self._run_process(
                     tasks=[self._task_switch_frontend_to_trinity],
                     show_output=show_output,
                 )
-                if show_output is not True : console.print(f":clinking_beer_mugs: Demand accomplished.")
+                if show_output is False:
+                    console.print(f":clinking_beer_mugs: Demand accomplished.")
         except KeyboardInterrupt:
             console.print(
                 f":pile_of_poo: You interrupted process. Manually check your demand steps."
@@ -426,13 +428,15 @@ class Receiver:
                     tasks=[self._task_switch_addling_to_receipt],
                     show_output=show_output,
                 )
-                if show_output is not True : console.print(f":clinking_beer_mugs: Demand accomplished.")
+                if show_output is False:
+                    console.print(f":clinking_beer_mugs: Demand accomplished.")
             if target_addling == "invoice":
                 self._run_process(
                     tasks=[self._task_switch_addling_to_invoice],
                     show_output=show_output,
                 )
-                if show_output is not True : console.print(f":clinking_beer_mugs: Demand accomplished.")
+                if show_output is False:
+                    console.print(f":clinking_beer_mugs: Demand accomplished.")
         except KeyboardInterrupt:
             console.print(
                 f":pile_of_poo: You interrupted process. Manually check your demand steps."
@@ -472,14 +476,14 @@ class Receiver:
 
                     self._store_linking_info(self._dep_versions)
                     self._apply_package_changes(show_output=show_output)
-                    if show_output is not True:
+                    if show_output is False:
                         console.print(f":ok_hand: Base repo linked.")
                     self._change_directory(target_path)
                     self._apply_package_changes(show_output=show_output, force=True)
-                    if show_output is not True:
+                    if show_output is False:
                         console.print(f":ok_hand: Target repo reloaded.")
                     self._change_directory(base_path)
-                    if show_output is not True:
+                    if show_output is False:
                         console.print(f":clinking_beer_mugs: Demand accomplished.")
             elif repo_name == "shared-logic":
                 dep_key = "shared-logic"
@@ -501,14 +505,14 @@ class Receiver:
 
                     self._store_linking_info(self._dep_versions)
                     self._apply_package_changes(show_output=show_output)
-                    if show_output is not True:
+                    if show_output is False:
                         console.print(f":ok_hand: Base repo linked.")
                     self._change_directory(target_path)
                     self._apply_package_changes(show_output=show_output, force=True)
-                    if show_output is not True:
+                    if show_output is False:
                         console.print(f":ok_hand: Target repo reloaded.")
                     self._change_directory(base_path)
-                    if show_output is not True:
+                    if show_output is False:
                         console.print(f":clinking_beer_mugs: Demand accomplished.")
 
     def undo_linking(self, base_repo: str, repos: List[str], show_output: bool) -> None:
@@ -539,14 +543,14 @@ class Receiver:
                     self._dep_versions["ui_library"]["linked"] = False
 
                     self._apply_package_changes(show_output=show_output)
-                    if show_output is not True:
+                    if show_output is False:
                         console.print(f":ok_hand: Base repo unlinked.")
                     self._change_directory(target_path)
                     self._apply_package_changes(show_output=show_output, force=True)
-                    if show_output is not True:
+                    if show_output is False:
                         console.print(f":ok_hand: Undoed target repo reloaded.")
                     self._change_directory(base_path)
-                    if show_output is not True:
+                    if show_output is False:
                         console.print(f":clinking_beer_mugs: Demand accomplished.")
             elif repo_name == "shared-logic":
                 dep_key = "shared-logic"
@@ -565,14 +569,14 @@ class Receiver:
                     self._dep_versions["shared_logic"]["linked"] = False
 
                     self._apply_package_changes(show_output=show_output)
-                    if show_output is not True:
+                    if show_output is False:
                         console.print(f":ok_hand: Base repo unlinked.")
                     self._change_directory(target_path)
                     self._apply_package_changes(show_output=show_output, force=True)
-                    if show_output is not True:
+                    if show_output is False:
                         console.print(f":ok_hand: Undoed target repo reloaded.")
                     self._change_directory(base_path)
-                    if show_output is not True:
+                    if show_output is False:
                         console.print(f":clinking_beer_mugs: Demand accomplished.")
 
     def get_linked_repos(self, base_repo: str) -> None:
@@ -582,7 +586,7 @@ class Receiver:
         else:
             print("There is no repo linking to this repo.")
 
-    def _run_process(self, tasks: List[str], check=False, show_output=False):
+    def _run_process(self, tasks: List[str], show_output=False):
         if show_output is False:
             with console.status("[bold green] Working on process...") as status:
                 for task in tasks:
@@ -593,7 +597,11 @@ class Receiver:
                     result.check_returncode()
         else:
             for task in tasks:
-                subprocess.run(["/bin/zsh", "-c", f"{task}"], check=check)
+                subprocess.run(
+                    ["/bin/zsh", "-c", f"{task}"],
+                    capture_output=True,
+                )
+                result.check_returncode()
 
     def _apply_package_changes(self, show_output: bool, force: bool = False) -> None:
         attempts = 0
@@ -601,10 +609,10 @@ class Receiver:
 
         while attempts < 3:
             try:
-                self._run_process(tasks=[command], check=True, show_output=show_output)
+                self._run_process(tasks=[command], show_output=show_output)
                 break
             except subprocess.CalledProcessError:
-                if show_output is not True:
+                if show_output is False:
                     console.print(
                         f":thumbs_down: Yarn had a problem with an dependent package."
                     )

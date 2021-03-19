@@ -3,6 +3,12 @@ History
 =======
 
 
+0.3.1 (2021-03-19)
+-------------------
+
+* UPDATE: Docs improvements
+* DELETE: forgotten paremeters.
+
 0.3.0 (2021-03-19)
 -------------------
 
