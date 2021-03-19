@@ -468,14 +468,14 @@ class Receiver:
 
                     self._store_linking_info(self._dep_versions)
                     self._apply_package_changes(show_output=show_output)
-                    if show_output is not False:
+                    if show_output is not True:
                         console.print(f":ok_hand: Base repo linked.")
                     self._change_directory(target_path)
                     self._apply_package_changes(show_output=show_output, force=True)
-                    if show_output is not False:
+                    if show_output is not True:
                         console.print(f":ok_hand: Target repo reloaded.")
                     self._change_directory(base_path)
-                    if show_output is not False:
+                    if show_output is not True:
                         console.print(f":clinking_beer_mugs: Demand accomplished.")
             elif repo_name == "shared-logic":
                 dep_key = "shared-logic"
@@ -497,14 +497,14 @@ class Receiver:
 
                     self._store_linking_info(self._dep_versions)
                     self._apply_package_changes(show_output=show_output)
-                    if show_output is not False:
+                    if show_output is not True:
                         console.print(f":ok_hand: Base repo linked.")
                     self._change_directory(target_path)
                     self._apply_package_changes(show_output=show_output, force=True)
-                    if show_output is not False:
+                    if show_output is not True:
                         console.print(f":ok_hand: Target repo reloaded.")
                     self._change_directory(base_path)
-                    if show_output is not False:
+                    if show_output is not True:
                         console.print(f":clinking_beer_mugs: Demand accomplished.")
 
     def undo_linking(self, base_repo: str, repos: List[str], show_output: bool) -> None:
@@ -535,14 +535,14 @@ class Receiver:
                     self._dep_versions["ui_library"]["linked"] = False
 
                     self._apply_package_changes(show_output=show_output)
-                    if show_output is not False:
+                    if show_output is not True:
                         console.print(f":ok_hand: Base repo unlinked.")
                     self._change_directory(target_path)
                     self._apply_package_changes(show_output=show_output, force=True)
-                    if show_output is not False:
+                    if show_output is not True:
                         console.print(f":ok_hand: Undoed target repo reloaded.")
                     self._change_directory(base_path)
-                    if show_output is not False:
+                    if show_output is not True:
                         console.print(f":clinking_beer_mugs: Demand accomplished.")
             elif repo_name == "shared-logic":
                 dep_key = "shared-logic"
@@ -561,14 +561,14 @@ class Receiver:
                     self._dep_versions["shared_logic"]["linked"] = False
 
                     self._apply_package_changes(show_output=show_output)
-                    if show_output is not False:
+                    if show_output is not True:
                         console.print(f":ok_hand: Base repo unlinked.")
                     self._change_directory(target_path)
                     self._apply_package_changes(show_output=show_output, force=True)
-                    if show_output is not False:
+                    if show_output is not True:
                         console.print(f":ok_hand: Undoed target repo reloaded.")
                     self._change_directory(base_path)
-                    if show_output is not False:
+                    if show_output is not True:
                         console.print(f":clinking_beer_mugs: Demand accomplished.")
 
     def get_linked_repos(self, base_repo: str) -> None:
@@ -600,7 +600,7 @@ class Receiver:
                 self._run_process(tasks=[command], check=True, show_output=show_output)
                 break
             except subprocess.CalledProcessError:
-                if show_output is not False:
+                if show_output is not True:
                     console.print(
                         f":thumbs_down: Yarn had a problem with an dependent package."
                     )
