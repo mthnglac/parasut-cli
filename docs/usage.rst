@@ -47,6 +47,8 @@ so that you can undo any changes you have made later ``(-u/--undo)``.
 
 * ``--list`` - a repository name for unlinking it list linked repos of base repo.
 
+* ``--output`` - an option for showing process output.
+
 .. note::
 
     -b/--base argument is necessary. Command will continue to ask until the
@@ -69,9 +71,13 @@ automate processes that are executed interactively in the background.
 
     * ``-t/--target`` - target prefix for choosing choices. Choices: phoenix, trinity.
 
+    * ``--output`` - an option for showing process output.
+
 * ``addlings`` - command for switching addlings.
 
     * ``-t/--target`` - target prefix for choosing choices. Choices: receipt, invoice.
+
+    * ``--output`` - an option for showing process output.
 
 
 Run Command
