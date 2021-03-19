@@ -3,6 +3,16 @@ History
 =======
 
 
+0.3.0 (2021-03-19)
+-------------------
+
+* FEATURE: `rich`_ integrated. Plugin used in hidden commands.
+* FEATURE: new ``--output`` parameter. ``switch`` and ``link`` command outputs are now hidden. To show their outputs, use ``--output`` prefix at the end of command chain.
+* FIX: Yarn error situation was not working properly. Exception was not working. Also, CLI now gets angry for the third time.
+* REFACTOR: subprocess structure has been rewritten. Inreractive terminal mode deprecated.
+
+.. _rich: https://github.com/willmcgugan/rich
+
 0.2.0 (2021-03-17)
 -------------------
 

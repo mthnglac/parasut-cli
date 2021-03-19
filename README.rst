@@ -36,6 +36,3 @@ TODO
 
 * Clone command for cloning repos in base directory.
 * Release/Pre-release command.
-* `rich`_ integration.
-
-.. _rich: https://github.com/willmcgugan/rich
