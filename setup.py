@@ -13,6 +13,7 @@ with open('HISTORY.rst') as history_file:
 requirements = [
     'python-dotenv',
     'libtmux',
+    'rich',
 ]
 
 setup_requirements = [ ]
