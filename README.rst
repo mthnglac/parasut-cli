@@ -38,7 +38,8 @@ TODO
 ----
 
 * ``clone`` command for cloning repos in base directory.
-* ``Release`` & ``pre-release`` command.
+* ``release`` & ``pre-release`` command.
+* ``version`` command.
 * unit tests.
 * mypy & black connection to tox.
 * linking state mechanism refactor.
