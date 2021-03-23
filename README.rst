@@ -41,3 +41,4 @@ TODO
 * ``Release`` & ``pre-release`` command.
 * unit tests.
 * mypy & black connection to tox.
+* linking state mechanism refactor.
