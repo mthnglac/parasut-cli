@@ -259,27 +259,29 @@ class Receiver:
 
         try:
             if "server" == repo_name:
-                self._run_process([self._task_run_server])
+                self._run_process([self._task_run_server], show_output=True)
             elif "server-sidekiq" == repo_name:
-                self._run_process([self._task_run_server_sidekiq])
+                self._run_process([self._task_run_server_sidekiq], show_output=True)
             elif "billing" == repo_name:
-                self._run_process([self._task_run_billing])
+                self._run_process([self._task_run_billing], show_output=True)
             elif "billing-sidekiq" == repo_name:
-                self._run_process([self._task_run_billing_sidekiq])
+                self._run_process([self._task_run_billing_sidekiq], show_output=True)
             elif "e-doc-broker" == repo_name:
-                self._run_process([self._task_run_e_doc_broker])
+                self._run_process([self._task_run_e_doc_broker], show_output=True)
             elif "e-doc-broker-sidekiq" == repo_name:
-                self._run_process([self._task_run_e_doc_broker_sidekiq])
+                self._run_process(
+                    [self._task_run_e_doc_broker_sidekiq], show_output=True
+                )
             elif "phoenix" == repo_name:
-                self._run_process([self._task_run_phoenix])
+                self._run_process([self._task_run_phoenix], show_output=True)
             elif "shared-logic" == repo_name:
-                self._run_process([self._task_run_shared_logic])
+                self._run_process([self._task_run_shared_logic], show_output=True)
             elif "trinity" == repo_name:
-                self._run_process([self._task_run_trinity])
+                self._run_process([self._task_run_trinity], show_output=True)
             elif "ui-library" == repo_name:
-                self._run_process([self._task_run_ui_library])
+                self._run_process([self._task_run_ui_library], show_output=True)
             elif "client" == repo_name:
-                self._run_process([self._task_run_client])
+                self._run_process([self._task_run_client], show_output=True)
         except KeyboardInterrupt:
             pass
         except Exception as e:
@@ -605,9 +607,7 @@ class Receiver:
             for task in tasks:
                 subprocess.run(
                     ["/bin/zsh", "-c", f"{task}"],
-                    capture_output=True,
                 )
-                result.check_returncode()
 
     def _apply_package_changes(self, show_output: bool, force: bool = False) -> None:
         attempts = 0
