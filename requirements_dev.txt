@@ -7,7 +7,7 @@ tox==3.23.0
 coverage==5.5
 Sphinx==3.5.3
 twine==3.4.1
-python-dotenv==0.16.0
+python-dotenv==0.17.0
 libtmux==0.8.5
 sphinx_rtd_theme==0.5.1
 mypy==0.812
