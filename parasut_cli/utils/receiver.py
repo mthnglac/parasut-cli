@@ -82,6 +82,11 @@ class Receiver:
             source_nvm="source ~/.nvm/nvm.sh",
             source_yvm="source ~/.yvm/yvm.sh",
             source_rvm="source ~/.rvm/scripts/rvm",
+            ember_release="ember release",
+            npm_set_parasut_registry="npm config set registry https://npm.fury.io/parasut/",
+            npm_login="npm login",
+            npm_publish="npm publish",
+            npm_delete_registry="npm config delete registry",
         )
         self._server_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
@@ -216,6 +221,19 @@ class Receiver:
                 self._shared_logic_commands["ember_serve"],
             ]
         )
+        self._task_release_shared_logic = " && ".join(
+            [
+                self._core_commands["source_yvm"],
+                self._core_commands["source_nvm"],
+                self._shared_logic_commands["choose_yarn_version"],
+                self._shared_logic_commands["choose_node_version"],
+                self._core_commands["ember_release"],
+                self._core_commands["npm_set_parasut_registry"],
+                self._core_commands["npm_login"],
+                self._core_commands["npm_publish"],
+                self._core_commands["npm_delete_registry"],
+            ]
+        )
         self._task_run_trinity = " && ".join(
             [
                 self._core_commands["source_yvm"],
@@ -232,6 +250,19 @@ class Receiver:
                 self._ui_library_commands["choose_yarn_version"],
                 self._ui_library_commands["choose_node_version"],
                 self._ui_library_commands["ember_serve"],
+            ]
+        )
+        self._task_release_ui_library = " && ".join(
+            [
+                self._core_commands["source_yvm"],
+                self._core_commands["source_nvm"],
+                self._ui_library_commands["choose_yarn_version"],
+                self._ui_library_commands["choose_node_version"],
+                self._core_commands["ember_release"],
+                self._core_commands["npm_set_parasut_registry"],
+                self._core_commands["npm_login"],
+                self._core_commands["npm_publish"],
+                self._core_commands["npm_delete_registry"],
             ]
         )
         self._task_run_client = " && ".join(
@@ -312,6 +343,21 @@ class Receiver:
                 self._run_process([self._task_run_ui_library], show_output=True)
             elif "client" == repo_name:
                 self._run_process([self._task_run_client], show_output=True)
+        except KeyboardInterrupt:
+            pass
+        except Exception as e:
+            print(e)
+
+    def release_repo(self, repo_name: str) -> None:
+        base_path: str = self._find_repo_path(repo_name)
+
+        self._change_directory(base_path)
+
+        try:
+            if "shared-logic" == repo_name:
+                self._run_process([self._task_release_shared_logic], show_output=True)
+            elif "ui-library" == repo_name:
+                self._run_process([self._task_release_ui_library], show_output=True)
         except KeyboardInterrupt:
             pass
         except Exception as e:

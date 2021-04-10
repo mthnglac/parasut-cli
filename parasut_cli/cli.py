@@ -7,6 +7,7 @@ from parasut_cli.commands.start import StartCommand
 from parasut_cli.commands.link import LinkCommand
 from parasut_cli.commands.switch import SwitchCommand
 from parasut_cli.commands.run import RunCommand
+from parasut_cli.commands.release import ReleaseCommand
 
 
 def main():
@@ -193,6 +194,24 @@ def main():
         help="a repository name",
     )
 
+    # release command
+    parser_release = subparsers.add_parser(
+        "release", help="command for release"
+    )
+    parser_release.add_argument(
+        "-t",
+        "--target",
+        dest="release_repo",
+        metavar="<repo-name>",
+        type=str,
+        choices=[
+            "shared-logic",
+            "ui-library",
+        ],
+        required=True,
+        help="a repository name for releasing",
+    )
+
     args = parent_parser.parse_args()
 
     invoker = Invoker()
@@ -270,9 +289,20 @@ def main():
             )
         else:
             parser_link.print_help()
+    # release
+    elif hasattr(args, "subcommand") and args.subcommand == "release":
+        if getattr(args, "release_repo", False):
+            invoker.do_something_important(
+                ReleaseCommand(
+                    receiver,
+                    repo_name=args.release_repo,
+                )
+            )
+        else:
+            parser_link.print_help()
 
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())  # pragma: no cover
+    sys.exit(main())
