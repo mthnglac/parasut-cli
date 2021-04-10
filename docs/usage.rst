@@ -94,6 +94,20 @@ Selects yarn, node and ruby versions and related options for the target repo.
 * ``-t/--target`` - a repository name for running target repository with necessary options. Choices: server, server-sidekiq, billing, billing-sidekiq, e-doc-broker, e-doc-broker-sidekiq, post-office, post-office-sidekiq, phoenix, shared-logic, trinity, ui-library, client.
 
 
+Release Command
+--------------
+
+It does the "release" operation on the specified repo. Sets the registry, logs
+in to npm, publishes the package, and deletes the registry.
+
+.. code-block:: console
+
+    $ parasut-cli release -t <repo-name>
+
+
+* ``-t/--target`` - a repository name for publish release to target repository. Choices: shared-logic, ui-library.
+
+
 Help Command
 --------------
 
