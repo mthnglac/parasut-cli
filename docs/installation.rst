@@ -35,10 +35,11 @@ Clone all repos into a folder that you will use as base. You get the idea.::
         server/          # Server repo
         billing/         # Billing repo
         e-doc-broker/    # broker repo
+        post-office/     # post-office repo
         phoenix/         # phoenix repo
         shared-logic/    # shared repo
         trinity/         # trinity repo
-        ui-library/      # ui repo
+        ui-library/      # ui-library repo
 
 
 Environment Variables
@@ -82,6 +83,7 @@ here, everything goes well on CLI. Briefly define the following variables:
     export PARASUT_SERVER_DIR="server"
     export PARASUT_BILLING_DIR="billing"
     export PARASUT_E_DOC_BROKER_DIR="e-doc-broker"
+    export PARASUT_E_DOC_BROKER_DIR="post-office"
     export PARASUT_PHOENIX_DIR="phoenix"
     export PARASUT_SHARED_LOGIC_DIR="shared-logic"
     export PARASUT_CLIENT_DIR="client"

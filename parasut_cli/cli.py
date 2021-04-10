@@ -38,6 +38,7 @@ def main():
             "ui-library",
             "client",
             "e-doc-broker",
+            "post-office",
         ],
         help="a repository name to open in text editor",
     )
@@ -57,6 +58,7 @@ def main():
             "ui-library",
             "client",
             "e-doc-broker",
+            "post-office",
         ],
         help="a repository name to launch",
     )
@@ -179,6 +181,8 @@ def main():
             "billing-sidekiq",
             "e-doc-broker",
             "e-doc-broker-sidekiq",
+            "post-office",
+            "post-office-sidekiq",
             "phoenix",
             "shared-logic",
             "trinity",

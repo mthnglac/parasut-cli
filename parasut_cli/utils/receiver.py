@@ -34,6 +34,10 @@ class Receiver:
             self.E_DOC_BROKER_RUBY_V: str = env["PARASUT_E_DOC_BROKER_RUBY_V"]
             self.E_DOC_BROKER_RAILS_PORT: str = env["PARASUT_E_DOC_BROKER_RAILS_PORT"]
             self.E_DOC_BROKER_DIR: str = env["PARASUT_E_DOC_BROKER_DIR"]
+            # post-office
+            self.POST_OFFICE_RUBY_V: str = env["PARASUT_POST_OFFICE_RUBY_V"]
+            self.POST_OFFICE_RAILS_PORT: str = env["PARASUT_POST_OFFICE_RAILS_PORT"]
+            self.POST_OFFICE_DIR: str = env["PARASUT_POST_OFFICE_DIR"]
             # phoenix
             self.PHOENIX_NODE_V: str = env["PARASUT_PHOENIX_NODE_V"]
             self.PHOENIX_YARN_V: str = env["PARASUT_PHOENIX_YARN_V"]
@@ -100,6 +104,12 @@ class Receiver:
             choose_ruby_version=f"rvm use {self.E_DOC_BROKER_RUBY_V}",
             launch_sidekiq="bundle exec sidekiq",
             launch_rails=f"rails server -p {self.E_DOC_BROKER_RAILS_PORT}",
+        )
+        self._post_office_commands: Dict[str, str] = dict(
+            launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
+            choose_ruby_version=f"rvm use {self.POST_OFFICE_RUBY_V}",
+            launch_sidekiq="bundle exec sidekiq",
+            launch_rails=f"rails server -p {self.POST_OFFICE_RAILS_PORT}",
         )
         self._phoenix_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
@@ -172,6 +182,20 @@ class Receiver:
                 self._core_commands["source_rvm"],
                 self._e_doc_broker_commands["choose_ruby_version"],
                 self._e_doc_broker_commands["launch_sidekiq"],
+            ]
+        )
+        self._task_run_post_office = " && ".join(
+            [
+                self._core_commands["source_rvm"],
+                self._post_office_commands["choose_ruby_version"],
+                self._post_office_commands["launch_rails"],
+            ]
+        )
+        self._task_run_post_office_sidekiq = " && ".join(
+            [
+                self._core_commands["source_rvm"],
+                self._post_office_commands["choose_ruby_version"],
+                self._post_office_commands["launch_sidekiq"],
             ]
         )
         self._task_run_phoenix = " && ".join(
@@ -272,6 +296,12 @@ class Receiver:
                 self._run_process(
                     [self._task_run_e_doc_broker_sidekiq], show_output=True
                 )
+            elif "post-office" == repo_name:
+                self._run_process([self._task_run_post_office], show_output=True)
+            elif "post-office-sidekiq" == repo_name:
+                self._run_process(
+                    [self._task_run_post_office_sidekiq], show_output=True
+                )
             elif "phoenix" == repo_name:
                 self._run_process([self._task_run_phoenix], show_output=True)
             elif "shared-logic" == repo_name:
@@ -316,6 +346,11 @@ class Receiver:
                     f"{self.PARASUT_BASE_DIR}/{self.E_DOC_BROKER_DIR}"
                 )
                 self._launch_parasut_e_doc_broker_repo()
+            elif "post-office" == repo_name:
+                self._change_directory(
+                    f"{self.PARASUT_BASE_DIR}/{self.POST_OFFICE_DIR}"
+                )
+                self._launch_parasut_post_office_repo()
             elif "phoenix" == repo_name:
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.PHOENIX_DIR}")
                 self._launch_parasut_phoenix_repo()
@@ -369,6 +404,11 @@ class Receiver:
                     f"{self.PARASUT_BASE_DIR}/{self.E_DOC_BROKER_DIR}"
                 )
                 self._launch_parasut_e_doc_broker_editor()
+            elif "post-office" == repo_name:
+                self._change_directory(
+                    f"{self.PARASUT_BASE_DIR}/{self.POST_OFFICE_DIR}"
+                )
+                self._launch_parasut_post_office_editor()
             elif "phoenix" == repo_name:
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.PHOENIX_DIR}")
                 self._launch_parasut_phoenix_editor()
@@ -655,6 +695,8 @@ class Receiver:
             return f"{self.PARASUT_BASE_DIR}/{self.BILLING_DIR}"
         elif repo_name == "e-doc-broker" or "e-doc-broker" in repo_name:
             return f"{self.PARASUT_BASE_DIR}/{self.E_DOC_BROKER_DIR}"
+        elif repo_name == "post-office" or "post-office" in repo_name:
+            return f"{self.PARASUT_BASE_DIR}/{self.POST_OFFICE_DIR}"
         elif repo_name == "client":
             return f"{self.PARASUT_BASE_DIR}/{self.CLIENT_DIR}"
         elif repo_name == "phoenix":
@@ -830,6 +872,48 @@ class Receiver:
             " && ".join(
                 [
                     self._e_doc_broker_commands["launch_text_editor"],
+                ]
+            )
+        )
+
+    def _launch_parasut_post_office_repo(self) -> None:
+        post_office_window: Window = self._tmux_session_parasut_ws_setup.new_window(
+            attach=False, window_name="post_office"
+        )
+        post_office_pane: Pane = post_office_window.attached_pane
+        post_office_sidekiq_pane: Pane = post_office_window.split_window(
+            vertical=False
+        )
+
+        post_office_window.select_layout("tiled")
+        # panes
+        post_office_pane.send_keys(
+            " && ".join(
+                [
+                    self._post_office_commands["choose_ruby_version"],
+                    self._post_office_commands["launch_rails"],
+                ]
+            )
+        )
+        post_office_sidekiq_pane.send_keys(
+            " && ".join(
+                [
+                    self._post_office_commands["choose_ruby_version"],
+                    self._post_office_commands["launch_sidekiq"],
+                ]
+            )
+        )
+
+    def _launch_parasut_post_office_editor(self) -> None:
+        post_office_window: Window = self._tmux_session_parasut_ws_editor.new_window(
+            attach=False, window_name="post_office"
+        )
+        post_office_pane: Pane = post_office_window.attached_pane
+
+        post_office_pane.send_keys(
+            " && ".join(
+                [
+                    self._post_office_commands["launch_text_editor"],
                 ]
             )
         )
