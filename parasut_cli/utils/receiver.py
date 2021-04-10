@@ -881,9 +881,7 @@ class Receiver:
             attach=False, window_name="post_office"
         )
         post_office_pane: Pane = post_office_window.attached_pane
-        post_office_sidekiq_pane: Pane = post_office_window.split_window(
-            vertical=False
-        )
+        post_office_sidekiq_pane: Pane = post_office_window.split_window(vertical=False)
 
         post_office_window.select_layout("tiled")
         # panes
