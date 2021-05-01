@@ -835,6 +835,7 @@ class Receiver:
         server_pane.send_keys(
             " && ".join(
                 [
+                    self._server_commands["choose_ruby_version"],
                     self._server_commands["launch_text_editor"],
                 ]
             )
@@ -875,6 +876,7 @@ class Receiver:
         billing_pane.send_keys(
             " && ".join(
                 [
+                    self._billing_commands["choose_ruby_version"],
                     self._billing_commands["launch_text_editor"],
                 ]
             )
@@ -917,6 +919,7 @@ class Receiver:
         e_doc_broker_pane.send_keys(
             " && ".join(
                 [
+                    self._e_doc_broker_commands["choose_ruby_version"],
                     self._e_doc_broker_commands["launch_text_editor"],
                 ]
             )
@@ -957,6 +960,7 @@ class Receiver:
         post_office_pane.send_keys(
             " && ".join(
                 [
+                    self._post_office_commands["choose_ruby_version"],
                     self._post_office_commands["launch_text_editor"],
                 ]
             )
@@ -987,6 +991,7 @@ class Receiver:
         phoenix_pane.send_keys(
             " && ".join(
                 [
+                    self._phoenix_commands["choose_node_version"],
                     self._phoenix_commands["launch_text_editor"],
                 ]
             )
@@ -1017,6 +1022,7 @@ class Receiver:
         client_pane.send_keys(
             " && ".join(
                 [
+                    self._client_commands["choose_node_version"],
                     self._client_commands["launch_text_editor"],
                 ]
             )
@@ -1047,6 +1053,7 @@ class Receiver:
         trinity_pane.send_keys(
             " && ".join(
                 [
+                    self._trinity_commands["choose_node_version"],
                     self._trinity_commands["launch_text_editor"],
                 ]
             )
@@ -1077,6 +1084,7 @@ class Receiver:
         ui_library_pane.send_keys(
             " && ".join(
                 [
+                    self._ui_library_commands["choose_node_version"],
                     self._ui_library_commands["launch_text_editor"],
                 ]
             )
@@ -1107,6 +1115,7 @@ class Receiver:
         shared_logic_pane.send_keys(
             " && ".join(
                 [
+                    self._shared_logic_commands["choose_node_version"],
                     self._shared_logic_commands["launch_text_editor"],
                 ]
             )
