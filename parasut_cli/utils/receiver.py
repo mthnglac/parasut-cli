@@ -79,9 +79,7 @@ class Receiver:
             shared_logic="shared-logic",
         )
         self._core_commands: Dict[str, str] = dict(
-            source_nvm="source ~/.nvm/nvm.sh",
-            source_yvm="source ~/.yvm/yvm.sh",
-            source_rvm="source ~/.rvm/scripts/rvm",
+            source_asdf="source ~/.asdf/asdf.sh",
             ember_release="ember release",
             npm_set_parasut_registry="npm config set registry https://npm.fury.io/parasut/",
             npm_login="npm login",
@@ -90,7 +88,7 @@ class Receiver:
         )
         self._server_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
-            choose_ruby_version=f"rvm use {self.SERVER_RUBY_V}",
+            choose_ruby_version=f"asdf local ruby {self.SERVER_RUBY_V}",
             launch_sidekiq="bundle exec sidekiq",
             launch_rails="rails server",
             switch_to_phoenix=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.PHOENIX_SWITCH_NAME}\")'",  # noqa: E501
@@ -100,113 +98,112 @@ class Receiver:
         )
         self._billing_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
-            choose_ruby_version=f"rvm use {self.BILLING_RUBY_V}",
+            choose_ruby_version=f"asdf local ruby {self.BILLING_RUBY_V}",
             launch_sidekiq="bundle exec sidekiq",
             launch_rails=f"rails server -p {self.BILLING_RAILS_PORT}",
         )
         self._e_doc_broker_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
-            choose_ruby_version=f"rvm use {self.E_DOC_BROKER_RUBY_V}",
+            choose_ruby_version=f"asdf local ruby {self.E_DOC_BROKER_RUBY_V}",
             launch_sidekiq="bundle exec sidekiq",
             launch_rails=f"rails server -p {self.E_DOC_BROKER_RAILS_PORT}",
         )
         self._post_office_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
-            choose_ruby_version=f"rvm use {self.POST_OFFICE_RUBY_V}",
+            choose_ruby_version=f"asdf local ruby {self.POST_OFFICE_RUBY_V}",
             launch_sidekiq="bundle exec sidekiq",
             launch_rails=f"rails server -p {self.POST_OFFICE_RAILS_PORT}",
         )
         self._phoenix_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
-            choose_yarn_version=f"yvm use {self.PHOENIX_YARN_V}",
-            choose_node_version=f"nvm use {self.PHOENIX_NODE_V}",
+            choose_yarn_version=f"asdf local yarn {self.PHOENIX_YARN_V}",
+            choose_node_version=f"asdf local nodejs {self.PHOENIX_NODE_V}",
             ember_serve="PROJECT_TARGET=phoenix ember s",
         )
         self._client_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
-            choose_yarn_version=f"yvm use {self.CLIENT_YARN_V}",
-            choose_node_version=f"nvm use {self.CLIENT_NODE_V}",
+            choose_yarn_version=f"asdf local yarn {self.CLIENT_YARN_V}",
+            choose_node_version=f"asdf local nodejs {self.CLIENT_NODE_V}",
             ember_serve=f"./node_modules/ember-cli/bin/ember s --live-reload-port {self.CLIENT_EMBER_PORT}",  # noqa: E501
         )
         self._trinity_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
-            choose_yarn_version=f"yvm use {self.TRINITY_YARN_V}",
-            choose_node_version=f"nvm use {self.TRINITY_NODE_V}",
+            choose_yarn_version=f"asdf local yarn {self.TRINITY_YARN_V}",
+            choose_node_version=f"asdf local nodejs {self.TRINITY_NODE_V}",
             ember_serve="ember s --live-reload-port 6505",
         )
         self._ui_library_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
-            choose_yarn_version=f"yvm use {self.UI_LIBRARY_YARN_V}",
-            choose_node_version=f"nvm use {self.UI_LIBRARY_NODE_V}",
+            choose_yarn_version=f"asdf local yarn {self.UI_LIBRARY_YARN_V}",
+            choose_node_version=f"asdf local yarn {self.UI_LIBRARY_NODE_V}",
             ember_serve=f"PROJECT_TARGET=phoenix ember s --live-reload-port {self.UI_LIBRARY_EMBER_PORT}",  # noqa: E501
         )
         self._shared_logic_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
-            choose_yarn_version=f"yvm use {self.SHARED_LOGIC_YARN_V}",
-            choose_node_version=f"nvm use {self.SHARED_LOGIC_NODE_V}",
+            choose_yarn_version=f"asdf local yarn {self.SHARED_LOGIC_YARN_V}",
+            choose_node_version=f"asdf local nodejs {self.SHARED_LOGIC_NODE_V}",
             ember_serve=f"ember s --live-reload-port {self.SHARED_LOGIC_EMBER_PORT}",
         )
         # run tasks
         self._task_run_server = " && ".join(
             [
-                self._core_commands["source_rvm"],
+                self._core_commands["source_asdf"],
                 self._server_commands["choose_ruby_version"],
                 self._server_commands["launch_rails"],
             ]
         )
         self._task_run_server_sidekiq = " && ".join(
             [
-                self._core_commands["source_rvm"],
+                self._core_commands["source_asdf"],
                 self._server_commands["choose_ruby_version"],
                 self._server_commands["launch_sidekiq"],
             ]
         )
         self._task_run_billing = " && ".join(
             [
-                self._core_commands["source_rvm"],
+                self._core_commands["source_asdf"],
                 self._billing_commands["choose_ruby_version"],
                 self._billing_commands["launch_rails"],
             ]
         )
         self._task_run_billing_sidekiq = " && ".join(
             [
-                self._core_commands["source_rvm"],
+                self._core_commands["source_asdf"],
                 self._billing_commands["choose_ruby_version"],
                 self._billing_commands["launch_sidekiq"],
             ]
         )
         self._task_run_e_doc_broker = " && ".join(
             [
-                self._core_commands["source_rvm"],
+                self._core_commands["source_asdf"],
                 self._e_doc_broker_commands["choose_ruby_version"],
                 self._e_doc_broker_commands["launch_rails"],
             ]
         )
         self._task_run_e_doc_broker_sidekiq = " && ".join(
             [
-                self._core_commands["source_rvm"],
+                self._core_commands["source_asdf"],
                 self._e_doc_broker_commands["choose_ruby_version"],
                 self._e_doc_broker_commands["launch_sidekiq"],
             ]
         )
         self._task_run_post_office = " && ".join(
             [
-                self._core_commands["source_rvm"],
+                self._core_commands["source_asdf"],
                 self._post_office_commands["choose_ruby_version"],
                 self._post_office_commands["launch_rails"],
             ]
         )
         self._task_run_post_office_sidekiq = " && ".join(
             [
-                self._core_commands["source_rvm"],
+                self._core_commands["source_asdf"],
                 self._post_office_commands["choose_ruby_version"],
                 self._post_office_commands["launch_sidekiq"],
             ]
         )
         self._task_run_phoenix = " && ".join(
             [
-                self._core_commands["source_yvm"],
-                self._core_commands["source_nvm"],
+                self._core_commands["source_asdf"],
                 self._phoenix_commands["choose_yarn_version"],
                 self._phoenix_commands["choose_node_version"],
                 self._phoenix_commands["ember_serve"],
@@ -214,8 +211,7 @@ class Receiver:
         )
         self._task_run_shared_logic = " && ".join(
             [
-                self._core_commands["source_yvm"],
-                self._core_commands["source_nvm"],
+                self._core_commands["source_asdf"],
                 self._shared_logic_commands["choose_yarn_version"],
                 self._shared_logic_commands["choose_node_version"],
                 self._shared_logic_commands["ember_serve"],
@@ -223,8 +219,7 @@ class Receiver:
         )
         self._task_release_shared_logic = " && ".join(
             [
-                self._core_commands["source_yvm"],
-                self._core_commands["source_nvm"],
+                self._core_commands["source_asdf"],
                 self._shared_logic_commands["choose_yarn_version"],
                 self._shared_logic_commands["choose_node_version"],
                 self._core_commands["ember_release"],
@@ -236,8 +231,7 @@ class Receiver:
         )
         self._task_run_trinity = " && ".join(
             [
-                self._core_commands["source_yvm"],
-                self._core_commands["source_nvm"],
+                self._core_commands["source_asdf"],
                 self._trinity_commands["choose_yarn_version"],
                 self._trinity_commands["choose_node_version"],
                 self._trinity_commands["ember_serve"],
@@ -245,8 +239,7 @@ class Receiver:
         )
         self._task_run_ui_library = " && ".join(
             [
-                self._core_commands["source_yvm"],
-                self._core_commands["source_nvm"],
+                self._core_commands["source_asdf"],
                 self._ui_library_commands["choose_yarn_version"],
                 self._ui_library_commands["choose_node_version"],
                 self._ui_library_commands["ember_serve"],
@@ -254,8 +247,7 @@ class Receiver:
         )
         self._task_release_ui_library = " && ".join(
             [
-                self._core_commands["source_yvm"],
-                self._core_commands["source_nvm"],
+                self._core_commands["source_asdf"],
                 self._ui_library_commands["choose_yarn_version"],
                 self._ui_library_commands["choose_node_version"],
                 self._core_commands["ember_release"],
@@ -267,8 +259,7 @@ class Receiver:
         )
         self._task_run_client = " && ".join(
             [
-                self._core_commands["source_yvm"],
-                self._core_commands["source_nvm"],
+                self._core_commands["source_asdf"],
                 self._client_commands["choose_yarn_version"],
                 self._client_commands["choose_node_version"],
                 self._client_commands["ember_serve"],
@@ -277,28 +268,28 @@ class Receiver:
         # switch tasks
         self._task_switch_frontend_to_phoenix = " && ".join(
             [
-                self._core_commands["source_rvm"],
+                self._core_commands["source_asdf"],
                 self._server_commands["choose_ruby_version"],
                 self._server_commands["switch_to_phoenix"],
             ]
         )
         self._task_switch_frontend_to_trinity = " && ".join(
             [
-                self._core_commands["source_rvm"],
+                self._core_commands["source_asdf"],
                 self._server_commands["choose_ruby_version"],
                 self._server_commands["switch_to_trinity"],
             ]
         )
         self._task_switch_addling_to_invoice = " && ".join(
             [
-                self._core_commands["source_rvm"],
+                self._core_commands["source_asdf"],
                 self._server_commands["choose_ruby_version"],
                 self._server_commands["switch_to_invoice"],
             ]
         )
         self._task_switch_addling_to_receipt = " && ".join(
             [
-                self._core_commands["source_rvm"],
+                self._core_commands["source_asdf"],
                 self._server_commands["choose_ruby_version"],
                 self._server_commands["switch_to_receipt"],
             ]
