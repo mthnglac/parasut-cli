@@ -12,7 +12,7 @@ History
 * tox python3.5 deprecated
 * dependency upgrades.
 * editor workspace choosing node,ruby versions now in favor of editor actions.
-* all version managers (rvm, yvm, nvm) deprecated in favor of `asdf-vm`_ .
+* all version managers (rvm, yvm, nvm) deprecated in favor of `asdf`_ .
 * docs improvements.
 
 .. _asdf: https://asdf-vm.com
