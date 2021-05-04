@@ -40,7 +40,7 @@ It is necessary to install and configure the 3rd party tools below:
 .. note::
 
     **asdf** will create a file named ``.tool-versions`` in all your
-    repositories while cli is running. To have Git ignore these files, you can
+    repositories while CLI is running. To have Git ignore these files, you can
     create a global ``.gitignore`` file and define this information in git.
 
     .. code-block:: console
