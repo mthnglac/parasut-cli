@@ -3,6 +3,20 @@ History
 =======
 
 
+0.4.0 (2021-05-04)
+-------------------
+
+* ``post-office`` repo added.
+* ``ubl-validator`` repo added.
+* ``release`` command added (beta).
+* tox python3.5 deprecated
+* dependency upgrades.
+* editor workspace choosing node,ruby versions now in favor of editor actions.
+* all version managers (rvm, yvm, nvm) deprecated in favor of `asdf-vm`_.
+* docs improvements.
+
+.. _asdf: https://asdf-vm.com
+
 0.3.5 (2021-03-23)
 -------------------
 

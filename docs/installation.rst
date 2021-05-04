@@ -56,6 +56,8 @@ here, everything goes well on CLI. Briefly define the following variables:
     export PARASUT_CLI_TEXT_EDITOR="vim"
     # company id
     export PARASUT_COMPANY_ID="..."
+    # npm registry
+    export PARASUT_REGISTRY="..."
     # switch rails names
     export PARASUT_PHOENIX_SWITCH_NAME="..."
     export PARASUT_TRINITY_SWITCH_NAME="..."

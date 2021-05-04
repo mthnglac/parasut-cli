@@ -21,6 +21,7 @@ class Receiver:
         try:
             # core
             self.COMPANY_ID: str = env["PARASUT_COMPANY_ID"]
+            self.PARASUT_REGISTRY: str = env["PARASUT_REGISTRY"]
             self.PARASUT_BASE_DIR: str = env["PARASUT_BASE_DIR"]
             self.PARASUT_CLI_TEXT_EDITOR: str = env["PARASUT_CLI_TEXT_EDITOR"]
             # server
@@ -84,7 +85,7 @@ class Receiver:
         self._core_commands: Dict[str, str] = dict(
             source_asdf="source ~/.asdf/asdf.sh",
             ember_release="ember release",
-            npm_set_parasut_registry="npm config set registry https://npm.fury.io/parasut/",
+            npm_set_parasut_registry=f"npm config set registry {self.PARASUT_REGISTRY}",
             npm_login="npm login",
             npm_publish="npm publish",
             npm_delete_registry="npm config delete registry",
