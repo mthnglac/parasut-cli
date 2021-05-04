@@ -40,6 +40,7 @@ def main():
             "client",
             "e-doc-broker",
             "post-office",
+            "ubl-validator",
         ],
         help="a repository name to open in text editor",
     )
@@ -60,6 +61,7 @@ def main():
             "client",
             "e-doc-broker",
             "post-office",
+            "ubl-validator",
         ],
         help="a repository name to launch",
     )
@@ -195,9 +197,7 @@ def main():
     )
 
     # release command
-    parser_release = subparsers.add_parser(
-        "release", help="command for release"
-    )
+    parser_release = subparsers.add_parser("release", help="command for release")
     parser_release.add_argument(
         "-t",
         "--target",

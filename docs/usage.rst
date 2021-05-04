@@ -13,9 +13,9 @@ using tmux and builds workspaces into them.
     $ parasut-cli start -e <repo-name> -s <repo-name>
 
 
-* ``-e/--edit`` - a repository name to open in text editor. Choices: server, billing, phoenix, shared-logic, trinity, ui-library, client, e-doc-broker, post-office.
+* ``-e/--edit`` - a repository name to open in text editor. Choices: server, billing, phoenix, shared-logic, trinity, ui-library, client, e-doc-broker, post-office, ubl-validator.
 
-* ``-s/--setup`` - a repository name to launch. Choices: server, billing, phoenix, shared-logic, trinity, ui-library, client, e-doc-broker, post-office.
+* ``-s/--setup`` - a repository name to launch. Choices: server, billing, phoenix, shared-logic, trinity, ui-library, client, e-doc-broker, post-office, ubl-validator.
 
 .. note::
 

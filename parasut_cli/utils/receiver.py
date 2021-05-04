@@ -38,6 +38,9 @@ class Receiver:
             self.POST_OFFICE_RUBY_V: str = env["PARASUT_POST_OFFICE_RUBY_V"]
             self.POST_OFFICE_RAILS_PORT: str = env["PARASUT_POST_OFFICE_RAILS_PORT"]
             self.POST_OFFICE_DIR: str = env["PARASUT_POST_OFFICE_DIR"]
+            # ubl-validator
+            self.UBL_VALIDATOR_MAVEN_V: str = env["PARASUT_UBL_VALIDATOR_MAVEN_V"]
+            self.UBL_VALIDATOR_DIR: str = env["PARASUT_UBL_VALIDATOR_DIR"]
             # phoenix
             self.PHOENIX_NODE_V: str = env["PARASUT_PHOENIX_NODE_V"]
             self.PHOENIX_YARN_V: str = env["PARASUT_PHOENIX_YARN_V"]
@@ -113,6 +116,11 @@ class Receiver:
             choose_ruby_version=f"asdf local ruby {self.POST_OFFICE_RUBY_V}",
             launch_sidekiq="bundle exec sidekiq",
             launch_rails=f"rails server -p {self.POST_OFFICE_RAILS_PORT}",
+        )
+        self._ubl_validator_commands: Dict[str, str] = dict(
+            launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
+            choose_maven_version=f"asdf local maven {self.UBL_VALIDATOR_MAVEN_V}",
+            launch_spring_boot="mvn sprint-boot:run",
         )
         self._phoenix_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
@@ -199,6 +207,13 @@ class Receiver:
                 self._core_commands["source_asdf"],
                 self._post_office_commands["choose_ruby_version"],
                 self._post_office_commands["launch_sidekiq"],
+            ]
+        )
+        self._task_run_ubl_validator = " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._ubl_validator_commands["choose_maven_version"],
+                self._ubl_validator_commands["launch_spring_boot"],
             ]
         )
         self._task_run_phoenix = " && ".join(
@@ -324,6 +339,8 @@ class Receiver:
                 self._run_process(
                     [self._task_run_post_office_sidekiq], show_output=True
                 )
+            elif "ubl-validator" == repo_name:
+                self._run_process([self._task_run_ubl_validator], show_output=True)
             elif "phoenix" == repo_name:
                 self._run_process([self._task_run_phoenix], show_output=True)
             elif "shared-logic" == repo_name:
@@ -388,6 +405,11 @@ class Receiver:
                     f"{self.PARASUT_BASE_DIR}/{self.POST_OFFICE_DIR}"
                 )
                 self._launch_parasut_post_office_repo()
+            elif "ubl-validator" == repo_name:
+                self._change_directory(
+                    f"{self.PARASUT_BASE_DIR}/{self.UBL_VALIDATOR_DIR}"
+                )
+                self._launch_parasut_ubl_validator_repo()
             elif "phoenix" == repo_name:
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.PHOENIX_DIR}")
                 self._launch_parasut_phoenix_repo()
@@ -446,6 +468,11 @@ class Receiver:
                     f"{self.PARASUT_BASE_DIR}/{self.POST_OFFICE_DIR}"
                 )
                 self._launch_parasut_post_office_editor()
+            elif "ubl-validator" == repo_name:
+                self._change_directory(
+                    f"{self.PARASUT_BASE_DIR}/{self.UBL_VALIDATOR_DIR}"
+                )
+                self._launch_parasut_ubl_validator_editor()
             elif "phoenix" == repo_name:
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.PHOENIX_DIR}")
                 self._launch_parasut_phoenix_editor()
@@ -734,6 +761,8 @@ class Receiver:
             return f"{self.PARASUT_BASE_DIR}/{self.E_DOC_BROKER_DIR}"
         elif repo_name == "post-office" or "post-office" in repo_name:
             return f"{self.PARASUT_BASE_DIR}/{self.POST_OFFICE_DIR}"
+        elif repo_name == "ubl-validator" or "ubl-validator" in repo_name:
+            return f"{self.PARASUT_BASE_DIR}/{self.UBL_VALIDATOR_DIR}"
         elif repo_name == "client":
             return f"{self.PARASUT_BASE_DIR}/{self.CLIENT_DIR}"
         elif repo_name == "phoenix":
@@ -953,6 +982,41 @@ class Receiver:
                 [
                     self._post_office_commands["choose_ruby_version"],
                     self._post_office_commands["launch_text_editor"],
+                ]
+            )
+        )
+
+    def _launch_parasut_ubl_validator_repo(self) -> None:
+        ubl_validator_window: Window = self._tmux_session_parasut_ws_setup.new_window(
+            attach=False, window_name="ubl_validator"
+        )
+        ubl_validator_pane: Pane = ubl_validator_window.attached_pane
+        ubl_validator_sidekiq_pane: Pane = ubl_validator_window.split_window(
+            vertical=False
+        )
+
+        ubl_validator_window.select_layout("tiled")
+        # panes
+        ubl_validator_pane.send_keys(
+            " && ".join(
+                [
+                    self._ubl_validator_commands["choose_maven_version"],
+                    self._ubl_validator_commands["launch_spring_boot"],
+                ]
+            )
+        )
+
+    def _launch_parasut_ubl_validator_editor(self) -> None:
+        ubl_validator_window: Window = self._tmux_session_parasut_ws_editor.new_window(
+            attach=False, window_name="ubl_validator"
+        )
+        ubl_validator_pane: Pane = ubl_validator_window.attached_pane
+
+        ubl_validator_pane.send_keys(
+            " && ".join(
+                [
+                    self._ubl_validator_commands["choose_maven_version"],
+                    self._ubl_validator_commands["launch_text_editor"],
                 ]
             )
         )

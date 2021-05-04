@@ -36,6 +36,7 @@ Clone all repos into a folder that you will use as base. You get the idea.::
         billing/         # Billing repo
         e-doc-broker/    # broker repo
         post-office/     # post-office repo
+        ubl-validator/   # ubl-validator repo
         phoenix/         # phoenix repo
         shared-logic/    # shared repo
         trinity/         # trinity repo
@@ -66,6 +67,7 @@ here, everything goes well on CLI. Briefly define the following variables:
     export PARASUT_E_DOC_BROKER_RAILS_PORT="..."
     export PARASUT_POST_OFFICE_RUBY_V="..."
     export PARASUT_POST_OFFICE_RAILS_PORT="..."
+    export PARASUT_UBL_VALIDATOR_MAVEN_V="..."
     export PARASUT_PHOENIX_NODE_V="..."
     export PARASUT_PHOENIX_YARN_V="..."
     export PARASUT_CLIENT_NODE_V="..."
@@ -86,6 +88,7 @@ here, everything goes well on CLI. Briefly define the following variables:
     export PARASUT_BILLING_DIR="billing"
     export PARASUT_E_DOC_BROKER_DIR="e-doc-broker"
     export PARASUT_POST_OFFICE_DIR="post-office"
+    export PARASUT_UBL_VALIDATOR_DIR="ubl-validator"
     export PARASUT_PHOENIX_DIR="phoenix"
     export PARASUT_SHARED_LOGIC_DIR="shared-logic"
     export PARASUT_CLIENT_DIR="client"
