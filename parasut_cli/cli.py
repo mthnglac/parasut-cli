@@ -186,6 +186,7 @@ def main():
             "e-doc-broker-sidekiq",
             "post-office",
             "post-office-sidekiq",
+            "ubl-validator",
             "phoenix",
             "shared-logic",
             "trinity",

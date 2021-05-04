@@ -120,7 +120,7 @@ class Receiver:
         self._ubl_validator_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
             choose_maven_version=f"asdf local maven {self.UBL_VALIDATOR_MAVEN_V}",
-            launch_spring_boot="mvn sprint-boot:run",
+            launch_spring_boot="mvn spring-boot:run",
         )
         self._phoenix_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
@@ -991,12 +991,7 @@ class Receiver:
             attach=False, window_name="ubl_validator"
         )
         ubl_validator_pane: Pane = ubl_validator_window.attached_pane
-        ubl_validator_sidekiq_pane: Pane = ubl_validator_window.split_window(
-            vertical=False
-        )
 
-        ubl_validator_window.select_layout("tiled")
-        # panes
         ubl_validator_pane.send_keys(
             " && ".join(
                 [
