@@ -16,7 +16,9 @@ Parasut CLI
 
 
 
-CLI for Parasut workspace management
+Parasut development environment consists of microservices and different
+applications depending on them. **parasut-cli** is a CLI that facilitates you to
+manage your workspaces and the applications you will run during development.
 
 
 * Free software: MIT license
