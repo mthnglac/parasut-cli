@@ -12,6 +12,7 @@ Welcome to Parasut CLI's documentation!
    contributing
    authors
    history
+   faq
 
 Indices and tables
 ==================

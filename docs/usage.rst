@@ -28,7 +28,7 @@ using tmux and builds workspaces into them.
 
 
 Link Command
---------------
+-------------
 
 This command does the linking work of yarn. It takes the given argument and
 writes it to package.json in the current repo for you. It also includes a logic
@@ -56,7 +56,7 @@ so that you can undo any changes you have made later ``(-u/--undo)``.
 
 
 Switch Command
---------------
+---------------
 
 This part can be a little confusing. It represents exactly what it does.
 Switch processes run on the ``server``. What the command does is to
@@ -81,7 +81,7 @@ automate processes that are executed interactively in the background.
 
 
 Run Command
---------------
+------------
 
 This command runs the chain of commands required to instantiate the repository.
 Selects yarn, node and ruby versions and related options for the target repo.
@@ -94,8 +94,8 @@ Selects yarn, node and ruby versions and related options for the target repo.
 * ``-t/--target`` - a repository name for running target repository with necessary options. Choices: server, server-sidekiq, billing, billing-sidekiq, e-doc-broker, e-doc-broker-sidekiq, post-office, post-office-sidekiq, phoenix, shared-logic, trinity, ui-library, client.
 
 
-Release Command
---------------
+Release Command (beta)
+-----------------------
 
 It does the "release" operation on the specified repo. Sets the registry, logs
 in to npm, publishes the package, and deletes the registry.
@@ -109,7 +109,7 @@ in to npm, publishes the package, and deletes the registry.
 
 
 Help Command
---------------
+-------------
 
 Generally, the CLI will not make you do anything against the rules and will
 give you the necessary warnings when the time comes. If you are confused, type
