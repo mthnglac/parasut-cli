@@ -10,7 +10,7 @@ Dependency Setup
 
 There are some dependencies we need to handle before running the cli.
 
-It is necessary to install and configure the 3rd tools below:
+It is necessary to install and configure the 3rd party tools below:
 
 * `Ember.js`_
 * `Ruby on Rails`_
@@ -20,6 +20,33 @@ It is necessary to install and configure the 3rd tools below:
 .. _Ember.js: https://emberjs.com/
 .. _Ruby on Rails: https://rubyonrails.org/
 .. _asdf: https://github.com/asdf-vm/asdf
+
+.. warning::
+
+    Before using the asdf version manager, you need to install the interpreters
+    and their valid versions you will use (maven, nodejs, ruby, yarn):
+
+    .. code-block:: console
+
+        $ asdf plugin-add maven
+        $ asdf install maven <version>
+        $ asdf plugin-add nodejs
+        $ asdf install nodejs <version>
+        $ asdf plugin-add ruby
+        $ asdf install ruby <version>
+        $ asdf plugin-add yarn
+        $ asdf install yarn <version>
+
+.. note::
+
+    **asdf** will create a file named ``.tool-versions`` in all your
+    repositories while cli is running. To have Git ignore these files, you can
+    create a global ``.gitignore`` file and define this information in git.
+
+    .. code-block:: console
+
+        $ echo .tool-versions > ~/.gitignore
+        $ git config --global core.excludesFile '~/.gitignore'
 
 
 Workspace Structure
