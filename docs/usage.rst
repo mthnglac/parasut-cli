@@ -108,6 +108,17 @@ in to npm, publishes the package, and deletes the registry.
 * ``-t/--target`` - a repository name for publish release to target repository. Choices: shared-logic, ui-library.
 
 
+Version Command
+----------------
+
+You can use this command to show the version of the CLI.
+
+.. code-block:: console
+
+    $ parasut-cli -v
+    $ parasut-cli --version
+
+
 Help Command
 -------------
 
