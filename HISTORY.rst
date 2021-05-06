@@ -3,6 +3,13 @@ History
 =======
 
 
+0.4.1 (2021-05-06)
+-------------------
+
+* ``version`` command added.
+* bug fixings.
+* docs improvements.
+
 0.4.0 (2021-05-04)
 -------------------
 
