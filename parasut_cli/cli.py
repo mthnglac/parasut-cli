@@ -8,6 +8,7 @@ from parasut_cli.commands.link import LinkCommand
 from parasut_cli.commands.switch import SwitchCommand
 from parasut_cli.commands.run import RunCommand
 from parasut_cli.commands.release import ReleaseCommand
+from parasut_cli.commands.version import VersionCommand
 
 
 def main():
@@ -17,6 +18,15 @@ def main():
         description="valid subcommands",
         help="sub-command help",
         dest="subcommand",
+    )
+
+    # version argument
+    parent_parser.add_argument(
+        "-v",
+        "--version",
+        dest="version_pkg",
+        action="store_true",
+        help="version of the package",
     )
 
     # start command parser
@@ -197,7 +207,7 @@ def main():
         help="a repository name",
     )
 
-    # release command
+    # release command parser
     parser_release = subparsers.add_parser("release", help="command for release")
     parser_release.add_argument(
         "-t",
@@ -219,8 +229,19 @@ def main():
     receiver = Receiver()
 
     # main condition for given arguments
+    # bare arguments
+    if not getattr(args, "subcommand"):
+        # version
+        if getattr(args, "version_pkg", False):
+            invoker.do_something_important(
+                VersionCommand(
+                    receiver,
+                )
+            )
+        else:
+            parent_parser.print_help()
     # start
-    if hasattr(args, "subcommand") and args.subcommand == "start":
+    elif hasattr(args, "subcommand") and args.subcommand == "start":
         if getattr(args, "edit_repos", False) or getattr(args, "setup_repos", False):
             invoker.do_something_important(
                 StartCommand(
@@ -263,7 +284,8 @@ def main():
                     )
                 )
             else:
-                parser_switch.print_help()
+                subparser_switch_frontend.print_help()
+        # switch_addlings sub-command
         elif (
             hasattr(args, "switch_subcommand") and args.switch_subcommand == "addlings"
         ):
@@ -276,9 +298,9 @@ def main():
                     )
                 )
             else:
-                parser_switch.print_help()
+                subparser_switch_addlings.print_help()
         else:
-            parent_parser.print_help()
+            parser_switch.print_help()
     # run
     elif hasattr(args, "subcommand") and args.subcommand == "run":
         if getattr(args, "run_repo", False):
@@ -289,7 +311,7 @@ def main():
                 )
             )
         else:
-            parser_link.print_help()
+            parser_run.print_help()
     # release
     elif hasattr(args, "subcommand") and args.subcommand == "release":
         if getattr(args, "release_repo", False):
@@ -300,7 +322,7 @@ def main():
                 )
             )
         else:
-            parser_link.print_help()
+            parser_release.print_help()
 
     return 0
 

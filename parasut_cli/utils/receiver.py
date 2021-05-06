@@ -9,6 +9,7 @@ import sys
 import json
 import subprocess
 import pickle
+import parasut_cli
 
 from parasut_cli.config.settings import APP_DIR, env
 
@@ -698,6 +699,9 @@ class Receiver:
                 print(key)
         else:
             print("There is no repo linking to this repo.")
+
+    def get_pkg_version(self) -> None:
+        print(parasut_cli.__version__)
 
     def _run_process(self, tasks: List[str], show_output=False):
         if show_output is False:
