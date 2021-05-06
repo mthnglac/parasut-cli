@@ -230,7 +230,7 @@ def main():
 
     # main condition for given arguments
     # bare arguments
-    if not getattr(args, "subcommand"):
+    if getattr(args, "subcommand") == None:
         # version
         if getattr(args, "version_pkg", False):
             invoker.do_something_important(
