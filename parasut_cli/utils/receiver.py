@@ -91,6 +91,10 @@ class Receiver:
             npm_publish="npm publish",
             npm_delete_registry="npm config delete registry",
         )
+        self._worker_commands: Dict[str, str] = dict(
+            launch_server_worker="foreman start -m 'worker=1, shoryuken=1, sidekiq_mikro_outbound=1, sidekiq_mikro_outbound=1'",  # noqa: E501
+            launch_e_doc_broker_worker="foreman start -m 'shoryuken=1, sidekiq_inbound=1, sidekiq_outbound=1, sidekiq_send=1, sidekiq_fetch_ubl=1, sidekiq_storage=1, sidekiq_other=1, sidekiq_migrations=1'",  # noqa: E501
+        )
         self._server_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
             choose_ruby_version=f"asdf local ruby {self.SERVER_RUBY_V}",
@@ -492,10 +496,45 @@ class Receiver:
                     f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
                 )
                 self._launch_parasut_shared_logic_editor()
+
         # kill the first empty window if new session initialized
         if not session:
             self._tmux_session_parasut_ws_editor.select_window(1).kill_window()
         self._tmux_session_parasut_ws_editor.select_window(1)
+
+    def create_parasut_ws_worker(self, workers: List[str]) -> None:
+        session: Optional[Session]
+
+        # get or create session
+        try:
+            session = self._tmux_server.find_where(
+                {"session_name": "parasut-ws-worker"}
+            )
+        except LibTmuxException:
+            session = None
+        finally:
+            if session:
+                self._tmux_session_parasut_ws_worker = session
+            else:
+                self._tmux_session_parasut_ws_worker = self._tmux_server.new_session(
+                    session_name="parasut-ws-worker", kill_session=True, attach=False
+                )
+
+        # launch relative repos
+        for worker in workers:
+            if "server-worker" == worker:
+                self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}")
+                self._launch_parasut_server_worker()
+            elif "e-doc-broker-worker" == worker:
+                self._change_directory(
+                    f"{self.PARASUT_BASE_DIR}/{self.E_DOC_BROKER_DIR}"
+                )
+                self._launch_parasut_e_doc_broker_worker()
+
+        # kill the first empty window if new session initialized
+        if not session:
+            self._tmux_session_parasut_ws_worker.select_window(1).kill_window()
+        self._tmux_session_parasut_ws_worker.select_window(1)
 
     def switch_server_rails_frontend(self, target_repo: str, show_output: bool) -> None:
         server_repo: str = f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}"
@@ -866,6 +905,21 @@ class Receiver:
             )
         )
 
+    def _launch_parasut_server_worker(self) -> None:
+        server_worker_window: Window = self._tmux_session_parasut_ws_worker.new_window(
+            attach=False, window_name="server_worker"
+        )
+        server_worker_pane: Pane = server_worker_window.attached_pane
+
+        server_worker_pane.send_keys(
+            " && ".join(
+                [
+                    self._server_commands["choose_ruby_version"],
+                    self._worker_commands["launch_server_worker"],
+                ]
+            )
+        )
+
     def _launch_parasut_billing_repo(self) -> None:
         billing_window: Window = self._tmux_session_parasut_ws_setup.new_window(
             attach=False, window_name="billing"
@@ -946,6 +1000,23 @@ class Receiver:
                 [
                     self._e_doc_broker_commands["choose_ruby_version"],
                     self._e_doc_broker_commands["launch_text_editor"],
+                ]
+            )
+        )
+
+    def _launch_parasut_e_doc_broker_worker(self) -> None:
+        e_doc_broker_worker_window: Window = (
+            self._tmux_session_parasut_ws_worker.new_window(
+                attach=False, window_name="e_doc_broker_worker"
+            )
+        )
+        e_doc_broker_worker_pane: Pane = e_doc_broker_worker_window.attached_pane
+
+        e_doc_broker_worker_pane.send_keys(
+            " && ".join(
+                [
+                    self._e_doc_broker_commands["choose_ruby_version"],
+                    self._worker_commands["launch_e_doc_broker_worker"],
                 ]
             )
         )

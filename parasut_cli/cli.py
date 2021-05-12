@@ -75,6 +75,19 @@ def main():
         ],
         help="a repository name to launch",
     )
+    parser_start.add_argument(
+        "-w",
+        "--worker",
+        dest="workers",
+        metavar="<worker-name>",
+        type=str,
+        nargs="+",
+        choices=[
+            "server-worker",
+            "e-doc-broker-worker",
+        ],
+        help="a worker name to launch",
+    )
 
     # link command parser
     parser_link = subparsers.add_parser("link", help="command for linking")
@@ -242,12 +255,17 @@ def main():
             parent_parser.print_help()
     # start
     elif hasattr(args, "subcommand") and args.subcommand == "start":
-        if getattr(args, "edit_repos", False) or getattr(args, "setup_repos", False):
+        if (
+            getattr(args, "edit_repos", False)
+            or getattr(args, "setup_repos", False)
+            or getattr(args, "workers", False)
+        ):
             invoker.do_something_important(
                 StartCommand(
                     receiver,
                     setup_repos=args.setup_repos,
                     edit_repos=args.edit_repos,
+                    workers=args.workers,
                 )
             )
         else:
