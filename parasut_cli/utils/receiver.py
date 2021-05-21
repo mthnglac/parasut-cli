@@ -325,37 +325,37 @@ class Receiver:
         self._change_directory(base_path)
 
         try:
-            if "server" == repo_name:
+            if repo_name == "server":
                 self._run_process([self._task_run_server], show_output=True)
-            elif "server-sidekiq" == repo_name:
+            elif repo_name == "server-sidekiq":
                 self._run_process([self._task_run_server_sidekiq], show_output=True)
-            elif "billing" == repo_name:
+            elif repo_name == "billing":
                 self._run_process([self._task_run_billing], show_output=True)
-            elif "billing-sidekiq" == repo_name:
+            elif repo_name == "billing-sidekiq":
                 self._run_process([self._task_run_billing_sidekiq], show_output=True)
-            elif "e-doc-broker" == repo_name:
+            elif repo_name == "e-doc-broker":
                 self._run_process([self._task_run_e_doc_broker], show_output=True)
-            elif "e-doc-broker-sidekiq" == repo_name:
+            elif repo_name == "e-doc-broker-sidekiq":
                 self._run_process(
                     [self._task_run_e_doc_broker_sidekiq], show_output=True
                 )
-            elif "post-office" == repo_name:
+            elif repo_name == "post-office":
                 self._run_process([self._task_run_post_office], show_output=True)
-            elif "post-office-sidekiq" == repo_name:
+            elif repo_name == "post-office-sidekiq":
                 self._run_process(
                     [self._task_run_post_office_sidekiq], show_output=True
                 )
-            elif "ubl-validator" == repo_name:
+            elif repo_name == "ubl-validator":
                 self._run_process([self._task_run_ubl_validator], show_output=True)
-            elif "phoenix" == repo_name:
+            elif repo_name == "phoenix":
                 self._run_process([self._task_run_phoenix], show_output=True)
-            elif "shared-logic" == repo_name:
+            elif repo_name == "shared-logic":
                 self._run_process([self._task_run_shared_logic], show_output=True)
-            elif "trinity" == repo_name:
+            elif repo_name == "trinity":
                 self._run_process([self._task_run_trinity], show_output=True)
-            elif "ui-library" == repo_name:
+            elif repo_name == "ui-library":
                 self._run_process([self._task_run_ui_library], show_output=True)
-            elif "client" == repo_name:
+            elif repo_name == "client":
                 self._run_process([self._task_run_client], show_output=True)
         except KeyboardInterrupt:
             pass
@@ -368,9 +368,9 @@ class Receiver:
         self._change_directory(base_path)
 
         try:
-            if "shared-logic" == repo_name:
+            if repo_name == "shared-logic":
                 self._run_process([self._task_release_shared_logic], show_output=True)
-            elif "ui-library" == repo_name:
+            elif repo_name == "ui-library":
                 self._run_process([self._task_release_ui_library], show_output=True)
         except KeyboardInterrupt:
             pass
@@ -395,40 +395,40 @@ class Receiver:
 
         # launch relative repos
         for repo_name in repos:
-            if "server" == repo_name:
+            if repo_name == "server":
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}")
                 self._launch_parasut_server_repo()
-            elif "billing" == repo_name:
+            elif repo_name == "billing":
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.BILLING_DIR}")
                 self._launch_parasut_billing_repo()
-            elif "e-doc-broker" == repo_name:
+            elif repo_name == "e-doc-broker":
                 self._change_directory(
                     f"{self.PARASUT_BASE_DIR}/{self.E_DOC_BROKER_DIR}"
                 )
                 self._launch_parasut_e_doc_broker_repo()
-            elif "post-office" == repo_name:
+            elif repo_name == "post-office":
                 self._change_directory(
                     f"{self.PARASUT_BASE_DIR}/{self.POST_OFFICE_DIR}"
                 )
                 self._launch_parasut_post_office_repo()
-            elif "ubl-validator" == repo_name:
+            elif repo_name == "ubl-validator":
                 self._change_directory(
                     f"{self.PARASUT_BASE_DIR}/{self.UBL_VALIDATOR_DIR}"
                 )
                 self._launch_parasut_ubl_validator_repo()
-            elif "phoenix" == repo_name:
+            elif repo_name == "phoenix":
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.PHOENIX_DIR}")
                 self._launch_parasut_phoenix_repo()
-            elif "client" == repo_name:
+            elif repo_name == "client":
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.CLIENT_DIR}")
                 self._launch_parasut_client_repo()
-            elif "trinity" == repo_name:
+            elif repo_name == "trinity":
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.TRINITY_DIR}")
                 self._launch_parasut_trinity_repo()
-            elif "ui-library" == repo_name:
+            elif repo_name == "ui-library":
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}")
                 self._launch_parasut_ui_library_repo()
-            elif "shared-logic" == repo_name:
+            elif repo_name == "shared-logic":
                 self._change_directory(
                     f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
                 )
@@ -458,40 +458,40 @@ class Receiver:
 
         # launch relative repos
         for repo_name in repos:
-            if "server" == repo_name:
+            if repo_name == "server":
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}")
                 self._launch_parasut_server_editor()
-            elif "billing" == repo_name:
+            elif repo_name == "billing":
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.BILLING_DIR}")
                 self._launch_parasut_billing_editor()
-            elif "e-doc-broker" == repo_name:
+            elif repo_name == "e-doc-broker":
                 self._change_directory(
                     f"{self.PARASUT_BASE_DIR}/{self.E_DOC_BROKER_DIR}"
                 )
                 self._launch_parasut_e_doc_broker_editor()
-            elif "post-office" == repo_name:
+            elif repo_name == "post-office":
                 self._change_directory(
                     f"{self.PARASUT_BASE_DIR}/{self.POST_OFFICE_DIR}"
                 )
                 self._launch_parasut_post_office_editor()
-            elif "ubl-validator" == repo_name:
+            elif repo_name == "ubl-validator":
                 self._change_directory(
                     f"{self.PARASUT_BASE_DIR}/{self.UBL_VALIDATOR_DIR}"
                 )
                 self._launch_parasut_ubl_validator_editor()
-            elif "phoenix" == repo_name:
+            elif repo_name == "phoenix":
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.PHOENIX_DIR}")
                 self._launch_parasut_phoenix_editor()
-            elif "client" == repo_name:
+            elif repo_name == "client":
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.CLIENT_DIR}")
                 self._launch_parasut_client_editor()
-            elif "trinity" == repo_name:
+            elif repo_name == "trinity":
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.TRINITY_DIR}")
                 self._launch_parasut_trinity_editor()
-            elif "ui-library" == repo_name:
+            elif repo_name == "ui-library":
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}")
                 self._launch_parasut_ui_library_editor()
-            elif "shared-logic" == repo_name:
+            elif repo_name == "shared-logic":
                 self._change_directory(
                     f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
                 )
@@ -522,10 +522,10 @@ class Receiver:
 
         # launch relative repos
         for worker in workers:
-            if "server-worker" == worker:
+            if worker == "server-worker":
                 self._change_directory(f"{self.PARASUT_BASE_DIR}/{self.SERVER_DIR}")
                 self._launch_parasut_server_worker()
-            elif "e-doc-broker-worker" == worker:
+            elif worker == "e-doc-broker-worker":
                 self._change_directory(
                     f"{self.PARASUT_BASE_DIR}/{self.E_DOC_BROKER_DIR}"
                 )
