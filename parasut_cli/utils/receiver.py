@@ -149,7 +149,7 @@ class Receiver:
         self._ui_library_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
             choose_yarn_version=f"asdf local yarn {self.UI_LIBRARY_YARN_V}",
-            choose_node_version=f"asdf local yarn {self.UI_LIBRARY_NODE_V}",
+            choose_node_version=f"asdf local nodejs {self.UI_LIBRARY_NODE_V}",
             ember_serve=f"PROJECT_TARGET=phoenix ember s --live-reload-port {self.UI_LIBRARY_EMBER_PORT}",  # noqa: E501
         )
         self._shared_logic_commands: Dict[str, str] = dict(
@@ -1101,8 +1101,8 @@ class Receiver:
         phoenix_pane.send_keys(
             " && ".join(
                 [
-                    self._phoenix_commands["choose_node_version"],
                     self._phoenix_commands["choose_yarn_version"],
+                    self._phoenix_commands["choose_node_version"],
                     self._phoenix_commands["ember_serve"],
                 ]
             )
@@ -1117,8 +1117,8 @@ class Receiver:
         phoenix_pane.send_keys(
             " && ".join(
                 [
-                    self._phoenix_commands["choose_node_version"],
                     self._phoenix_commands["choose_yarn_version"],
+                    self._phoenix_commands["choose_node_version"],
                     self._phoenix_commands["launch_text_editor"],
                 ]
             )
@@ -1133,8 +1133,8 @@ class Receiver:
         client_pane.send_keys(
             " && ".join(
                 [
-                    self._client_commands["choose_node_version"],
                     self._client_commands["choose_yarn_version"],
+                    self._client_commands["choose_node_version"],
                     self._client_commands["ember_serve"],
                 ]
             )
@@ -1149,8 +1149,8 @@ class Receiver:
         client_pane.send_keys(
             " && ".join(
                 [
-                    self._client_commands["choose_node_version"],
                     self._client_commands["choose_yarn_version"],
+                    self._client_commands["choose_node_version"],
                     self._client_commands["launch_text_editor"],
                 ]
             )
@@ -1165,8 +1165,8 @@ class Receiver:
         trinity_pane.send_keys(
             " && ".join(
                 [
-                    self._trinity_commands["choose_node_version"],
                     self._trinity_commands["choose_yarn_version"],
+                    self._trinity_commands["choose_node_version"],
                     self._trinity_commands["ember_serve"],
                 ]
             )
@@ -1181,8 +1181,8 @@ class Receiver:
         trinity_pane.send_keys(
             " && ".join(
                 [
-                    self._trinity_commands["choose_node_version"],
                     self._trinity_commands["choose_yarn_version"],
+                    self._trinity_commands["choose_node_version"],
                     self._trinity_commands["launch_text_editor"],
                 ]
             )
@@ -1197,8 +1197,8 @@ class Receiver:
         ui_library_pane.send_keys(
             " && ".join(
                 [
-                    self._ui_library_commands["choose_node_version"],
                     self._ui_library_commands["choose_yarn_version"],
+                    self._ui_library_commands["choose_node_version"],
                     self._ui_library_commands["ember_serve"],
                 ]
             )
@@ -1213,8 +1213,8 @@ class Receiver:
         ui_library_pane.send_keys(
             " && ".join(
                 [
-                    self._ui_library_commands["choose_node_version"],
                     self._ui_library_commands["choose_yarn_version"],
+                    self._ui_library_commands["choose_node_version"],
                     self._ui_library_commands["launch_text_editor"],
                 ]
             )
@@ -1229,8 +1229,8 @@ class Receiver:
         shared_logic_pane.send_keys(
             " && ".join(
                 [
-                    self._shared_logic_commands["choose_node_version"],
                     self._shared_logic_commands["choose_yarn_version"],
+                    self._shared_logic_commands["choose_node_version"],
                     self._shared_logic_commands["ember_serve"],
                 ]
             )
@@ -1245,8 +1245,8 @@ class Receiver:
         shared_logic_pane.send_keys(
             " && ".join(
                 [
-                    self._shared_logic_commands["choose_node_version"],
                     self._shared_logic_commands["choose_yarn_version"],
+                    self._shared_logic_commands["choose_node_version"],
                     self._shared_logic_commands["launch_text_editor"],
                 ]
             )
