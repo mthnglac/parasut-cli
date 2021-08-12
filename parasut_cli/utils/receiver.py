@@ -78,6 +78,9 @@ class Receiver:
         self._tmux_server: Server
         self._tmux_session_parasut_ws_setup: Session
         self._tmux_session_parasut_ws_editor: Session
+        self._third_party_packages: Dict[str, str] = dict(
+            npm_cli_login="npm-cli-login",
+        )
         self._dep_versions: Dict[str, Dict[str, Any]] = dict(
             ui_library=dict(linked=False, value=""),
             shared_logic=dict(linked=False, value=""),
@@ -419,6 +422,7 @@ class Receiver:
     ) -> None:
         target_path: str = self._find_repo_path(target_repo)
 
+        self._check_npm_package_installed(self._third_party_packages["npm_cli_login"])
         self._change_directory(target_path)
 
         try:
@@ -427,14 +431,12 @@ class Receiver:
                     self._run_process(
                         [self._task_auto_release_shared_logic], show_output=show_output
                     )
-
                     if show_output is False:
                         console.print(":ok_hand: Target repo has been released.")
                 else:
                     self._run_process(
                         [self._task_release_shared_logic], show_output=show_output
                     )
-
                     if show_output is False:
                         console.print(":ok_hand: Target repo has been released.")
             elif target_repo == "ui-library":
@@ -442,14 +444,12 @@ class Receiver:
                     self._run_process(
                         [self._task_release_ui_library], show_output=show_output
                     )
-
                     if show_output is False:
                         console.print(":ok_hand: Target repo has been released.")
                 else:
                     self._run_process(
                         [self._task_auto_release_ui_library], show_output=show_output
                     )
-
                     if show_output is False:
                         console.print(":ok_hand: Target repo has been released.")
         except KeyboardInterrupt:
@@ -826,6 +826,15 @@ class Receiver:
     def get_pkg_version(self) -> None:
         print(parasut_cli.__version__)
 
+    def _check_npm_package_installed(self, pkg_name: str):
+        command = f"npm list -g --depth=0 | grep {pkg_name}"
+
+        try:
+            output = self._run_process(tasks=[command], show_output=False).stdout
+        except subprocess.CalledProcessError:
+            console.print(f":thumbs_down: You must install '{pkg_name}' package.")
+            sys.exit(0)
+
     def _run_process(self, tasks: List[str], show_output: bool):
         if show_output is False:
             with console.status("[bold green] Working on process..."):
@@ -833,8 +842,10 @@ class Receiver:
                     result = subprocess.run(
                         ["/bin/zsh", "-c", f"{task}"],
                         capture_output=True,
+                        text=True,
                     )
                     result.check_returncode()
+                    return result
         else:
             for task in tasks:
                 subprocess.run(
