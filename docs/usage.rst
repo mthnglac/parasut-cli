@@ -103,8 +103,7 @@ registry, logs in to the npm, publishes the package, and deletes the registry.
 .. code-block:: console
 
     $ parasut-cli release -t <repo-name>
-    $ parasut-cli release -t <repo-name> --auto-login
-    $ parasut-cli release -t <repo-name> --auto-login --output
+    $ parasut-cli release -t <repo-name> --output
 
 
 * ``-t/--target`` - a repository name for publish release to target repository. Choices: shared-logic, ui-library.
@@ -126,11 +125,14 @@ registry, logs in to the npm, publishes the package, and deletes the registry.
 
     Also, if you want to login to npm without entering username and password,
     you are lucky because parasut-cli has a flag for this: ``--auto-login``.
-    But first, you have to install the third party package below:
+    But first, you have to install the third party package below; after the
+    installation you can use ``--auto-login`` flag.
 
     .. code-block:: console
 
         $ npm install -g npm-cli-login
+        $ parasut-cli release -t <repo-name> --auto-login
+        $ parasut-cli release -t <repo-name> --auto-login --output
 
 
 Version Command
