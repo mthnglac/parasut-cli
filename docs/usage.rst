@@ -126,7 +126,7 @@ registry, logs in to the npm, publishes the package, and deletes the registry.
 
     Also, if you want to login to npm without entering username and password,
     you are lucky because parasut-cli has a flag for this: ``--auto-login``.
-    But first, you have to install the 3rd package below.
+    But first, you have to install this package below.
 
     .. code-block:: console
 
