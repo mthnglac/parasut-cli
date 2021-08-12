@@ -115,8 +115,8 @@ registry, logs in to the npm, publishes the package, and deletes the registry.
 
 .. note::
 
-    You have to set these environment variables for be able to release the
-    target repo:
+    You have to set these environment variables be able to release the target
+    repo:
 
     .. code-block:: console
 
