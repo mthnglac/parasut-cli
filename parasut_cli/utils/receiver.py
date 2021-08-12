@@ -373,15 +373,15 @@ class Receiver:
         except Exception as e:
             print(e)
 
-    def release_repo(self, repo_name: str) -> None:
-        base_path: str = self._find_repo_path(repo_name)
+    def release_repo(self, target_repo: str) -> None:
+        target_path: str = self._find_repo_path(target_repo)
 
-        self._change_directory(base_path)
+        self._change_directory(target_path)
 
         try:
-            if repo_name == "shared-logic":
+            if target_repo == "shared-logic":
                 self._run_process([self._task_release_shared_logic], show_output=True)
-            elif repo_name == "ui-library":
+            elif target_repo == "ui-library":
                 self._run_process([self._task_release_ui_library], show_output=True)
         except KeyboardInterrupt:
             pass

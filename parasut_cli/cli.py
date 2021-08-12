@@ -336,7 +336,7 @@ def main():
             invoker.do_something_important(
                 ReleaseCommand(
                     receiver,
-                    repo_name=args.release_repo,
+                    target_repo=args.release_repo,
                 )
             )
         else:

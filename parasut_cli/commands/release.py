@@ -8,11 +8,11 @@ class ReleaseCommand(Command):
     def __init__(
         self,
         receiver: Receiver,
-        repo_name: str,
+        target_repo: str,
     ) -> None:
         self._receiver: Receiver = receiver
-        self._repo_name: str = repo_name
+        self._target_repo: str = target_repo
 
     def execute(self) -> None:
-        if self._repo_name:
-            self._receiver.release_repo(repo_name=self._repo_name)
+        if self._target_repo:
+            self._receiver.release_repo(target_repo=self._target_repo)
