@@ -81,6 +81,9 @@ here, everything goes well on CLI. Briefly define the following variables:
     export PARASUT_COMPANY_ID="..."
     # npm registry
     export PARASUT_REGISTRY="..."
+    export PARASUT_NPM_USERNAME="..."
+    export PARASUT_NPM_PASSWORD="..."
+    export PARASUT_NPM_EMAIL="..."
     # switch rails names
     export PARASUT_PHOENIX_SWITCH_NAME="..."
     export PARASUT_TRINITY_SWITCH_NAME="..."
