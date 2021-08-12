@@ -235,6 +235,18 @@ def main():
         required=True,
         help="a repository name for releasing",
     )
+    parser_release.add_argument(
+        "--auto-login",
+        dest="auto_login_release",
+        action="store_true",
+        help="releasing without entering username&password",
+    )
+    parser_release.add_argument(
+        "--output",
+        dest="show_output_release",
+        action="store_true",
+        help="show output of release action",
+    )
 
     args = parent_parser.parse_args()
 
@@ -337,6 +349,8 @@ def main():
                 ReleaseCommand(
                     receiver,
                     target_repo=args.release_repo,
+                    auto_login=args.auto_login_release,
+                    show_output=args.show_output_release,
                 )
             )
         else:

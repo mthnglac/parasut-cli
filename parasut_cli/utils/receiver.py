@@ -86,15 +86,23 @@ class Receiver:
         self._core_commands: Dict[str, str] = dict(
             source_asdf="source ~/.asdf/asdf.sh",
             ember_release="ember release",
-            npm_set_parasut_registry=f"npm config set registry {self.PARASUT_REGISTRY}",
-            npm_login="npm login",
-            npm_publish="npm publish",
-            npm_delete_registry="npm config delete registry",
             git_change_branch_master="git checkout master",
             git_change_branch_develop="git checkout develop",
             git_fetch_all="git fetch --all",
             git_pull_origin_master="git pull origin master",
             git_pull_origin_develop="git pull origin develop",
+        )
+        self._npm_release_commands: Dict[str, str] = dict(
+            npm_set_parasut_registry=f"npm config set registry {self.PARASUT_REGISTRY}",
+            npm_login="npm login",
+            npm_publish="npm publish",
+            npm_delete_registry="npm config delete registry",
+        )
+        self._npm_auto_release_commands: Dict[str, str] = dict(
+            npm_set_parasut_registry=f"npm config set registry {self.PARASUT_REGISTRY}",
+            npm_login=f"npm-cli-login login -u {self.PARASUT_NPM_USERNAME} -p {self.PARASUT_NPM_PASSWORD} -e {self.PARASUT_NPM_EMAIL} -r {self.PARASUT_REGISTRY}",
+            npm_publish="npm publish --verbose",
+            npm_delete_registry="npm config delete registry",
         )
         self._worker_commands: Dict[str, str] = dict(
             launch_server_worker="foreman start -m 'worker=1, shoryuken=1, sidekiq_mikro_outbound=1, sidekiq_mikro_outbound=1'",  # noqa: E501
@@ -252,10 +260,25 @@ class Receiver:
                 self._core_commands["git_pull_origin_master"],
                 self._core_commands["git_fetch_all"],
                 self._core_commands["ember_release"],
-                self._core_commands["npm_set_parasut_registry"],
-                self._core_commands["npm_login"],
-                self._core_commands["npm_publish"],
-                self._core_commands["npm_delete_registry"],
+                self._npm_release_commands["npm_set_parasut_registry"],
+                self._npm_release_commands["npm_login"],
+                self._npm_release_commands["npm_publish"],
+                self._npm_release_commands["npm_delete_registry"],
+            ]
+        )
+        self._task_auto_release_shared_logic = " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._shared_logic_commands["choose_yarn_version"],
+                self._shared_logic_commands["choose_node_version"],
+                self._core_commands["git_change_branch_master"],
+                self._core_commands["git_pull_origin_master"],
+                self._core_commands["git_fetch_all"],
+                self._core_commands["ember_release"],
+                self._npm_auto_release_commands["npm_set_parasut_registry"],
+                self._npm_auto_release_commands["npm_login"],
+                self._npm_auto_release_commands["npm_publish"],
+                self._npm_auto_release_commands["npm_delete_registry"],
             ]
         )
         self._task_run_trinity = " && ".join(
@@ -283,10 +306,25 @@ class Receiver:
                 self._core_commands["git_pull_origin_develop"],
                 self._core_commands["git_fetch_all"],
                 self._core_commands["ember_release"],
-                self._core_commands["npm_set_parasut_registry"],
-                self._core_commands["npm_login"],
-                self._core_commands["npm_publish"],
-                self._core_commands["npm_delete_registry"],
+                self._npm_release_commands["npm_set_parasut_registry"],
+                self._npm_release_commands["npm_login"],
+                self._npm_release_commands["npm_publish"],
+                self._npm_release_commands["npm_delete_registry"],
+            ]
+        )
+        self._task_auto_release_ui_library = " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._ui_library_commands["choose_yarn_version"],
+                self._ui_library_commands["choose_node_version"],
+                self._core_commands["git_change_branch_develop"],
+                self._core_commands["git_pull_origin_develop"],
+                self._core_commands["git_fetch_all"],
+                self._core_commands["ember_release"],
+                self._npm_auto_release_commands["npm_set_parasut_registry"],
+                self._npm_auto_release_commands["npm_login"],
+                self._npm_auto_release_commands["npm_publish"],
+                self._npm_auto_release_commands["npm_delete_registry"],
             ]
         )
         self._task_run_client = " && ".join(
@@ -373,16 +411,32 @@ class Receiver:
         except Exception as e:
             print(e)
 
-    def release_repo(self, target_repo: str) -> None:
+    def release_repo(
+        self, target_repo: str, show_output: bool, auto_login: bool
+    ) -> None:
         target_path: str = self._find_repo_path(target_repo)
 
         self._change_directory(target_path)
 
         try:
             if target_repo == "shared-logic":
-                self._run_process([self._task_release_shared_logic], show_output=True)
+                if auto_login is True:
+                    self._run_process(
+                        [self._task_auto_release_shared_logic], show_output=show_output
+                    )
+                else:
+                    self._run_process(
+                        [self._task_release_shared_logic], show_output=show_output
+                    )
             elif target_repo == "ui-library":
-                self._run_process([self._task_release_ui_library], show_output=True)
+                if auto_login is True:
+                    self._run_process(
+                        [self._task_release_ui_library], show_output=show_output
+                    )
+                else:
+                    self._run_process(
+                        [self._task_auto_release_ui_library], show_output=show_output
+                    )
         except KeyboardInterrupt:
             pass
         except Exception as e:
@@ -753,7 +807,7 @@ class Receiver:
     def get_pkg_version(self) -> None:
         print(parasut_cli.__version__)
 
-    def _run_process(self, tasks: List[str], show_output=False):
+    def _run_process(self, tasks: List[str], show_output: bool):
         if show_output is False:
             with console.status("[bold green] Working on process..."):
                 for task in tasks:
