@@ -10,7 +10,7 @@ Dependency Setup
 
 There are some dependencies we need to handle before running the cli.
 
-It is necessary to install and configure the 3rd party tools below:
+It is necessary to install and configure these third party tools below:
 
 * `Ember.js`_
 * `Ruby on Rails`_
