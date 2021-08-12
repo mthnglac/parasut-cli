@@ -427,21 +427,37 @@ class Receiver:
                     self._run_process(
                         [self._task_auto_release_shared_logic], show_output=show_output
                     )
+
+                    if show_output is False:
+                        console.print(":ok_hand: Target repo has been released.")
                 else:
                     self._run_process(
                         [self._task_release_shared_logic], show_output=show_output
                     )
+
+                    if show_output is False:
+                        console.print(":ok_hand: Target repo has been released.")
             elif target_repo == "ui-library":
                 if auto_login is True:
                     self._run_process(
                         [self._task_release_ui_library], show_output=show_output
                     )
+
+                    if show_output is False:
+                        console.print(":ok_hand: Target repo has been released.")
                 else:
                     self._run_process(
                         [self._task_auto_release_ui_library], show_output=show_output
                     )
+
+                    if show_output is False:
+                        console.print(":ok_hand: Target repo has been released.")
         except KeyboardInterrupt:
-            pass
+            console.print(
+                ":pile_of_poo: You interrupted process. \
+                          Manually check your demand steps."
+            )
+            sys.exit(0)
         except Exception as e:
             print(e)
 
