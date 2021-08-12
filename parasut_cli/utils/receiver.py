@@ -90,6 +90,11 @@ class Receiver:
             npm_login="npm login",
             npm_publish="npm publish",
             npm_delete_registry="npm config delete registry",
+            git_change_branch_master="git checkout master",
+            git_change_branch_develop="git checkout develop",
+            git_fetch_all="git fetch --all",
+            git_pull_origin_master="git pull origin master",
+            git_pull_origin_develop="git pull origin develop",
         )
         self._worker_commands: Dict[str, str] = dict(
             launch_server_worker="foreman start -m 'worker=1, shoryuken=1, sidekiq_mikro_outbound=1, sidekiq_mikro_outbound=1'",  # noqa: E501
@@ -243,6 +248,9 @@ class Receiver:
                 self._core_commands["source_asdf"],
                 self._shared_logic_commands["choose_yarn_version"],
                 self._shared_logic_commands["choose_node_version"],
+                self._core_commands["git_change_branch_master"],
+                self._core_commands["git_pull_origin_master"],
+                self._core_commands["git_fetch_all"],
                 self._core_commands["ember_release"],
                 self._core_commands["npm_set_parasut_registry"],
                 self._core_commands["npm_login"],
@@ -271,6 +279,9 @@ class Receiver:
                 self._core_commands["source_asdf"],
                 self._ui_library_commands["choose_yarn_version"],
                 self._ui_library_commands["choose_node_version"],
+                self._core_commands["git_change_branch_develop"],
+                self._core_commands["git_pull_origin_develop"],
+                self._core_commands["git_fetch_all"],
                 self._core_commands["ember_release"],
                 self._core_commands["npm_set_parasut_registry"],
                 self._core_commands["npm_login"],
