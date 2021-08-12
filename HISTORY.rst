@@ -3,6 +3,13 @@ History
 =======
 
 
+0.4.3 (2021-08-12)
+-------------------
+
+* REFACTOR: release command logic
+* UPDATE: ``--auto-login`` and ``--output`` options for release command
+* UPDATE: docs improvements
+
 0.4.2 (2021-08-12)
 -------------------
 

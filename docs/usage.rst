@@ -94,18 +94,43 @@ Selects yarn, node and ruby versions and related options for the target repo.
 * ``-t/--target`` - a repository name for running target repository with necessary options. Choices: server, server-sidekiq, billing, billing-sidekiq, e-doc-broker, e-doc-broker-sidekiq, post-office, post-office-sidekiq, ubl-validator, phoenix, shared-logic, trinity, ui-library, client.
 
 
-Release Command (beta)
------------------------
+Release Command
+----------------
 
-It does the "release" operation on the specified repo. Sets the registry, logs
-in to npm, publishes the package, and deletes the registry.
+It does the "release" operation on the target repo. It does simply sets the
+registry, logs in to the npm, publishes the package, and deletes the registry.
 
 .. code-block:: console
 
     $ parasut-cli release -t <repo-name>
+    $ parasut-cli release -t <repo-name> --auto-login
+    $ parasut-cli release -t <repo-name> --auto-login --output
 
 
 * ``-t/--target`` - a repository name for publish release to target repository. Choices: shared-logic, ui-library.
+
+* ``--auto-login`` - an option for logging in to npm automatically.
+
+* ``--output`` - an option for showing process output.
+
+.. note::
+
+    You have to set these environment variables for be able to release the
+    target repo:
+
+    .. code-block:: console
+
+        $ export PARASUT_NPM_USERNAME=<npm_username>
+        $ export PARASUT_NPM_PASSWORD=<npm_password>
+        $ export PARASUT_NPM_EMAIL=<npm_email>
+
+    Also, if you want to login to npm without entering username and password,
+    you are lucky because parasut-cli has a flag for this: ``--auto-login``.
+    But first, you have to install the 3rd package below.
+
+    .. code-block:: console
+
+        $ npm install -g npm-cli-login
 
 
 Version Command

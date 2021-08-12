@@ -16,10 +16,12 @@ It is necessary to install and configure the 3rd party tools below:
 * `Ruby on Rails`_
 * `asdf`_ - version manager
 * tmux - terminal multiplexer
+* `npm-cli-login` - npm auto login package (optional)
 
 .. _Ember.js: https://emberjs.com/
 .. _Ruby on Rails: https://rubyonrails.org/
 .. _asdf: https://github.com/asdf-vm/asdf
+.. _npm-cli-login: https://github.com/postmanlabs/npm-cli-login
 
 .. warning::
 
