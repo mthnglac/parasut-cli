@@ -25,6 +25,9 @@ class Receiver:
             self.PARASUT_REGISTRY: str = env["PARASUT_REGISTRY"]
             self.PARASUT_BASE_DIR: str = env["PARASUT_BASE_DIR"]
             self.PARASUT_CLI_TEXT_EDITOR: str = env["PARASUT_CLI_TEXT_EDITOR"]
+            self.PARASUT_NPM_USERNAME: str = env["PARASUT_NPM_USERNAME"]
+            self.PARASUT_NPM_PASSWORD: str = env["PARASUT_NPM_PASSWORD"]
+            self.PARASUT_NPM_EMAIL: str = env["PARASUT_NPM_EMAIL"]
             # server
             self.SERVER_RUBY_V: str = env["PARASUT_SERVER_RUBY_V"]
             self.SERVER_DIR: str = env["PARASUT_SERVER_DIR"]
