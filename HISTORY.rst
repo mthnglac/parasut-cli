@@ -3,7 +3,7 @@ History
 =======
 
 
-0.4.3 (2021-08-12)
+0.4.3 (2021-08-13)
 -------------------
 
 * REFACTOR: release command logic
