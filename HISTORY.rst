@@ -3,6 +3,12 @@ History
 =======
 
 
+0.4.4 (2021-08-13)
+-------------------
+
+* BUG: auto release was working as manuel.
+* UPDATE: docs improvements
+
 0.4.3 (2021-08-13)
 -------------------
 
