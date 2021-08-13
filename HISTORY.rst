@@ -3,6 +3,11 @@ History
 =======
 
 
+0.4.5 (2021-08-13)
+-------------------
+
+* FEATURE: ``--yes`` flag added for ember release auto login.
+
 0.4.4 (2021-08-13)
 -------------------
 
