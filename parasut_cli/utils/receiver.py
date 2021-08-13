@@ -442,13 +442,13 @@ class Receiver:
             elif target_repo == "ui-library":
                 if auto_login is True:
                     self._run_process(
-                        [self._task_release_ui_library], show_output=show_output
+                        [self._task_auto_release_ui_library], show_output=show_output
                     )
                     if show_output is False:
                         console.print(":ok_hand: Target repo has been released.")
                 else:
                     self._run_process(
-                        [self._task_auto_release_ui_library], show_output=show_output
+                        [self._task_release_ui_library], show_output=show_output
                     )
                     if show_output is False:
                         console.print(":ok_hand: Target repo has been released.")
