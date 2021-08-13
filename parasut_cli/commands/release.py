@@ -21,6 +21,6 @@ class ReleaseCommand(Command):
         if self._target_repo:
             self._receiver.release_repo(
                 target_repo=self._target_repo,
-                show_output=self.show_output,
+                show_output=self._show_output,
                 auto_login=self._auto_login,
             )
