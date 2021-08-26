@@ -3,6 +3,13 @@ History
 =======
 
 
+0.4.6 (2021-08-26)
+-------------------
+
+* FEATURE: new switch subcommand added: ``pricing_list``.
+* UPDATE: docs improvements.
+* UPDATE: minor bugs.
+
 0.4.5 (2021-08-13)
 -------------------
 

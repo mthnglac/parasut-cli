@@ -88,7 +88,9 @@ here, everything goes well on CLI. Briefly define the following variables:
     export PARASUT_NPM_EMAIL="..."
     # switch rails names
     export PARASUT_PHOENIX_SWITCH_NAME="..."
+    export PARASUT_PHOENIX_SWITCH_PRICING_LIST_NAME="..."
     export PARASUT_TRINITY_SWITCH_NAME="..."
+    export PARASUT_TRINITY_SWITCH_PRICING_LIST_NAME="..."
     # version & ports
     export PARASUT_SERVER_RUBY_V="..."
     export PARASUT_BILLING_RUBY_V="..."

@@ -51,6 +51,7 @@ class Receiver:
             self.PHOENIX_YARN_V: str = env["PARASUT_PHOENIX_YARN_V"]
             self.PHOENIX_DIR: str = env["PARASUT_PHOENIX_DIR"]
             self.PHOENIX_SWITCH_NAME: str = env["PARASUT_PHOENIX_SWITCH_NAME"]
+            self.PHOENIX_SWITCH_PRICING_LIST_NAME: str = env["PARASUT_PHOENIX_SWITCH_PRICING_LIST_NAME"]
             # client
             self.CLIENT_NODE_V: str = env["PARASUT_CLIENT_NODE_V"]
             self.CLIENT_YARN_V: str = env["PARASUT_CLIENT_YARN_V"]
@@ -61,6 +62,7 @@ class Receiver:
             self.TRINITY_YARN_V: str = env["PARASUT_TRINITY_YARN_V"]
             self.TRINITY_EMBER_PORT: str = env["PARASUT_TRINITY_EMBER_PORT"]
             self.TRINITY_SWITCH_NAME: str = env["PARASUT_TRINITY_SWITCH_NAME"]
+            self.TRINITY_SWITCH_PRICING_LIST_NAME: str = env["PARASUT_TRINITY_SWITCH_PRICING_LIST_NAME"]
             self.TRINITY_DIR: str = env["PARASUT_TRINITY_DIR"]
             # ui-library
             self.UI_LIBRARY_NODE_V: str = env["PARASUT_UI_LIBRARY_NODE_V"]
@@ -130,6 +132,8 @@ class Receiver:
             choose_ruby_version=f"asdf local ruby {self.BILLING_RUBY_V}",
             launch_sidekiq="bundle exec sidekiq",
             launch_rails=f"rails server -p {self.BILLING_RAILS_PORT}",
+            switch_pricing_list_to_trinity=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(pricing_list: \"{self.TRINITY_SWITCH_PRICING_LIST_NAME}\")'",  # noqa: E501
+            switch_pricing_list_to_phoenix=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(pricing_list: \"{self.PHOENIX_SWITCH_PRICING_LIST_NAME}\")'",  # noqa: E501
         )
         self._e_doc_broker_commands: Dict[str, str] = dict(
             launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
@@ -369,6 +373,20 @@ class Receiver:
                 self._core_commands["source_asdf"],
                 self._server_commands["choose_ruby_version"],
                 self._server_commands["switch_to_receipt"],
+            ]
+        )
+        self._task_switch_pricing_list_to_trinity = " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._billing_commands["choose_ruby_version"],
+                self._billing_commands["switch_pricing_list_to_trinity"],
+            ]
+        )
+        self._task_switch_pricing_list_to_phoenix = " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._billing_commands["choose_ruby_version"],
+                self._billing_commands["switch_pricing_list_to_phoenix"],
             ]
         )
 
@@ -676,6 +694,35 @@ class Receiver:
                           Manually check your demand steps."
             )
             sys.exit(0)
+
+    def switch_billing_rails_pricing_list(
+            self, target_pricing_list: str, show_output: bool
+        ) -> None:
+            billing_repo: str = f"{self.PARASUT_BASE_DIR}/{self.BILLING_DIR}"
+
+            self._change_directory(billing_repo)
+
+            try:
+                if target_pricing_list == "trinity":
+                    self._run_process(
+                        tasks=[self._task_switch_pricing_list_to_trinity],
+                        show_output=show_output,
+                    )
+                    if show_output is False:
+                        console.print(":clinking_beer_mugs: Demand accomplished.")
+                if target_pricing_list == "phoenix":
+                    self._run_process(
+                        tasks=[self._task_switch_pricing_list_to_phoenix],
+                        show_output=show_output,
+                    )
+                    if show_output is False:
+                        console.print(":clinking_beer_mugs: Demand accomplished.")
+            except KeyboardInterrupt:
+                console.print(
+                    ":pile_of_poo: You interrupted process. \
+                              Manually check your demand steps."
+                )
+                sys.exit(0)
 
     def do_linking(
         self, base_repo: str, target_repos: List[str], show_output: bool

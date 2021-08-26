@@ -59,7 +59,7 @@ Switch Command
 ---------------
 
 This part can be a little confusing. It represents exactly what it does.
-Switch processes run on the ``server``. What the command does is to
+Switch processes run on ``server`` and ``billing``. What the command does is to
 automate processes that are executed interactively in the background.
 
 .. code-block:: console
@@ -76,6 +76,12 @@ automate processes that are executed interactively in the background.
 * ``addlings`` - command for switching addlings.
 
     * ``-t/--target`` - target prefix for choosing choices. Choices: receipt, invoice.
+
+    * ``--output`` - an option for showing process output.
+
+* ``pricing_list`` - command for switching addlings.
+
+    * ``-t/--target`` - target prefix for choosing choices. Choices: trinity, phoenix.
 
     * ``--output`` - an option for showing process output.
 

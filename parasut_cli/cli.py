@@ -189,6 +189,28 @@ def main():
         action="store_true",
         help="show output of switch addling action",
     )
+    subparser_switch_pricing_list = subparsers_switch.add_parser(
+        "pricing_list", help="command for switching pricing list"
+    )
+    subparser_switch_pricing_list.add_argument(
+        "-t",
+        "--target",
+        dest="switch_pricing_list",
+        metavar="<pricing_list_name>",
+        type=str,
+        choices=[
+            "phoenix",
+            "trinity",
+        ],
+        required=True,
+        help="a name to switch pricing list on billing",
+    )
+    subparser_switch_pricing_list.add_argument(
+        "--output",
+        dest="show_output_pricing_list",
+        action="store_true",
+        help="show output of switch pricing list action",
+    )
 
     # run command parser
     parser_run = subparsers.add_parser(
@@ -325,6 +347,20 @@ def main():
                         receiver,
                         target_addling=args.switch_addling,
                         show_output=args.show_output_addlings,
+                    )
+                )
+            else:
+                subparser_switch_addlings.print_help()
+        # switch_pricing_list sub-command
+        elif (
+            hasattr(args, "switch_subcommand") and args.switch_subcommand == "pricing_list"
+        ):
+            if getattr(args, "switch_pricing_list", False):
+                invoker.do_something_important(
+                    SwitchCommand(
+                        receiver,
+                        target_pricing_list=args.switch_pricing_list,
+                        show_output=args.show_output_pricing_list,
                     )
                 )
             else:
