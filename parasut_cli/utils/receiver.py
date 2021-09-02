@@ -100,6 +100,9 @@ class Receiver:
             git_fetch_all="git fetch --all",
             git_pull_origin_master="git pull origin master",
             git_pull_origin_develop="git pull origin develop",
+            git_push_origin_master="git push origin master",
+            git_push_origin_develop="git push origin develop",
+            git_push_tags="git push --tags",
         )
         self._npm_release_commands: Dict[str, str] = dict(
             npm_set_parasut_registry=f"npm config set registry {self.PARASUT_REGISTRY}",
@@ -275,6 +278,8 @@ class Receiver:
                 self._npm_release_commands["npm_login"],
                 self._npm_release_commands["npm_publish"],
                 self._npm_release_commands["npm_delete_registry"],
+                self._core_commands["git_push_origin_master"],
+                self._core_commands["git_push_tags"],
             ]
         )
         self._task_auto_release_shared_logic = " && ".join(
@@ -290,6 +295,8 @@ class Receiver:
                 self._npm_auto_release_commands["npm_login"],
                 self._npm_auto_release_commands["npm_publish"],
                 self._npm_auto_release_commands["npm_delete_registry"],
+                self._core_commands["git_push_origin_master"],
+                self._core_commands["git_push_tags"],
             ]
         )
         self._task_run_trinity = " && ".join(
@@ -321,6 +328,8 @@ class Receiver:
                 self._npm_release_commands["npm_login"],
                 self._npm_release_commands["npm_publish"],
                 self._npm_release_commands["npm_delete_registry"],
+                self._core_commands["git_push_origin_develop"],
+                self._core_commands["git_push_tags"],
             ]
         )
         self._task_auto_release_ui_library = " && ".join(
@@ -336,6 +345,8 @@ class Receiver:
                 self._npm_auto_release_commands["npm_login"],
                 self._npm_auto_release_commands["npm_publish"],
                 self._npm_auto_release_commands["npm_delete_registry"],
+                self._core_commands["git_push_origin_develop"],
+                self._core_commands["git_push_tags"],
             ]
         )
         self._task_run_client = " && ".join(
