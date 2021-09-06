@@ -17,6 +17,8 @@ using tmux and builds workspaces into them.
 
 * ``-s/--setup`` - a repository name to launch. Choices: server, billing, phoenix, shared-logic, trinity, ui-library, client, e-doc-broker, post-office, ubl-validator.
 
+* ``-w/--worker`` - a worker name to launch. This is necessary when you working with e-invoice. Choices: server-worker, e-doc-broker-worker.
+
 .. note::
 
     You can access existing tmux sessions with this command.
