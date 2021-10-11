@@ -279,7 +279,6 @@ class Receiver:
                 self._npm_release_commands["npm_publish"],
                 self._npm_release_commands["npm_delete_registry"],
                 self._core_commands["git_push_origin_master"],
-                self._core_commands["git_push_tags"],
             ]
         )
         self._task_auto_release_shared_logic = " && ".join(
@@ -296,7 +295,6 @@ class Receiver:
                 self._npm_auto_release_commands["npm_publish"],
                 self._npm_auto_release_commands["npm_delete_registry"],
                 self._core_commands["git_push_origin_master"],
-                self._core_commands["git_push_tags"],
             ]
         )
         self._task_run_trinity = " && ".join(
@@ -329,7 +327,6 @@ class Receiver:
                 self._npm_release_commands["npm_publish"],
                 self._npm_release_commands["npm_delete_registry"],
                 self._core_commands["git_push_origin_develop"],
-                self._core_commands["git_push_tags"],
             ]
         )
         self._task_auto_release_ui_library = " && ".join(
@@ -346,7 +343,6 @@ class Receiver:
                 self._npm_auto_release_commands["npm_publish"],
                 self._npm_auto_release_commands["npm_delete_registry"],
                 self._core_commands["git_push_origin_develop"],
-                self._core_commands["git_push_tags"],
             ]
         )
         self._task_run_client = " && ".join(
