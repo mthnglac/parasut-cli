@@ -51,6 +51,7 @@ def main():
             "e-doc-broker",
             "post-office",
             "ubl-validator",
+            "printx",
         ],
         help="a repository name to open in text editor",
     )
@@ -72,6 +73,7 @@ def main():
             "e-doc-broker",
             "post-office",
             "ubl-validator",
+            "printx",
         ],
         help="a repository name to launch",
     )
@@ -237,6 +239,7 @@ def main():
             "trinity",
             "ui-library",
             "client",
+            "printx",
         ],
         required=True,
         help="a repository name",

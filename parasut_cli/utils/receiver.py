@@ -74,6 +74,11 @@ class Receiver:
             self.SHARED_LOGIC_YARN_V: str = env["PARASUT_SHARED_LOGIC_YARN_V"]
             self.SHARED_LOGIC_EMBER_PORT: str = env["PARASUT_SHARED_LOGIC_EMBER_PORT"]
             self.SHARED_LOGIC_DIR: str = env["PARASUT_SHARED_LOGIC_DIR"]
+            # printx
+            self.PRINTX_NODE_V: str = env["PARASUT_PRINTX_NODE_V"]
+            self.PRINTX_YARN_V: str = env["PARASUT_PRINTX_YARN_V"]
+            self.PRINTX_EMBER_PORT: str = env["PARASUT_PRINTX_EMBER_PORT"]
+            self.PRINTX_DIR: str = env["PARASUT_PRINTX_DIR"]
         except KeyError as e:
             print(f"Please set environment variable: {e}")
             sys.exit(0)
@@ -184,6 +189,12 @@ class Receiver:
             choose_yarn_version=f"asdf local yarn {self.SHARED_LOGIC_YARN_V}",
             choose_node_version=f"asdf local nodejs {self.SHARED_LOGIC_NODE_V}",
             ember_serve=f"ember s --live-reload-port {self.SHARED_LOGIC_EMBER_PORT}",
+        )
+        self._printx_commands: Dict[str, str] = dict(
+            launch_text_editor=self.PARASUT_CLI_TEXT_EDITOR,
+            choose_yarn_version=f"asdf local yarn {self.PRINTX_YARN_V}",
+            choose_node_version=f"asdf local nodejs {self.PRINTX_NODE_V}",
+            ember_serve=f"./node_modules/ember-cli/bin/ember s --live-reload-port {self.PRINTX_EMBER_PORT}",
         )
         # run tasks
         self._task_run_server = " && ".join(
@@ -543,6 +554,11 @@ class Receiver:
                     f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
                 )
                 self._launch_parasut_shared_logic_repo()
+            elif repo_name == "printx":
+                self._change_directory(
+                    f"{self.PARASUT_BASE_DIR}/{self.PRINTX_DIR}"
+                )
+                self._launch_parasut_printx_repo()
 
         # kill the first empty window if new session initialized
         if not session:
@@ -606,6 +622,11 @@ class Receiver:
                     f"{self.PARASUT_BASE_DIR}/{self.SHARED_LOGIC_DIR}"
                 )
                 self._launch_parasut_shared_logic_editor()
+            elif repo_name == "printx":
+                self._change_directory(
+                    f"{self.PARASUT_BASE_DIR}/{self.PRINTX_DIR}"
+                )
+                self._launch_parasut_printx_editor()
 
         # kill the first empty window if new session initialized
         if not session:
@@ -1398,6 +1419,38 @@ class Receiver:
                     self._shared_logic_commands["choose_yarn_version"],
                     self._shared_logic_commands["choose_node_version"],
                     self._shared_logic_commands["launch_text_editor"],
+                ]
+            )
+        )
+
+    def _launch_parasut_printx_repo(self) -> None:
+        printx_window: Window = self._tmux_session_parasut_ws_setup.new_window(
+            attach=False, window_name="printx"
+        )
+        printx_pane: Pane = printx_window.attached_pane
+
+        printx_pane.send_keys(
+            " && ".join(
+                [
+                    self._printx_commands["choose_yarn_version"],
+                    self._printx_commands["choose_node_version"],
+                    self._printx_commands["ember_serve"],
+                ]
+            )
+        )
+
+    def _launch_parasut_printx_editor(self) -> None:
+        printx_window: Window = self._tmux_session_parasut_ws_editor.new_window(
+            attach=False, window_name="printx"
+        )
+        printx_pane: Pane = printx_window.attached_pane
+
+        printx_pane.send_keys(
+            " && ".join(
+                [
+                    self._printx_commands["choose_yarn_version"],
+                    self._printx_commands["choose_node_version"],
+                    self._printx_commands["launch_text_editor"],
                 ]
             )
         )
