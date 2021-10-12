@@ -61,6 +61,7 @@ Clone all repos into a folder that you will use as base. You get the idea.::
         billing/         # Billing repo
         e-doc-broker/    # broker repo
         post-office/     # post-office repo
+        printX/          # printX repo
         ubl-validator/   # ubl-validator repo
         phoenix/         # phoenix repo
         shared-logic/    # shared repo
@@ -114,6 +115,9 @@ here, everything goes well on CLI. Briefly define the following variables:
     export PARASUT_SHARED_LOGIC_NODE_V="..."
     export PARASUT_SHARED_LOGIC_YARN_V="..."
     export PARASUT_SHARED_LOGIC_EMBER_PORT="..."
+    export PARASUT_PRINTX_NODE_V="..."
+    export PARASUT_PRINTX_YARN_V="..."
+    export PARASUT_PRINTX_EMBER_PORT="..."
     # structure variables
     export PARASUT_BASE_DIR="~/Code/development/parasutcom"
     export PARASUT_SERVER_DIR="server"
@@ -123,6 +127,7 @@ here, everything goes well on CLI. Briefly define the following variables:
     export PARASUT_UBL_VALIDATOR_DIR="ubl-validator"
     export PARASUT_PHOENIX_DIR="phoenix"
     export PARASUT_SHARED_LOGIC_DIR="shared-logic"
+    export PARASUT_PRINTX_DIR="printX"
     export PARASUT_CLIENT_DIR="client"
     export PARASUT_TRINITY_DIR="trinity"
     export PARASUT_UI_LIBRARY_DIR="ui-library"

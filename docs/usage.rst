@@ -13,9 +13,9 @@ using tmux and builds workspaces into them.
     $ parasut-cli start -e <repo-name> -s <repo-name>
 
 
-* ``-e/--edit`` - a repository name to open in text editor. Choices: server, billing, phoenix, shared-logic, trinity, ui-library, client, e-doc-broker, post-office, ubl-validator.
+* ``-e/--edit`` - a repository name to open in text editor. Choices: server, billing, phoenix, shared-logic, trinity, ui-library, client, e-doc-broker, post-office, ubl-validator, printX.
 
-* ``-s/--setup`` - a repository name to launch. Choices: server, billing, phoenix, shared-logic, trinity, ui-library, client, e-doc-broker, post-office, ubl-validator.
+* ``-s/--setup`` - a repository name to launch. Choices: server, billing, phoenix, shared-logic, trinity, ui-library, client, e-doc-broker, post-office, ubl-validator, printX.
 
 * ``-w/--worker`` - a worker name to launch. This is necessary when you working with e-invoice. Choices: server-worker, e-doc-broker-worker.
 
@@ -99,7 +99,7 @@ Selects yarn, node and ruby versions and related options for the target repo.
     $ parasut-cli run -t <repo-name>
 
 
-* ``-t/--target`` - a repository name for running target repository with necessary options. Choices: server, server-sidekiq, billing, billing-sidekiq, e-doc-broker, e-doc-broker-sidekiq, post-office, post-office-sidekiq, ubl-validator, phoenix, shared-logic, trinity, ui-library, client.
+* ``-t/--target`` - a repository name for running target repository with necessary options. Choices: server, server-sidekiq, billing, billing-sidekiq, e-doc-broker, e-doc-broker-sidekiq, post-office, post-office-sidekiq, ubl-validator, phoenix, shared-logic, trinity, ui-library, client, printX.
 
 
 Release Command

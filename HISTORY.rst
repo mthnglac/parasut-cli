@@ -3,6 +3,13 @@ History
 =======
 
 
+0.4.8 (2021-10-12)
+-------------------
+
+* DELETE: ``git fetch --tags`` command removed from release process; it is already done in "ember release" command.
+* FEATURE: ``printX`` repo & its related logic & environments added.
+* UPDATE: docs improvements
+
 0.4.7 (2021-09-02)
 -------------------
 

@@ -28,10 +28,11 @@ manage your workspaces and the applications you will run during development.
 Features
 --------
 
-* Start command for preparing workspace with all necessary options.
-* Link command for yarn linking operations. Also --undo action.
-* Switch command for rails console actions.
-* Run command for executing repo command chains manually.
+* ``start`` command for preparing workspace with all necessary options.
+* ``link`` command for yarn linking operations. Also --undo action.
+* ``switch`` command for rails console actions.
+* ``run`` command for executing repo command chains manually.
+* ``release`` command for releasing version on related repo.
 * `rich`_ integrated.
 
 .. _rich: https://github.com/willmcgugan/rich
@@ -40,9 +41,7 @@ TODO
 ----
 
 * ``clone`` command for cloning repos in base directory.
-* ``release`` & ``pre-release`` command.
-* ``version`` command.
+* ``pre-release`` command.
 * unit tests.
 * mypy & black connection to tox.
 * linking state mechanism refactor.
-* docs refactor.
