@@ -364,6 +364,14 @@ class Receiver:
                 self._client_commands["ember_serve"],
             ]
         )
+        self._task_run_printx = " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._printx_commands["choose_yarn_version"],
+                self._printx_commands["choose_node_version"],
+                self._printx_commands["ember_serve"],
+            ]
+        )
         # switch tasks
         self._task_switch_frontend_to_phoenix = " && ".join(
             [
@@ -448,6 +456,8 @@ class Receiver:
             elif repo_name == "ui-library":
                 self._run_process([self._task_run_ui_library], show_output=True)
             elif repo_name == "client":
+                self._run_process([self._task_run_client], show_output=True)
+            elif repo_name == "printx":
                 self._run_process([self._task_run_client], show_output=True)
         except KeyboardInterrupt:
             pass
@@ -988,6 +998,8 @@ class Receiver:
             return f"{self.PARASUT_BASE_DIR}/{self.TRINITY_DIR}"
         elif repo_name == "ui-library":
             return f"{self.PARASUT_BASE_DIR}/{self.UI_LIBRARY_DIR}"
+        elif repo_name == "printx":
+            return f"{self.PARASUT_BASE_DIR}/{self.PRINTX_DIR}"
         else:
             raise Exception(
                 "Exiting because of an error: wrong repo path. couldn't find the repo"
