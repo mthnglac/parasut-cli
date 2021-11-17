@@ -132,12 +132,10 @@ class Receiver:
             choose_ruby_version=f"asdf local ruby {self.SERVER_RUBY_V}",
             launch_sidekiq="bundle exec sidekiq",
             launch_rails="rails server",
-            # switch_to_phoenix=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.PHOENIX_SWITCH_NAME}\")'",  # noqa: E501
             update_company_app_phoenix=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.PHOENIX_SWITCH_APP_NAME}\")'",  # noqa: E501
             update_owner_type_phoenix=f"rails runner 'puts Company.find({self.COMPANY_ID}).owner.update!(type: \"{self.PHOENIX_SWITCH_OWNER_TYPE_NAME}\")'",  # noqa: E501
-            # switch_to_trinity=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.TRINITY_SWITCH_NAME}\")'",  # noqa: E501
             update_company_app_trinity=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.TRINITY_SWITCH_APP_NAME}\")'",  # noqa: E501
-            update_owner_type_trinity=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.TRINITY_SWITCH_OWNER_TYPE_NAME}\")'",  # noqa: E501
+            update_owner_type_trinity=f"rails runner 'puts Company.find({self.COMPANY_ID}).owner.update!(type: \"{self.TRINITY_SWITCH_OWNER_TYPE_NAME}\")'",  # noqa: E501
             switch_to_receipt=f"rails runner 'puts company=Company.find({self.COMPANY_ID}); company.feature_flags[\"using_sales_receipt\"]=true; company.save!'",  # noqa: E501
             switch_to_invoice=f"rails runner 'puts company=Company.find({self.COMPANY_ID}); company.feature_flags[\"using_sales_receipt\"]=false; company.save!'",  # noqa: E501
         )
