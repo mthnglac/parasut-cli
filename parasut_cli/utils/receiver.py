@@ -50,7 +50,8 @@ class Receiver:
             self.PHOENIX_NODE_V: str = env["PARASUT_PHOENIX_NODE_V"]
             self.PHOENIX_YARN_V: str = env["PARASUT_PHOENIX_YARN_V"]
             self.PHOENIX_DIR: str = env["PARASUT_PHOENIX_DIR"]
-            self.PHOENIX_SWITCH_NAME: str = env["PARASUT_PHOENIX_SWITCH_NAME"]
+            self.PHOENIX_SWITCH_APP_NAME: str = env["PARASUT_PHOENIX_SWITCH_APP_NAME"]
+            self.PHOENIX_SWITCH_OWNER_TYPE_NAME: str = env["PARASUT_PHOENIX_SWITCH_OWNER_TYPE_NAME"]
             self.PHOENIX_SWITCH_PRICING_LIST_NAME: str = env["PARASUT_PHOENIX_SWITCH_PRICING_LIST_NAME"]
             # client
             self.CLIENT_NODE_V: str = env["PARASUT_CLIENT_NODE_V"]
@@ -61,7 +62,8 @@ class Receiver:
             self.TRINITY_NODE_V: str = env["PARASUT_TRINITY_NODE_V"]
             self.TRINITY_YARN_V: str = env["PARASUT_TRINITY_YARN_V"]
             self.TRINITY_EMBER_PORT: str = env["PARASUT_TRINITY_EMBER_PORT"]
-            self.TRINITY_SWITCH_NAME: str = env["PARASUT_TRINITY_SWITCH_NAME"]
+            self.TRINITY_SWITCH_APP_NAME: str = env["PARASUT_TRINITY_SWITCH_APP_NAME"]
+            self.TRINITY_SWITCH_OWNER_TYPE_NAME: str = env["PARASUT_TRINITY_SWITCH_OWNER_TYPE_NAME"]
             self.TRINITY_SWITCH_PRICING_LIST_NAME: str = env["PARASUT_TRINITY_SWITCH_PRICING_LIST_NAME"]
             self.TRINITY_DIR: str = env["PARASUT_TRINITY_DIR"]
             # ui-library
@@ -130,8 +132,12 @@ class Receiver:
             choose_ruby_version=f"asdf local ruby {self.SERVER_RUBY_V}",
             launch_sidekiq="bundle exec sidekiq",
             launch_rails="rails server",
-            switch_to_phoenix=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.PHOENIX_SWITCH_NAME}\")'",  # noqa: E501
-            switch_to_trinity=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.TRINITY_SWITCH_NAME}\")'",  # noqa: E501
+            # switch_to_phoenix=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.PHOENIX_SWITCH_NAME}\")'",  # noqa: E501
+            update_company_app_phoenix=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.PHOENIX_SWITCH_APP_NAME}\")'",  # noqa: E501
+            update_owner_type_phoenix=f"rails runner 'puts Company.find({self.COMPANY_ID}).owner.update!(type: \"{self.PHOENIX_SWITCH_OWNER_TYPE_NAME}\")'",  # noqa: E501
+            # switch_to_trinity=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.TRINITY_SWITCH_NAME}\")'",  # noqa: E501
+            update_company_app_trinity=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.TRINITY_SWITCH_APP_NAME}\")'",  # noqa: E501
+            update_owner_type_trinity=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.TRINITY_SWITCH_OWNER_TYPE_NAME}\")'",  # noqa: E501
             switch_to_receipt=f"rails runner 'puts company=Company.find({self.COMPANY_ID}); company.feature_flags[\"using_sales_receipt\"]=true; company.save!'",  # noqa: E501
             switch_to_invoice=f"rails runner 'puts company=Company.find({self.COMPANY_ID}); company.feature_flags[\"using_sales_receipt\"]=false; company.save!'",  # noqa: E501
         )
@@ -377,14 +383,16 @@ class Receiver:
             [
                 self._core_commands["source_asdf"],
                 self._server_commands["choose_ruby_version"],
-                self._server_commands["switch_to_phoenix"],
+                self._server_commands["update_company_app_phoenix"],
+                self._server_commands["update_owner_type_phoenix"],
             ]
         )
         self._task_switch_frontend_to_trinity = " && ".join(
             [
                 self._core_commands["source_asdf"],
                 self._server_commands["choose_ruby_version"],
-                self._server_commands["switch_to_trinity"],
+                self._server_commands["update_company_app_trinity"],
+                self._server_commands["update_owner_type_trinity"],
             ]
         )
         self._task_switch_addling_to_invoice = " && ".join(
@@ -942,7 +950,7 @@ class Receiver:
         attempts = 0
         command = f"yarn install{' --force' if force else ''}"
 
-        while attempts < 3:
+        while attempts < 4:
             try:
                 self._run_process(tasks=[command], show_output=show_output)
                 break
