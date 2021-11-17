@@ -3,6 +3,14 @@ History
 =======
 
 
+0.4.9 (2021-11-17)
+-------------------
+
+* UPDATE: add logic circle to switching frontend.
+  * ``PARASUT_PHOENIX_SWITCH_NAME`` environment variable changed as ``PARASUT_PHOENIX_SWITCH_APP_NAME``
+  * ``PARASUT_PHOENIX_SWITCH_OWNER_TYPE_NAME`` environment variable added.
+* UPDATE: minor changes on linking
+
 0.4.8 (2021-10-12)
 -------------------
 
