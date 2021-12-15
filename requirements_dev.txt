@@ -11,4 +11,4 @@ python-dotenv==0.19.2
 libtmux==0.10.2
 sphinx_rtd_theme==1.0.0
 mypy==0.910
-rich==10.16.0
+rich==10.16.1
