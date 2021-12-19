@@ -5,7 +5,7 @@ watchdog==2.1.6
 flake8==4.0.1
 tox==3.24.4
 coverage==6.2
-Sphinx==4.3.1
+Sphinx==4.3.2
 twine==3.7.1
 python-dotenv==0.19.2
 libtmux==0.10.2
