@@ -39,6 +39,8 @@ so that you can undo any changes you have made later ``(-u/--undo)``.
 .. code-block:: console
 
     $ parasut-cli link -b <repo-name> -t <repo-name>
+    $ parasut-cli link -b <repo-name> -t <repo-name> --output
+    $ parasut-cli link -b <repo-name> -t <repo-name> <repo-name> --output
 
 
 * ``-b/--base`` - a repository name for linking target repository. Use this with ``-t/--target`` option. Choices: phoenix, trinity.
