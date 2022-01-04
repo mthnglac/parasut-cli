@@ -118,6 +118,8 @@ registry, logs in to the npm, publishes the package, and deletes the registry.
 
 * ``-t/--target`` - a repository name for publish release to target repository. Choices: shared-logic, ui-library.
 
+* ``--pre-release`` - an option for making pre-release from your local branch (beta).
+
 * ``--auto-login`` - an option for logging in to npm automatically.
 
 * ``--output`` - an option for showing process output.

@@ -12,3 +12,4 @@ libtmux==0.10.2
 sphinx_rtd_theme==1.0.0
 mypy==0.910
 rich==10.14.0
+pygit2==1.7.2

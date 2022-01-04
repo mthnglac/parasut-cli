@@ -4,6 +4,7 @@ from time import sleep
 from libtmux import Server, Session, Window, Pane
 from libtmux.exc import LibTmuxException
 from rich.console import Console
+from pygit2 import Repository
 import os
 import sys
 import json
@@ -102,6 +103,8 @@ class Receiver:
             source_asdf="source ~/.asdf/asdf.sh",
             ember_release="ember release",
             ember_release_all_yes="ember release --yes",
+            ember_pre_release=f"ember release -l --prerelease {self._get_valid_pre_release_name}",
+            ember_pre_release_all_yes=f"ember release -l --prerelease {self._get_valid_pre_release_name} --yes",
             git_change_branch_master="git checkout master",
             git_change_branch_develop="git checkout develop",
             git_fetch_all="git fetch --all",
@@ -109,6 +112,7 @@ class Receiver:
             git_pull_origin_develop="git pull origin develop",
             git_push_origin_master="git push origin master",
             git_push_origin_develop="git push origin develop",
+            git_push_origin_current_branch=f"git push origin {self._get_current_branch_name}",
             git_push_tags="git push --tags",
         )
         self._npm_release_commands: Dict[str, str] = dict(
@@ -312,6 +316,34 @@ class Receiver:
                 self._core_commands["git_push_origin_master"],
             ]
         )
+        self._task_pre_release_shared_logic = " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._shared_logic_commands["choose_yarn_version"],
+                self._shared_logic_commands["choose_node_version"],
+                self._core_commands["git_fetch_all"],
+                self._core_commands["ember_pre_release"],
+                self._npm_release_commands["npm_set_parasut_registry"],
+                self._npm_release_commands["npm_login"],
+                self._npm_release_commands["npm_publish"],
+                self._npm_release_commands["npm_delete_registry"],
+                self._core_commands["git_push_origin_current_branch"],
+            ]
+        )
+        self._task_auto_pre_release_shared_logic = " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._shared_logic_commands["choose_yarn_version"],
+                self._shared_logic_commands["choose_node_version"],
+                self._core_commands["git_fetch_all"],
+                self._core_commands["ember_pre_release_all_yes"],
+                self._npm_auto_release_commands["npm_set_parasut_registry"],
+                self._npm_auto_release_commands["npm_login"],
+                self._npm_auto_release_commands["npm_publish"],
+                self._npm_auto_release_commands["npm_delete_registry"],
+                self._core_commands["git_push_origin_current_branch"],
+            ]
+        )
         self._task_run_trinity = " && ".join(
             [
                 self._core_commands["source_asdf"],
@@ -358,6 +390,34 @@ class Receiver:
                 self._npm_auto_release_commands["npm_publish"],
                 self._npm_auto_release_commands["npm_delete_registry"],
                 self._core_commands["git_push_origin_develop"],
+            ]
+        )
+        self._task_pre_release_ui_library = " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._ui_library_commands["choose_yarn_version"],
+                self._ui_library_commands["choose_node_version"],
+                self._core_commands["git_fetch_all"],
+                self._core_commands["ember_pre_release"],
+                self._npm_release_commands["npm_set_parasut_registry"],
+                self._npm_release_commands["npm_login"],
+                self._npm_release_commands["npm_publish"],
+                self._npm_release_commands["npm_delete_registry"],
+                self._core_commands["git_push_origin_current_branch"],
+            ]
+        )
+        self._task_auto_pre_release_ui_library = " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._ui_library_commands["choose_yarn_version"],
+                self._ui_library_commands["choose_node_version"],
+                self._core_commands["git_fetch_all"],
+                self._core_commands["ember_pre_release_all_yes"],
+                self._npm_auto_release_commands["npm_set_parasut_registry"],
+                self._npm_auto_release_commands["npm_login"],
+                self._npm_auto_release_commands["npm_publish"],
+                self._npm_auto_release_commands["npm_delete_registry"],
+                self._core_commands["git_push_origin_current_branch"],
             ]
         )
         self._task_run_client = " && ".join(
@@ -475,7 +535,9 @@ class Receiver:
     ) -> None:
         target_path: str = self._find_repo_path(target_repo)
 
-        self._check_npm_package_installed(self._third_party_packages["npm_cli_login"])
+        if auto_login:
+            self._check_npm_package_installed(self._third_party_packages["npm_cli_login"])
+
         self._change_directory(target_path)
 
         try:
@@ -505,6 +567,52 @@ class Receiver:
                     )
                     if show_output is False:
                         console.print(":ok_hand: Target repo has been released.")
+        except KeyboardInterrupt:
+            console.print(
+                ":pile_of_poo: You interrupted process. \
+                          Manually check your demand steps."
+            )
+            sys.exit(0)
+        except Exception as e:
+            print(e)
+
+    def pre_release_repo(
+        self, target_repo: str, show_output: bool, auto_login: bool
+    ) -> None:
+        target_path: str = self._find_repo_path(target_repo)
+
+        if auto_login:
+            self._check_npm_package_installed(self._third_party_packages["npm_cli_login"])
+
+        self._change_directory(target_path)
+
+        try:
+            if target_repo == "shared-logic":
+                if auto_login is True:
+                    self._run_process(
+                        [self._task_auto_pre_release_shared_logic], show_output=show_output
+                    )
+                    if show_output is False:
+                        console.print(":ok_hand: Target repo has been pre-released.")
+                else:
+                    self._run_process(
+                        [self._task_pre_release_shared_logic], show_output=show_output
+                    )
+                    if show_output is False:
+                        console.print(":ok_hand: Target repo has been pre-released.")
+            elif target_repo == "ui-library":
+                if auto_login is True:
+                    self._run_process(
+                        [self._task_auto_pre_release_ui_library], show_output=show_output
+                    )
+                    if show_output is False:
+                        console.print(":ok_hand: Target repo has been pre-released.")
+                else:
+                    self._run_process(
+                        [self._task_pre_release_ui_library], show_output=show_output
+                    )
+                    if show_output is False:
+                        console.print(":ok_hand: Target repo has been pre-released.")
         except KeyboardInterrupt:
             console.print(
                 ":pile_of_poo: You interrupted process. \
@@ -1472,3 +1580,19 @@ class Receiver:
                 ]
             )
         )
+
+    def _get_current_branch_name(self) -> str:
+        return Repository('.').head.shorthand
+
+    def _get_valid_pre_release_name(self) -> str:
+        current_branch_name = self._get_current_branch_name()
+        valid_branch_name: str
+
+        if '/' in current_branch_name:
+            valid_branch_name = current_branch_name.replace('/', '-')
+        else:
+            valid_branch_name = current_branch_name
+
+        return valid_branch_name
+
+

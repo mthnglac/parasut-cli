@@ -3,6 +3,12 @@ History
 =======
 
 
+0.5.0 (2022-01-04)
+-------------------
+
+* FEATURE: ``--pre-release`` flag added to release command.
+* UPDATE: docs improvements.
+
 0.4.9 (2021-11-17)
 -------------------
 

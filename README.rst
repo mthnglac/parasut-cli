@@ -33,6 +33,7 @@ Features
 * ``switch`` command for rails console actions.
 * ``run`` command for executing repo command chains manually.
 * ``release`` command for releasing version on related repo.
+* ``pre-release`` flag for ``release`` command.
 * `rich`_ integrated.
 
 .. _rich: https://github.com/willmcgugan/rich
@@ -41,7 +42,6 @@ TODO
 ----
 
 * ``clone`` command for cloning repos in base directory.
-* ``pre-release`` command.
 * unit tests.
 * mypy & black connection to tox.
 * linking state mechanism refactor.
