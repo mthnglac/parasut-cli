@@ -53,6 +53,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/mthnglac/parasut-cli',
-    version='0.4.9',
+    version='0.5.0',
     zip_safe=False,
 )
