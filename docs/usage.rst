@@ -114,6 +114,7 @@ registry, logs in to the npm, publishes the package, and deletes the registry.
 
     $ parasut-cli release -t <repo-name>
     $ parasut-cli release -t <repo-name> --output
+    $ parasut-cli release -t <repo-name> --pre-release --output
 
 
 * ``-t/--target`` - a repository name for publish release to target repository. Choices: shared-logic, ui-library.
@@ -145,6 +146,7 @@ registry, logs in to the npm, publishes the package, and deletes the registry.
         $ npm install -g npm-cli-login
         $ parasut-cli release -t <repo-name> --auto-login
         $ parasut-cli release -t <repo-name> --auto-login --output
+        $ parasut-cli release -t <repo-name> --pre-release --auto-login --output
 
 
 Version Command
