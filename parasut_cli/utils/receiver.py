@@ -103,8 +103,8 @@ class Receiver:
             source_asdf="source ~/.asdf/asdf.sh",
             ember_release="ember release",
             ember_release_all_yes="ember release --yes",
-            ember_pre_release=f"ember release -l --prerelease {self._get_valid_pre_release_name}",
-            ember_pre_release_all_yes=f"ember release -l --prerelease {self._get_valid_pre_release_name} --yes",
+            ember_pre_release=f"ember release -l --prerelease {self._get_valid_pre_release_name()}",
+            ember_pre_release_all_yes=f"ember release -l --prerelease {self._get_valid_pre_release_name()} --yes",
             git_change_branch_master="git checkout master",
             git_change_branch_develop="git checkout develop",
             git_fetch_all="git fetch --all",
@@ -112,7 +112,7 @@ class Receiver:
             git_pull_origin_develop="git pull origin develop",
             git_push_origin_master="git push origin master",
             git_push_origin_develop="git push origin develop",
-            git_push_origin_current_branch=f"git push origin {self._get_current_branch_name}",
+            git_push_origin_current_branch=f"git push origin {self._get_current_branch_name()}",
             git_push_tags="git push --tags",
         )
         self._npm_release_commands: Dict[str, str] = dict(

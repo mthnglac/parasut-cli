@@ -20,14 +20,14 @@ class ReleaseCommand(Command):
         self._show_output: bool = show_output
 
     def execute(self) -> None:
-        if self._target_repo:
+        if self._target_repo and not self._pre_release:
             self._receiver.release_repo(
                 target_repo=self._target_repo,
                 show_output=self._show_output,
                 auto_login=self._auto_login,
             )
 
-        if self._pre_release:
+        if self._target_repo and self._pre_release:
             self._receiver.pre_release_repo(
                 target_repo=self._target_repo,
                 show_output=self._show_output,
