@@ -3,6 +3,12 @@ History
 =======
 
 
+0.6.1 (2022-01-05)
+-------------------
+
+* ``--pre-release`` reverted. Commented for testing.
+* switch option for Asist.
+
 0.6.0 (2022-01-05)
 -------------------
 

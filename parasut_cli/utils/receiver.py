@@ -67,6 +67,9 @@ class Receiver:
             self.TRINITY_SWITCH_OWNER_TYPE_NAME: str = env["PARASUT_TRINITY_SWITCH_OWNER_TYPE_NAME"]
             self.TRINITY_SWITCH_PRICING_LIST_NAME: str = env["PARASUT_TRINITY_SWITCH_PRICING_LIST_NAME"]
             self.TRINITY_DIR: str = env["PARASUT_TRINITY_DIR"]
+            # asist
+            self.ASIST_SWITCH_APP_NAME: str = env["PARASUT_ASIST_SWITCH_APP_NAME"]
+            self.ASIST_SWITCH_OWNER_TYPE_NAME: str = env["PARASUT_ASIST_SWITCH_OWNER_TYPE_NAME"]
             # ui-library
             self.UI_LIBRARY_NODE_V: str = env["PARASUT_UI_LIBRARY_NODE_V"]
             self.UI_LIBRARY_YARN_V: str = env["PARASUT_UI_LIBRARY_YARN_V"]
@@ -140,6 +143,8 @@ class Receiver:
             update_owner_type_phoenix=f"rails runner 'puts Company.find({self.COMPANY_ID}).owner.update!(type: \"{self.PHOENIX_SWITCH_OWNER_TYPE_NAME}\")'",  # noqa: E501
             update_company_app_trinity=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.TRINITY_SWITCH_APP_NAME}\")'",  # noqa: E501
             update_owner_type_trinity=f"rails runner 'puts Company.find({self.COMPANY_ID}).owner.update!(type: \"{self.TRINITY_SWITCH_OWNER_TYPE_NAME}\")'",  # noqa: E501
+            update_company_app_asist=f"rails runner 'puts Company.find({self.COMPANY_ID}).update!(used_app: \"{self.ASIST_SWITCH_APP_NAME}\")'",  # noqa: E501
+            update_owner_type_asist=f"rails runner 'puts Company.find({self.COMPANY_ID}).owner.update!(type: \"{self.ASIST_SWITCH_OWNER_TYPE_NAME}\")'",  # noqa: E501
             switch_to_receipt=f"rails runner 'puts company=Company.find({self.COMPANY_ID}); company.feature_flags[\"using_sales_receipt\"]=true; company.save!'",  # noqa: E501
             switch_to_invoice=f"rails runner 'puts company=Company.find({self.COMPANY_ID}); company.feature_flags[\"using_sales_receipt\"]=false; company.save!'",  # noqa: E501
         )
@@ -443,6 +448,14 @@ class Receiver:
                 self._server_commands["choose_ruby_version"],
                 self._server_commands["update_company_app_phoenix"],
                 self._server_commands["update_owner_type_phoenix"],
+            ]
+        )
+        self._task_switch_frontend_to_asist = " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._server_commands["choose_ruby_version"],
+                self._server_commands["update_company_app_asist"],
+                self._server_commands["update_owner_type_asist"],
             ]
         )
         self._task_switch_frontend_to_trinity = " && ".join(
@@ -800,6 +813,13 @@ class Receiver:
             if target_repo == "phoenix":
                 self._run_process(
                     tasks=[self._task_switch_frontend_to_phoenix],
+                    show_output=show_output,
+                )
+                if show_output is False:
+                    console.print(":clinking_beer_mugs: Demand accomplished.")
+            if target_repo == "asist":
+                self._run_process(
+                    tasks=[self._task_switch_frontend_to_asist],
                     show_output=show_output,
                 )
                 if show_output is False:

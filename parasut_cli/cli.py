@@ -157,8 +157,9 @@ def main():
         metavar="<repo-name>",
         type=str,
         choices=[
-            "phoenix",
+            "asist",
             "trinity",
+            "phoenix",
         ],
         required=True,
         help="a repository name to switch frontend repo on server",
