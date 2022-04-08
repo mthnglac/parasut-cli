@@ -4,7 +4,7 @@ from time import sleep
 from libtmux import Server, Session, Window, Pane
 from libtmux.exc import LibTmuxException
 from rich.console import Console
-# from pygit2 import Repository
+from pygit2 import Repository
 import os
 import sys
 import json
@@ -106,8 +106,8 @@ class Receiver:
             source_asdf="source ~/.asdf/asdf.sh",
             ember_release="ember release",
             ember_release_all_yes="ember release --yes",
-            # ember_pre_release=f"ember release -l --prerelease {self._get_valid_pre_release_name()}",
-            # ember_pre_release_all_yes=f"ember release -l --prerelease {self._get_valid_pre_release_name()} --yes",
+            ember_pre_release=f"ember release -l --prerelease {self._get_valid_pre_release_name()}",
+            ember_pre_release_all_yes=f"ember release -l --prerelease {self._get_valid_pre_release_name()} --yes",
             git_change_branch_master="git checkout master",
             git_change_branch_develop="git checkout develop",
             git_fetch_all="git fetch --all",
@@ -115,7 +115,6 @@ class Receiver:
             git_pull_origin_develop="git pull origin develop",
             git_push_origin_master="git push origin master",
             git_push_origin_develop="git push origin develop",
-            # git_push_origin_current_branch=f"git push origin {self._get_current_branch_name()}",
             git_push_tags="git push --tags",
         )
         self._npm_release_commands: Dict[str, str] = dict(
@@ -209,291 +208,6 @@ class Receiver:
             choose_node_version=f"asdf local nodejs {self.PRINTX_NODE_V}",
             ember_serve=f"./node_modules/ember-cli/bin/ember s --live-reload-port {self.PRINTX_EMBER_PORT}",
         )
-        # run tasks
-        self._task_run_server = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._server_commands["choose_ruby_version"],
-                self._server_commands["launch_rails"],
-            ]
-        )
-        self._task_run_server_sidekiq = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._server_commands["choose_ruby_version"],
-                self._server_commands["launch_sidekiq"],
-            ]
-        )
-        self._task_run_billing = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._billing_commands["choose_ruby_version"],
-                self._billing_commands["launch_rails"],
-            ]
-        )
-        self._task_run_billing_sidekiq = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._billing_commands["choose_ruby_version"],
-                self._billing_commands["launch_sidekiq"],
-            ]
-        )
-        self._task_run_e_doc_broker = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._e_doc_broker_commands["choose_ruby_version"],
-                self._e_doc_broker_commands["launch_rails"],
-            ]
-        )
-        self._task_run_e_doc_broker_sidekiq = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._e_doc_broker_commands["choose_ruby_version"],
-                self._e_doc_broker_commands["launch_sidekiq"],
-            ]
-        )
-        self._task_run_post_office = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._post_office_commands["choose_ruby_version"],
-                self._post_office_commands["launch_rails"],
-            ]
-        )
-        self._task_run_post_office_sidekiq = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._post_office_commands["choose_ruby_version"],
-                self._post_office_commands["launch_sidekiq"],
-            ]
-        )
-        self._task_run_ubl_validator = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._ubl_validator_commands["choose_maven_version"],
-                self._ubl_validator_commands["launch_spring_boot"],
-            ]
-        )
-        self._task_run_phoenix = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._phoenix_commands["choose_yarn_version"],
-                self._phoenix_commands["choose_node_version"],
-                self._phoenix_commands["ember_serve"],
-            ]
-        )
-        self._task_run_shared_logic = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._shared_logic_commands["choose_yarn_version"],
-                self._shared_logic_commands["choose_node_version"],
-                self._shared_logic_commands["ember_serve"],
-            ]
-        )
-        self._task_release_shared_logic = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._shared_logic_commands["choose_yarn_version"],
-                self._shared_logic_commands["choose_node_version"],
-                self._core_commands["git_change_branch_master"],
-                self._core_commands["git_pull_origin_master"],
-                self._core_commands["git_fetch_all"],
-                self._core_commands["ember_release"],
-                self._npm_release_commands["npm_set_parasut_registry"],
-                self._npm_release_commands["npm_login"],
-                self._npm_release_commands["npm_publish"],
-                self._npm_release_commands["npm_delete_registry"],
-                self._core_commands["git_push_origin_master"],
-            ]
-        )
-        self._task_auto_release_shared_logic = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._shared_logic_commands["choose_yarn_version"],
-                self._shared_logic_commands["choose_node_version"],
-                self._core_commands["git_change_branch_master"],
-                self._core_commands["git_pull_origin_master"],
-                self._core_commands["git_fetch_all"],
-                self._core_commands["ember_release_all_yes"],
-                self._npm_auto_release_commands["npm_set_parasut_registry"],
-                self._npm_auto_release_commands["npm_login"],
-                self._npm_auto_release_commands["npm_publish"],
-                self._npm_auto_release_commands["npm_delete_registry"],
-                self._core_commands["git_push_origin_master"],
-            ]
-        )
-        # self._task_pre_release_shared_logic = " && ".join(
-            # [
-                # self._core_commands["source_asdf"],
-                # self._shared_logic_commands["choose_yarn_version"],
-                # self._shared_logic_commands["choose_node_version"],
-                # self._core_commands["git_fetch_all"],
-                # self._core_commands["ember_pre_release"],
-                # self._npm_release_commands["npm_set_parasut_registry"],
-                # self._npm_release_commands["npm_login"],
-                # self._npm_release_commands["npm_publish"],
-                # self._npm_release_commands["npm_delete_registry"],
-                # self._core_commands["git_push_origin_current_branch"],
-            # ]
-        # )
-        # self._task_auto_pre_release_shared_logic = " && ".join(
-            # [
-                # self._core_commands["source_asdf"],
-                # self._shared_logic_commands["choose_yarn_version"],
-                # self._shared_logic_commands["choose_node_version"],
-                # self._core_commands["git_fetch_all"],
-                # self._core_commands["ember_pre_release_all_yes"],
-                # self._npm_auto_release_commands["npm_set_parasut_registry"],
-                # self._npm_auto_release_commands["npm_login"],
-                # self._npm_auto_release_commands["npm_publish"],
-                # self._npm_auto_release_commands["npm_delete_registry"],
-                # self._core_commands["git_push_origin_current_branch"],
-            # ]
-        # )
-        self._task_run_trinity = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._trinity_commands["choose_yarn_version"],
-                self._trinity_commands["choose_node_version"],
-                self._trinity_commands["ember_serve"],
-            ]
-        )
-        self._task_run_ui_library = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._ui_library_commands["choose_yarn_version"],
-                self._ui_library_commands["choose_node_version"],
-                self._ui_library_commands["ember_serve"],
-            ]
-        )
-        self._task_release_ui_library = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._ui_library_commands["choose_yarn_version"],
-                self._ui_library_commands["choose_node_version"],
-                self._core_commands["git_change_branch_develop"],
-                self._core_commands["git_pull_origin_develop"],
-                self._core_commands["git_fetch_all"],
-                self._core_commands["ember_release"],
-                self._npm_release_commands["npm_set_parasut_registry"],
-                self._npm_release_commands["npm_login"],
-                self._npm_release_commands["npm_publish"],
-                self._npm_release_commands["npm_delete_registry"],
-                self._core_commands["git_push_origin_develop"],
-            ]
-        )
-        self._task_auto_release_ui_library = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._ui_library_commands["choose_yarn_version"],
-                self._ui_library_commands["choose_node_version"],
-                self._core_commands["git_change_branch_develop"],
-                self._core_commands["git_pull_origin_develop"],
-                self._core_commands["git_fetch_all"],
-                self._core_commands["ember_release_all_yes"],
-                self._npm_auto_release_commands["npm_set_parasut_registry"],
-                self._npm_auto_release_commands["npm_login"],
-                self._npm_auto_release_commands["npm_publish"],
-                self._npm_auto_release_commands["npm_delete_registry"],
-                self._core_commands["git_push_origin_develop"],
-            ]
-        )
-        # self._task_pre_release_ui_library = " && ".join(
-            # [
-                # self._core_commands["source_asdf"],
-                # self._ui_library_commands["choose_yarn_version"],
-                # self._ui_library_commands["choose_node_version"],
-                # self._core_commands["git_fetch_all"],
-                # self._core_commands["ember_pre_release"],
-                # self._npm_release_commands["npm_set_parasut_registry"],
-                # self._npm_release_commands["npm_login"],
-                # self._npm_release_commands["npm_publish"],
-                # self._npm_release_commands["npm_delete_registry"],
-                # self._core_commands["git_push_origin_current_branch"],
-            # ]
-        # )
-        # self._task_auto_pre_release_ui_library = " && ".join(
-            # [
-                # self._core_commands["source_asdf"],
-                # self._ui_library_commands["choose_yarn_version"],
-                # self._ui_library_commands["choose_node_version"],
-                # self._core_commands["git_fetch_all"],
-                # self._core_commands["ember_pre_release_all_yes"],
-                # self._npm_auto_release_commands["npm_set_parasut_registry"],
-                # self._npm_auto_release_commands["npm_login"],
-                # self._npm_auto_release_commands["npm_publish"],
-                # self._npm_auto_release_commands["npm_delete_registry"],
-                # self._core_commands["git_push_origin_current_branch"],
-            # ]
-        # )
-        self._task_run_client = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._client_commands["choose_yarn_version"],
-                self._client_commands["choose_node_version"],
-                self._client_commands["ember_serve"],
-            ]
-        )
-        self._task_run_printx = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._printx_commands["choose_yarn_version"],
-                self._printx_commands["choose_node_version"],
-                self._printx_commands["ember_serve"],
-            ]
-        )
-        # switch tasks
-        self._task_switch_frontend_to_phoenix = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._server_commands["choose_ruby_version"],
-                self._server_commands["update_company_app_phoenix"],
-                self._server_commands["update_owner_type_phoenix"],
-            ]
-        )
-        self._task_switch_frontend_to_asist = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._server_commands["choose_ruby_version"],
-                self._server_commands["update_company_app_asist"],
-                self._server_commands["update_owner_type_asist"],
-            ]
-        )
-        self._task_switch_frontend_to_trinity = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._server_commands["choose_ruby_version"],
-                self._server_commands["update_company_app_trinity"],
-                self._server_commands["update_owner_type_trinity"],
-            ]
-        )
-        self._task_switch_addling_to_invoice = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._server_commands["choose_ruby_version"],
-                self._server_commands["switch_to_invoice"],
-            ]
-        )
-        self._task_switch_addling_to_receipt = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._server_commands["choose_ruby_version"],
-                self._server_commands["switch_to_receipt"],
-            ]
-        )
-        self._task_switch_pricing_list_to_trinity = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._billing_commands["choose_ruby_version"],
-                self._billing_commands["switch_pricing_list_to_trinity"],
-            ]
-        )
-        self._task_switch_pricing_list_to_phoenix = " && ".join(
-            [
-                self._core_commands["source_asdf"],
-                self._billing_commands["choose_ruby_version"],
-                self._billing_commands["switch_pricing_list_to_phoenix"],
-            ]
-        )
 
     def initialize_tmux_server(self) -> None:
         self._tmux_server = Server()
@@ -505,39 +219,39 @@ class Receiver:
 
         try:
             if repo_name == "server":
-                self._run_process([self._task_run_server], show_output=True)
+                self._run_process([self._task_chain_to_run_server()], show_output=True)
             elif repo_name == "server-sidekiq":
-                self._run_process([self._task_run_server_sidekiq], show_output=True)
+                self._run_process([self._task_chain_to_run_server_sidekiq()], show_output=True)
             elif repo_name == "billing":
-                self._run_process([self._task_run_billing], show_output=True)
+                self._run_process([self._task_chain_to_run_billing()], show_output=True)
             elif repo_name == "billing-sidekiq":
-                self._run_process([self._task_run_billing_sidekiq], show_output=True)
+                self._run_process([self._task_chain_to_run_billing_sidekiq()], show_output=True)
             elif repo_name == "e-doc-broker":
-                self._run_process([self._task_run_e_doc_broker], show_output=True)
+                self._run_process([self._task_chain_to_run_e_doc_broker()], show_output=True)
             elif repo_name == "e-doc-broker-sidekiq":
                 self._run_process(
-                    [self._task_run_e_doc_broker_sidekiq], show_output=True
+                    [self._task_chain_to_run_e_doc_broker_sidekiq()], show_output=True
                 )
             elif repo_name == "post-office":
-                self._run_process([self._task_run_post_office], show_output=True)
+                self._run_process([self._task_chain_to_run_post_office()], show_output=True)
             elif repo_name == "post-office-sidekiq":
                 self._run_process(
-                    [self._task_run_post_office_sidekiq], show_output=True
+                    [self._task_chain_to_run_post_office_sidekiq()], show_output=True
                 )
             elif repo_name == "ubl-validator":
-                self._run_process([self._task_run_ubl_validator], show_output=True)
+                self._run_process([self._task_chain_to_run_ubl_validator()], show_output=True)
             elif repo_name == "phoenix":
-                self._run_process([self._task_run_phoenix], show_output=True)
+                self._run_process([self._task_chain_to_run_phoenix()], show_output=True)
             elif repo_name == "shared-logic":
-                self._run_process([self._task_run_shared_logic], show_output=True)
+                self._run_process([self._task_chain_to_run_shared_logic()], show_output=True)
             elif repo_name == "trinity":
-                self._run_process([self._task_run_trinity], show_output=True)
+                self._run_process([self._task_chain_to_run_trinity()], show_output=True)
             elif repo_name == "ui-library":
-                self._run_process([self._task_run_ui_library], show_output=True)
+                self._run_process([self._task_chain_to_run_ui_library()], show_output=True)
             elif repo_name == "client":
-                self._run_process([self._task_run_client], show_output=True)
+                self._run_process([self._task_chain_to_run_client()], show_output=True)
             elif repo_name == "printx":
-                self._run_process([self._task_run_client], show_output=True)
+                self._run_process([self._task_chain_to_run_printx()], show_output=True)
         except KeyboardInterrupt:
             pass
         except Exception as e:
@@ -557,26 +271,26 @@ class Receiver:
             if target_repo == "shared-logic":
                 if auto_login is True:
                     self._run_process(
-                        [self._task_auto_release_shared_logic], show_output=show_output
+                        [self._task_chain_to_make_auto_release_on_shared_logic()], show_output=show_output
                     )
                     if show_output is False:
                         console.print(":ok_hand: Target repo has been released.")
                 else:
                     self._run_process(
-                        [self._task_release_shared_logic], show_output=show_output
+                        [self._task_chain_to_make_release_on_shared_logic()], show_output=show_output
                     )
                     if show_output is False:
                         console.print(":ok_hand: Target repo has been released.")
             elif target_repo == "ui-library":
                 if auto_login is True:
                     self._run_process(
-                        [self._task_auto_release_ui_library], show_output=show_output
+                        [self._task_chain_to_make_auto_release_on_ui_library()], show_output=show_output
                     )
                     if show_output is False:
                         console.print(":ok_hand: Target repo has been released.")
                 else:
                     self._run_process(
-                        [self._task_release_ui_library], show_output=show_output
+                        [self._task_chain_to_make_release_on_ui_library()], show_output=show_output
                     )
                     if show_output is False:
                         console.print(":ok_hand: Target repo has been released.")
@@ -589,51 +303,51 @@ class Receiver:
         except Exception as e:
             print(e)
 
-    # def pre_release_repo(
-        # self, target_repo: str, show_output: bool, auto_login: bool
-    # ) -> None:
-        # target_path: str = self._find_repo_path(target_repo)
+    def pre_release_repo(
+        self, target_repo: str, show_output: bool, auto_login: bool
+    ) -> None:
+        target_path: str = self._find_repo_path(target_repo)
 
-        # if auto_login:
-            # self._check_npm_package_installed(self._third_party_packages["npm_cli_login"])
+        if auto_login:
+            self._check_npm_package_installed(self._third_party_packages["npm_cli_login"])
 
-        # self._change_directory(target_path)
+        self._change_directory(target_path)
 
-        # try:
-            # if target_repo == "shared-logic":
-                # if auto_login is True:
-                    # self._run_process(
-                        # [self._task_auto_pre_release_shared_logic], show_output=show_output
-                    # )
-                    # if show_output is False:
-                        # console.print(":ok_hand: Target repo has been pre-released.")
-                # else:
-                    # self._run_process(
-                        # [self._task_pre_release_shared_logic], show_output=show_output
-                    # )
-                    # if show_output is False:
-                        # console.print(":ok_hand: Target repo has been pre-released.")
-            # elif target_repo == "ui-library":
-                # if auto_login is True:
-                    # self._run_process(
-                        # [self._task_auto_pre_release_ui_library], show_output=show_output
-                    # )
-                    # if show_output is False:
-                        # console.print(":ok_hand: Target repo has been pre-released.")
-                # else:
-                    # self._run_process(
-                        # [self._task_pre_release_ui_library], show_output=show_output
-                    # )
-                    # if show_output is False:
-                        # console.print(":ok_hand: Target repo has been pre-released.")
-        # except KeyboardInterrupt:
-            # console.print(
-                # ":pile_of_poo: You interrupted process. \
-                          # Manually check your demand steps."
-            # )
-            # sys.exit(0)
-        # except Exception as e:
-            # print(e)
+        try:
+            if target_repo == "shared-logic":
+                if auto_login is True:
+                    self._run_process(
+                        [self._task_chain_to_make_auto_pre_release_on_shared_logic()], show_output=show_output
+                    )
+                    if show_output is False:
+                        console.print(":ok_hand: Target repo has been pre-released.")
+                else:
+                    self._run_process(
+                        [self._task_chain_to_make_pre_release_on_shared_logic()], show_output=show_output
+                    )
+                    if show_output is False:
+                        console.print(":ok_hand: Target repo has been pre-released.")
+            elif target_repo == "ui-library":
+                if auto_login is True:
+                    self._run_process(
+                        [self._task_chain_to_make_auto_pre_release_on_ui_library()], show_output=show_output
+                    )
+                    if show_output is False:
+                        console.print(":ok_hand: Target repo has been pre-released.")
+                else:
+                    self._run_process(
+                        [self._task_chain_to_make_pre_release_on_ui_library()], show_output=show_output
+                    )
+                    if show_output is False:
+                        console.print(":ok_hand: Target repo has been pre-released.")
+        except KeyboardInterrupt:
+            console.print(
+                ":pile_of_poo: You interrupted process. \
+                          Manually check your demand steps."
+            )
+            sys.exit(0)
+        except Exception as e:
+            print(e)
 
     def create_parasut_ws_setup(self, repos: List[str]) -> None:
         session: Optional[Session]
@@ -812,21 +526,21 @@ class Receiver:
         try:
             if target_repo == "phoenix":
                 self._run_process(
-                    tasks=[self._task_switch_frontend_to_phoenix],
+                    tasks=[self._task_chain_switch_frontend_to_phoenix()],
                     show_output=show_output,
                 )
                 if show_output is False:
                     console.print(":clinking_beer_mugs: Demand accomplished.")
             if target_repo == "asist":
                 self._run_process(
-                    tasks=[self._task_switch_frontend_to_asist],
+                    tasks=[self._task_chain_switch_frontend_to_asist()],
                     show_output=show_output,
                 )
                 if show_output is False:
                     console.print(":clinking_beer_mugs: Demand accomplished.")
             if target_repo == "trinity":
                 self._run_process(
-                    tasks=[self._task_switch_frontend_to_trinity],
+                    tasks=[self._task_chain_switch_frontend_to_trinity()],
                     show_output=show_output,
                 )
                 if show_output is False:
@@ -846,16 +560,16 @@ class Receiver:
         self._change_directory(server_repo)
 
         try:
-            if target_addling == "receipt":
+            if target_addling == "invoice":
                 self._run_process(
-                    tasks=[self._task_switch_addling_to_receipt],
+                    tasks=[self._task_chain_switch_addling_to_invoice()],
                     show_output=show_output,
                 )
                 if show_output is False:
                     console.print(":clinking_beer_mugs: Demand accomplished.")
-            if target_addling == "invoice":
+            if target_addling == "receipt":
                 self._run_process(
-                    tasks=[self._task_switch_addling_to_invoice],
+                    tasks=[self._task_chain_switch_addling_to_receipt()],
                     show_output=show_output,
                 )
                 if show_output is False:
@@ -877,14 +591,14 @@ class Receiver:
             try:
                 if target_pricing_list == "trinity":
                     self._run_process(
-                        tasks=[self._task_switch_pricing_list_to_trinity],
+                        tasks=[self._task_chain_switch_pricing_list_to_trinity()],
                         show_output=show_output,
                     )
                     if show_output is False:
                         console.print(":clinking_beer_mugs: Demand accomplished.")
                 if target_pricing_list == "phoenix":
                     self._run_process(
-                        tasks=[self._task_switch_pricing_list_to_phoenix],
+                        tasks=[self._task_chain_switch_pricing_list_to_phoenix()],
                         show_output=show_output,
                     )
                     if show_output is False:
@@ -1601,18 +1315,365 @@ class Receiver:
             )
         )
 
-    # def _get_current_branch_name(self) -> str:
-        # return Repository('.').head.shorthand
+    def _get_current_branch_name(self) -> str:
+        return Repository('.').head.shorthand
 
-    # def _get_valid_pre_release_name(self) -> str:
-        # current_branch_name = self._get_current_branch_name()
-        # valid_branch_name: str
+    def _get_valid_pre_release_name(self) -> str:
+        current_branch_name = self._get_current_branch_name()
+        valid_branch_name: str
 
-        # if '/' in current_branch_name:
-            # valid_branch_name = current_branch_name.replace('/', '-')
-        # else:
-            # valid_branch_name = current_branch_name
+        if '/' in current_branch_name:
+            valid_branch_name = current_branch_name.replace('/', '-')
+        else:
+            valid_branch_name = current_branch_name
 
-        # return valid_branch_name
+        return valid_branch_name
 
+    # run tasks
 
+    def _task_chain_to_run_server(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._server_commands["choose_ruby_version"],
+                self._server_commands["launch_rails"],
+            ]
+        )
+
+    def _task_chain_to_run_server_sidekiq(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._server_commands["choose_ruby_version"],
+                self._server_commands["launch_sidekiq"],
+            ]
+        )
+
+    def _task_chain_to_run_billing(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._billing_commands["choose_ruby_version"],
+                self._billing_commands["launch_rails"],
+            ]
+        )
+
+    def _task_chain_to_run_billing_sidekiq(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._billing_commands["choose_ruby_version"],
+                self._billing_commands["launch_sidekiq"],
+            ]
+        )
+
+    def _task_chain_to_run_e_doc_broker(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._e_doc_broker_commands["choose_ruby_version"],
+                self._e_doc_broker_commands["launch_rails"],
+            ]
+        )
+
+    def _task_chain_to_run_e_doc_broker_sidekiq(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._e_doc_broker_commands["choose_ruby_version"],
+                self._e_doc_broker_commands["launch_sidekiq"],
+            ]
+        )
+
+    def _task_chain_to_run_post_office(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._post_office_commands["choose_ruby_version"],
+                self._post_office_commands["launch_rails"],
+            ]
+        )
+
+    def _task_chain_to_run_post_office_sidekiq(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._post_office_commands["choose_ruby_version"],
+                self._post_office_commands["launch_sidekiq"],
+            ]
+        )
+
+    def _task_chain_to_run_ubl_validator(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._ubl_validator_commands["choose_maven_version"],
+                self._ubl_validator_commands["launch_spring_boot"],
+            ]
+        )
+
+    def _task_chain_to_run_phoenix(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._phoenix_commands["choose_yarn_version"],
+                self._phoenix_commands["choose_node_version"],
+                self._phoenix_commands["ember_serve"],
+            ]
+        )
+
+    def _task_chain_to_run_trinity(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._trinity_commands["choose_yarn_version"],
+                self._trinity_commands["choose_node_version"],
+                self._trinity_commands["ember_serve"],
+            ]
+        )
+
+    def _task_chain_to_run_shared_logic(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._shared_logic_commands["choose_yarn_version"],
+                self._shared_logic_commands["choose_node_version"],
+                self._shared_logic_commands["ember_serve"],
+            ]
+        )
+
+    def _task_chain_to_run_ui_library(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._ui_library_commands["choose_yarn_version"],
+                self._ui_library_commands["choose_node_version"],
+                self._ui_library_commands["ember_serve"],
+            ]
+        )
+
+    def _task_chain_to_run_client(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._client_commands["choose_yarn_version"],
+                self._client_commands["choose_node_version"],
+                self._client_commands["ember_serve"],
+            ]
+        )
+
+    def _task_chain_to_run_printx(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._printx_commands["choose_yarn_version"],
+                self._printx_commands["choose_node_version"],
+                self._printx_commands["ember_serve"],
+            ]
+        )
+
+    # release tasks
+
+    def _task_chain_to_make_release_on_shared_logic(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._shared_logic_commands["choose_yarn_version"],
+                self._shared_logic_commands["choose_node_version"],
+                self._core_commands["git_change_branch_master"],
+                self._core_commands["git_pull_origin_master"],
+                self._core_commands["git_fetch_all"],
+                self._core_commands["ember_release"],
+                self._npm_release_commands["npm_set_parasut_registry"],
+                self._npm_release_commands["npm_login"],
+                self._npm_release_commands["npm_publish"],
+                self._npm_release_commands["npm_delete_registry"],
+                self._core_commands["git_push_origin_master"],
+            ]
+        )
+
+    def _task_chain_to_make_auto_release_on_shared_logic(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._shared_logic_commands["choose_yarn_version"],
+                self._shared_logic_commands["choose_node_version"],
+                self._core_commands["git_change_branch_master"],
+                self._core_commands["git_pull_origin_master"],
+                self._core_commands["git_fetch_all"],
+                self._core_commands["ember_release_all_yes"],
+                self._npm_auto_release_commands["npm_set_parasut_registry"],
+                self._npm_auto_release_commands["npm_login"],
+                self._npm_auto_release_commands["npm_publish"],
+                self._npm_auto_release_commands["npm_delete_registry"],
+                self._core_commands["git_push_origin_master"],
+            ]
+        )
+
+    def _task_chain_to_make_pre_release_on_shared_logic(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._shared_logic_commands["choose_yarn_version"],
+                self._shared_logic_commands["choose_node_version"],
+                self._core_commands["git_fetch_all"],
+                self._core_commands["ember_pre_release"],
+                self._npm_release_commands["npm_set_parasut_registry"],
+                self._npm_release_commands["npm_login"],
+                self._npm_release_commands["npm_publish"],
+                self._npm_release_commands["npm_delete_registry"],
+                f"git push origin {self._get_current_branch_name()}"
+            ]
+        )
+
+    def _task_chain_to_make_auto_pre_release_on_shared_logic(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._shared_logic_commands["choose_yarn_version"],
+                self._shared_logic_commands["choose_node_version"],
+                self._core_commands["git_fetch_all"],
+                self._core_commands["ember_pre_release_all_yes"],
+                self._npm_auto_release_commands["npm_set_parasut_registry"],
+                self._npm_auto_release_commands["npm_login"],
+                self._npm_auto_release_commands["npm_publish"],
+                self._npm_auto_release_commands["npm_delete_registry"],
+                f"git push origin {self._get_current_branch_name()}"
+            ]
+        )
+
+    def _task_chain_to_make_release_on_ui_library(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._ui_library_commands["choose_yarn_version"],
+                self._ui_library_commands["choose_node_version"],
+                self._core_commands["git_change_branch_develop"],
+                self._core_commands["git_pull_origin_develop"],
+                self._core_commands["git_fetch_all"],
+                self._core_commands["ember_release"],
+                self._npm_release_commands["npm_set_parasut_registry"],
+                self._npm_release_commands["npm_login"],
+                self._npm_release_commands["npm_publish"],
+                self._npm_release_commands["npm_delete_registry"],
+                self._core_commands["git_push_origin_develop"],
+            ]
+        )
+
+    def _task_chain_to_make_auto_release_on_ui_library(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._ui_library_commands["choose_yarn_version"],
+                self._ui_library_commands["choose_node_version"],
+                self._core_commands["git_change_branch_develop"],
+                self._core_commands["git_pull_origin_develop"],
+                self._core_commands["git_fetch_all"],
+                self._core_commands["ember_release_all_yes"],
+                self._npm_auto_release_commands["npm_set_parasut_registry"],
+                self._npm_auto_release_commands["npm_login"],
+                self._npm_auto_release_commands["npm_publish"],
+                self._npm_auto_release_commands["npm_delete_registry"],
+                self._core_commands["git_push_origin_develop"],
+            ]
+        )
+
+    def _task_chain_to_make_pre_release_on_ui_library(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._ui_library_commands["choose_yarn_version"],
+                self._ui_library_commands["choose_node_version"],
+                self._core_commands["git_fetch_all"],
+                self._core_commands["ember_pre_release"],
+                self._npm_release_commands["npm_set_parasut_registry"],
+                self._npm_release_commands["npm_login"],
+                self._npm_release_commands["npm_publish"],
+                self._npm_release_commands["npm_delete_registry"],
+                f"git push origin {self._get_current_branch_name()}"
+            ]
+        )
+
+    def _task_chain_to_make_auto_pre_release_on_ui_library(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._ui_library_commands["choose_yarn_version"],
+                self._ui_library_commands["choose_node_version"],
+                self._core_commands["git_fetch_all"],
+                self._core_commands["ember_pre_release_all_yes"],
+                self._npm_auto_release_commands["npm_set_parasut_registry"],
+                self._npm_auto_release_commands["npm_login"],
+                self._npm_auto_release_commands["npm_publish"],
+                self._npm_auto_release_commands["npm_delete_registry"],
+                f"git push origin {self._get_current_branch_name()}"
+            ]
+        )
+
+    # switch tasks
+
+    def _task_chain_switch_frontend_to_phoenix(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._server_commands["choose_ruby_version"],
+                self._server_commands["update_company_app_phoenix"],
+                self._server_commands["update_owner_type_phoenix"],
+            ]
+        )
+
+    def _task_chain_switch_frontend_to_asist(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._server_commands["choose_ruby_version"],
+                self._server_commands["update_company_app_asist"],
+                self._server_commands["update_owner_type_asist"],
+            ]
+        )
+
+    def _task_chain_switch_frontend_to_trinity(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._server_commands["choose_ruby_version"],
+                self._server_commands["update_company_app_trinity"],
+                self._server_commands["update_owner_type_trinity"],
+            ]
+        )
+
+    def _task_chain_switch_addling_to_invoice(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._server_commands["choose_ruby_version"],
+                self._server_commands["switch_to_invoice"],
+            ]
+        )
+
+    def _task_chain_switch_addling_to_receipt(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._server_commands["choose_ruby_version"],
+                self._server_commands["switch_to_receipt"],
+            ]
+        )
+
+    def _task_chain_switch_pricing_list_to_trinity(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._billing_commands["choose_ruby_version"],
+                self._billing_commands["switch_pricing_list_to_trinity"],
+            ]
+        )
+
+    def _task_chain_switch_pricing_list_to_phoenix(self) -> str:
+        return " && ".join(
+            [
+                self._core_commands["source_asdf"],
+                self._billing_commands["choose_ruby_version"],
+                self._billing_commands["switch_pricing_list_to_phoenix"],
+            ]
+        )
