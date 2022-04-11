@@ -106,8 +106,6 @@ class Receiver:
             source_asdf="source ~/.asdf/asdf.sh",
             ember_release="ember release",
             ember_release_all_yes="ember release --yes",
-            ember_pre_release=f"ember release -l --prerelease {self._get_valid_pre_release_name()}",
-            ember_pre_release_all_yes=f"ember release -l --prerelease {self._get_valid_pre_release_name()} --yes",
             git_change_branch_master="git checkout master",
             git_change_branch_develop="git checkout develop",
             git_fetch_all="git fetch --all",
