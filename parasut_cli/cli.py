@@ -261,12 +261,12 @@ def main():
         required=True,
         help="a repository name for releasing",
     )
-    # parser_release.add_argument(
-        # "--pre-release",
-        # dest="pre_release",
-        # action="store_true",
-        # help="make pre-release from local branch",
-    # )
+    parser_release.add_argument(
+        "--pre-release",
+        dest="pre_release",
+        action="store_true",
+        help="make pre-release from local branch",
+    )
     parser_release.add_argument(
         "--auto-login",
         dest="auto_login_release",
@@ -395,7 +395,7 @@ def main():
                 ReleaseCommand(
                     receiver,
                     target_repo=args.release_repo,
-                    # pre_release=args.pre_release,
+                    pre_release=args.pre_release,
                     auto_login=args.auto_login_release,
                     show_output=args.show_output_release,
                 )

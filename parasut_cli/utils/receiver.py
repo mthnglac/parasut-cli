@@ -1322,6 +1322,8 @@ class Receiver:
 
         if '/' in current_branch_name:
             valid_branch_name = current_branch_name.replace('/', '-')
+        elif '_' in current_branch_name:
+            valid_branch_name = current_branch_name.replace('_', '-')
         else:
             valid_branch_name = current_branch_name
 
