@@ -10,6 +10,6 @@ twine==4.0.0
 python-dotenv==0.20.0
 libtmux==0.11.0
 sphinx_rtd_theme==1.0.0
-mypy==0.950
+mypy==0.960
 rich==12.4.4
 pygit2==1.9.1
